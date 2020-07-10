@@ -1,0 +1,335 @@
+##sequence-region NC_000932.1 1 154478
+##species https://www.ncbi.nlm.nih.gov/Taxonomy/Browser/wwwtax.cgi?id=3702
+NC_000932.1	RefSeq	region	1	154478	.	+	.	ID=NC_000932.1:1..154478;Dbxref=taxon:3702;Is_circular=true;Name=Pltd;ecotype=Columbia;gbkey=Src;genome=chloroplast;mol_type=genomic DNA
+NC_000932.1	RefSeq	gene	4	76	.	-	.	ID=gene-ArthCt088;Dbxref=GeneID:1466273;Name=trnH;gbkey=Gene;gene=trnH;gene_biotype=tRNA;locus_tag=ArthCt088
+NC_000932.1	RefSeq	tRNA	4	76	.	-	.	ID=rna-ArthCt088;Parent=gene-ArthCt088;Dbxref=GeneID:1466273;gbkey=tRNA;gene=trnH;locus_tag=ArthCt088;product=tRNA-His
+NC_000932.1	RefSeq	exon	4	76	.	-	.	ID=exon-ArthCt088-1;Parent=rna-ArthCt088;Dbxref=GeneID:1466273;gbkey=tRNA;gene=trnH;locus_tag=ArthCt088;product=tRNA-His
+NC_000932.1	RefSeq	gene	383	1444	.	-	.	ID=gene-ArthCp002;Dbxref=GeneID:844802;Name=psbA;gbkey=Gene;gene=psbA;gene_biotype=protein_coding;locus_tag=ArthCp002
+NC_000932.1	RefSeq	CDS	383	1444	.	-	0	ID=cds-NP_051039.1;Parent=gene-ArthCp002;Dbxref=Genbank:NP_051039.1,GeneID:844802;Name=NP_051039.1;gbkey=CDS;gene=psbA;locus_tag=ArthCp002;product=photosystem II protein D1;protein_id=NP_051039.1;transl_table=11
+NC_000932.1	RefSeq	gene	1717	4347	.	-	.	ID=gene-ArthCt089;Dbxref=GeneID:1466272;Name=trnK;gbkey=Gene;gene=trnK;gene_biotype=tRNA;locus_tag=ArthCt089
+NC_000932.1	RefSeq	tRNA	1717	4347	.	-	.	ID=rna-ArthCt089;Parent=gene-ArthCt089;Dbxref=GeneID:1466272;gbkey=tRNA;gene=trnK;locus_tag=ArthCt089;product=tRNA-Lys
+NC_000932.1	RefSeq	exon	4311	4347	.	-	.	ID=exon-ArthCt089-1;Parent=rna-ArthCt089;Dbxref=GeneID:1466272;gbkey=tRNA;gene=trnK;locus_tag=ArthCt089;product=tRNA-Lys
+NC_000932.1	RefSeq	exon	1717	1751	.	-	.	ID=exon-ArthCt089-2;Parent=rna-ArthCt089;Dbxref=GeneID:1466272;gbkey=tRNA;gene=trnK;locus_tag=ArthCt089;product=tRNA-Lys
+NC_000932.1	RefSeq	gene	2056	3570	.	-	.	ID=gene-ArthCp003;Dbxref=GeneID:844797;Name=matK;gbkey=Gene;gene=matK;gene_biotype=protein_coding;locus_tag=ArthCp003
+NC_000932.1	RefSeq	CDS	2056	3570	.	-	0	ID=cds-NP_051040.2;Parent=gene-ArthCp003;Dbxref=Genbank:NP_051040.2,GeneID:844797;Name=NP_051040.2;gbkey=CDS;gene=matK;locus_tag=ArthCp003;product=maturase K;protein_id=NP_051040.2;transl_table=11
+NC_000932.1	RefSeq	gene	5084	6188	.	-	.	ID=gene-ArthCp004;Dbxref=GeneID:844798;Name=rps16;gbkey=Gene;gene=rps16;gene_biotype=protein_coding;locus_tag=ArthCp004
+NC_000932.1	RefSeq	CDS	6149	6188	.	-	0	ID=cds-NP_051041.1;Parent=gene-ArthCp004;Dbxref=Genbank:NP_051041.1,GeneID:844798;Name=NP_051041.1;gbkey=CDS;gene=rps16;locus_tag=ArthCp004;product=ribosomal protein S16;protein_id=NP_051041.1;transl_table=11
+NC_000932.1	RefSeq	CDS	5084	5283	.	-	2	ID=cds-NP_051041.1;Parent=gene-ArthCp004;Dbxref=Genbank:NP_051041.1,GeneID:844798;Name=NP_051041.1;gbkey=CDS;gene=rps16;locus_tag=ArthCp004;product=ribosomal protein S16;protein_id=NP_051041.1;transl_table=11
+NC_000932.1	RefSeq	gene	6616	6687	.	-	.	ID=gene-ArthCt090;Dbxref=GeneID:1466271;Name=trnQ;gbkey=Gene;gene=trnQ;gene_biotype=tRNA;locus_tag=ArthCt090
+NC_000932.1	RefSeq	tRNA	6616	6687	.	-	.	ID=rna-ArthCt090;Parent=gene-ArthCt090;Dbxref=GeneID:1466271;gbkey=tRNA;gene=trnQ;locus_tag=ArthCt090;product=tRNA-Gln
+NC_000932.1	RefSeq	exon	6616	6687	.	-	.	ID=exon-ArthCt090-1;Parent=rna-ArthCt090;Dbxref=GeneID:1466271;gbkey=tRNA;gene=trnQ;locus_tag=ArthCt090;product=tRNA-Gln
+NC_000932.1	RefSeq	gene	7017	7202	.	+	.	ID=gene-ArthCp005;Dbxref=GeneID:844795;Name=psbK;gbkey=Gene;gene=psbK;gene_biotype=protein_coding;locus_tag=ArthCp005
+NC_000932.1	RefSeq	CDS	7017	7202	.	+	0	ID=cds-NP_051042.1;Parent=gene-ArthCp005;Dbxref=Genbank:NP_051042.1,GeneID:844795;Name=NP_051042.1;gbkey=CDS;gene=psbK;locus_tag=ArthCp005;product=photosystem II protein K;protein_id=NP_051042.1;transl_table=11
+NC_000932.1	RefSeq	gene	7583	7693	.	+	.	ID=gene-ArthCp006;Dbxref=GeneID:844794;Name=psbI;gbkey=Gene;gene=psbI;gene_biotype=protein_coding;locus_tag=ArthCp006
+NC_000932.1	RefSeq	CDS	7583	7693	.	+	0	ID=cds-NP_051043.1;Parent=gene-ArthCp006;Dbxref=Genbank:NP_051043.1,GeneID:844794;Name=NP_051043.1;gbkey=CDS;gene=psbI;locus_tag=ArthCp006;product=photosystem II protein I;protein_id=NP_051043.1;transl_table=11
+NC_000932.1	RefSeq	gene	7785	7872	.	+	.	ID=gene-ArthCt091;Dbxref=GeneID:1466270;Name=trnS;gbkey=Gene;gene=trnS;gene_biotype=tRNA;locus_tag=ArthCt091
+NC_000932.1	RefSeq	tRNA	7785	7872	.	+	.	ID=rna-ArthCt091;Parent=gene-ArthCt091;Dbxref=GeneID:1466270;gbkey=tRNA;gene=trnS;locus_tag=ArthCt091;product=tRNA-Ser
+NC_000932.1	RefSeq	exon	7785	7872	.	+	.	ID=exon-ArthCt091-1;Parent=rna-ArthCt091;Dbxref=GeneID:1466270;gbkey=tRNA;gene=trnS;locus_tag=ArthCt091;product=tRNA-Ser
+NC_000932.1	RefSeq	gene	8646	9431	.	+	.	ID=gene-ArthCt092;Dbxref=GeneID:1466269;Name=trnG;gbkey=Gene;gene=trnG;gene_biotype=tRNA;locus_tag=ArthCt092
+NC_000932.1	RefSeq	tRNA	8646	9431	.	+	.	ID=rna-ArthCt092;Parent=gene-ArthCt092;Dbxref=GeneID:1466269;gbkey=tRNA;gene=trnG;locus_tag=ArthCt092;product=tRNA-Gly
+NC_000932.1	RefSeq	exon	8646	8668	.	+	.	ID=exon-ArthCt092-1;Parent=rna-ArthCt092;Dbxref=GeneID:1466269;gbkey=tRNA;gene=trnG;locus_tag=ArthCt092;product=tRNA-Gly
+NC_000932.1	RefSeq	exon	9383	9431	.	+	.	ID=exon-ArthCt092-2;Parent=rna-ArthCt092;Dbxref=GeneID:1466269;gbkey=tRNA;gene=trnG;locus_tag=ArthCt092;product=tRNA-Gly
+NC_000932.1	RefSeq	gene	9590	9661	.	+	.	ID=gene-ArthCt093;Dbxref=GeneID:1466268;Name=trnR;gbkey=Gene;gene=trnR;gene_biotype=tRNA;locus_tag=ArthCt093
+NC_000932.1	RefSeq	tRNA	9590	9661	.	+	.	ID=rna-ArthCt093;Parent=gene-ArthCt093;Dbxref=GeneID:1466268;gbkey=tRNA;gene=trnR;locus_tag=ArthCt093;product=tRNA-Arg
+NC_000932.1	RefSeq	exon	9590	9661	.	+	.	ID=exon-ArthCt093-1;Parent=rna-ArthCt093;Dbxref=GeneID:1466268;gbkey=tRNA;gene=trnR;locus_tag=ArthCt093;product=tRNA-Arg
+NC_000932.1	RefSeq	gene	9938	11461	.	-	.	ID=gene-ArthCp007;Dbxref=GeneID:844790;Name=atpA;gbkey=Gene;gene=atpA;gene_biotype=protein_coding;locus_tag=ArthCp007
+NC_000932.1	RefSeq	CDS	9938	11461	.	-	0	ID=cds-NP_051044.1;Parent=gene-ArthCp007;Dbxref=Genbank:NP_051044.1,GeneID:844790;Name=NP_051044.1;Note=ATPase alpha subunit;gbkey=CDS;gene=atpA;locus_tag=ArthCp007;product=ATP synthase CF1 alpha subunit;protein_id=NP_051044.1;transl_table=11
+NC_000932.1	RefSeq	gene	11529	12798	.	-	.	ID=gene-ArthCp008;Dbxref=GeneID:844789;Name=atpF;gbkey=Gene;gene=atpF;gene_biotype=protein_coding;locus_tag=ArthCp008
+NC_000932.1	RefSeq	CDS	12654	12798	.	-	0	ID=cds-NP_051045.1;Parent=gene-ArthCp008;Dbxref=Genbank:NP_051045.1,GeneID:844789;Name=NP_051045.1;gbkey=CDS;gene=atpF;locus_tag=ArthCp008;product=ATP synthase CF0 B subunit;protein_id=NP_051045.1;transl_table=11
+NC_000932.1	RefSeq	CDS	11529	11938	.	-	2	ID=cds-NP_051045.1;Parent=gene-ArthCp008;Dbxref=Genbank:NP_051045.1,GeneID:844789;Name=NP_051045.1;gbkey=CDS;gene=atpF;locus_tag=ArthCp008;product=ATP synthase CF0 B subunit;protein_id=NP_051045.1;transl_table=11
+NC_000932.1	RefSeq	gene	13262	13507	.	-	.	ID=gene-ArthCp009;Dbxref=GeneID:844788;Name=atpH;gbkey=Gene;gene=atpH;gene_biotype=protein_coding;locus_tag=ArthCp009
+NC_000932.1	RefSeq	CDS	13262	13507	.	-	0	ID=cds-NP_051046.1;Parent=gene-ArthCp009;Dbxref=Genbank:NP_051046.1,GeneID:844788;Name=NP_051046.1;Note=ATP synthase CF0 C chain;gbkey=CDS;gene=atpH;locus_tag=ArthCp009;product=ATP synthase CF0 C subunit;protein_id=NP_051046.1;transl_table=11
+NC_000932.1	RefSeq	gene	14021	14770	.	-	.	ID=gene-ArthCp010;Dbxref=GeneID:844787;Name=atpI;gbkey=Gene;gene=atpI;gene_biotype=protein_coding;locus_tag=ArthCp010
+NC_000932.1	RefSeq	CDS	14021	14770	.	-	0	ID=cds-NP_051047.1;Parent=gene-ArthCp010;Dbxref=Genbank:NP_051047.1,GeneID:844787;Name=NP_051047.1;Note=ATP synthase CF0 A chain;gbkey=CDS;gene=atpI;locus_tag=ArthCp010;product=ATP synthase CF0 A subunit;protein_id=NP_051047.1;transl_table=11
+NC_000932.1	RefSeq	gene	15013	15723	.	-	.	ID=gene-ArthCp011;Dbxref=GeneID:844786;Name=rps2;gbkey=Gene;gene=rps2;gene_biotype=protein_coding;locus_tag=ArthCp011
+NC_000932.1	RefSeq	CDS	15013	15723	.	-	0	ID=cds-NP_051048.1;Parent=gene-ArthCp011;Dbxref=Genbank:NP_051048.1,GeneID:844786;Name=NP_051048.1;gbkey=CDS;gene=rps2;locus_tag=ArthCp011;product=ribosomal protein S2;protein_id=NP_051048.1;transl_table=11
+NC_000932.1	RefSeq	gene	15938	20068	.	-	.	ID=gene-ArthCp012;Dbxref=GeneID:844785;Name=rpoC2;gbkey=Gene;gene=rpoC2;gene_biotype=protein_coding;locus_tag=ArthCp012
+NC_000932.1	RefSeq	CDS	15938	20068	.	-	0	ID=cds-NP_051049.1;Parent=gene-ArthCp012;Dbxref=Genbank:NP_051049.1,GeneID:844785;Name=NP_051049.1;Note=one of four subunits of the minimal PEP RNA polymerase catalytic core;gbkey=CDS;gene=rpoC2;locus_tag=ArthCp012;product=RNA polymerase beta'' subunit;protein_id=NP_051049.1;transl_table=11
+NC_000932.1	RefSeq	gene	20251	23084	.	-	.	ID=gene-ArthCp013;Dbxref=GeneID:844784;Name=rpoC1;gbkey=Gene;gene=rpoC1;gene_biotype=protein_coding;locus_tag=ArthCp013
+NC_000932.1	RefSeq	CDS	22653	23084	.	-	0	ID=cds-NP_051050.1;Parent=gene-ArthCp013;Dbxref=Genbank:NP_051050.1,GeneID:844784;Name=NP_051050.1;gbkey=CDS;gene=rpoC1;locus_tag=ArthCp013;product=RNA polymerase beta' subunit;protein_id=NP_051050.1;transl_table=11
+NC_000932.1	RefSeq	CDS	20251	21861	.	-	0	ID=cds-NP_051050.1;Parent=gene-ArthCp013;Dbxref=Genbank:NP_051050.1,GeneID:844784;Name=NP_051050.1;gbkey=CDS;gene=rpoC1;locus_tag=ArthCp013;product=RNA polymerase beta' subunit;protein_id=NP_051050.1;transl_table=11
+NC_000932.1	RefSeq	gene	23111	26329	.	-	.	ID=gene-ArthCp014;Dbxref=GeneID:844783;Name=rpoB;gbkey=Gene;gene=rpoB;gene_biotype=protein_coding;locus_tag=ArthCp014
+NC_000932.1	RefSeq	CDS	23111	26329	.	-	0	ID=cds-NP_051051.1;Parent=gene-ArthCp014;Dbxref=Genbank:NP_051051.1,GeneID:844783;Name=NP_051051.1;Note=one of four subunits of the minimal PEP RNA polymerase catalytic core;gbkey=CDS;gene=rpoB;locus_tag=ArthCp014;product=RNA polymerase beta subunit;protein_id=NP_051051.1;transl_table=11
+NC_000932.1	RefSeq	gene	27373	27443	.	+	.	ID=gene-ArthCt094;Dbxref=GeneID:1466267;Name=trnC;gbkey=Gene;gene=trnC;gene_biotype=tRNA;locus_tag=ArthCt094
+NC_000932.1	RefSeq	tRNA	27373	27443	.	+	.	ID=rna-ArthCt094;Parent=gene-ArthCt094;Dbxref=GeneID:1466267;gbkey=tRNA;gene=trnC;locus_tag=ArthCt094;product=tRNA-Cys
+NC_000932.1	RefSeq	exon	27373	27443	.	+	.	ID=exon-ArthCt094-1;Parent=rna-ArthCt094;Dbxref=GeneID:1466267;gbkey=tRNA;gene=trnC;locus_tag=ArthCt094;product=tRNA-Cys
+NC_000932.1	RefSeq	gene	28089	28178	.	+	.	ID=gene-ArthCp015;Dbxref=GeneID:844779;Name=petN;gbkey=Gene;gene=petN;gene_biotype=protein_coding;gene_synonym=ycf6;locus_tag=ArthCp015
+NC_000932.1	RefSeq	CDS	28089	28178	.	+	0	ID=cds-NP_051052.1;Parent=gene-ArthCp015;Dbxref=Genbank:NP_051052.1,GeneID:844779;Name=NP_051052.1;gbkey=CDS;gene=petN;locus_tag=ArthCp015;product=cytochrome b6/f complex subunit VIII;protein_id=NP_051052.1;transl_table=11
+NC_000932.1	RefSeq	gene	28707	28811	.	-	.	ID=gene-ArthCp016;Dbxref=GeneID:844781;Name=psbM;gbkey=Gene;gene=psbM;gene_biotype=protein_coding;locus_tag=ArthCp016
+NC_000932.1	RefSeq	CDS	28707	28811	.	-	0	ID=cds-NP_051053.1;Parent=gene-ArthCp016;Dbxref=Genbank:NP_051053.1,GeneID:844781;Name=NP_051053.1;gbkey=CDS;gene=psbM;locus_tag=ArthCp016;product=photosystem II protein M;protein_id=NP_051053.1;transl_table=11
+NC_000932.1	RefSeq	gene	29801	29874	.	-	.	ID=gene-ArthCt095;Dbxref=GeneID:1466264;Name=trnD;gbkey=Gene;gene=trnD;gene_biotype=tRNA;locus_tag=ArthCt095
+NC_000932.1	RefSeq	tRNA	29801	29874	.	-	.	ID=rna-ArthCt095;Parent=gene-ArthCt095;Dbxref=GeneID:1466264;gbkey=tRNA;gene=trnD;locus_tag=ArthCt095;product=tRNA-Asp
+NC_000932.1	RefSeq	exon	29801	29874	.	-	.	ID=exon-ArthCt095-1;Parent=rna-ArthCt095;Dbxref=GeneID:1466264;gbkey=tRNA;gene=trnD;locus_tag=ArthCt095;product=tRNA-Asp
+NC_000932.1	RefSeq	gene	30323	30406	.	-	.	ID=gene-ArthCt096;Dbxref=GeneID:1466266;Name=trnY;gbkey=Gene;gene=trnY;gene_biotype=tRNA;locus_tag=ArthCt096
+NC_000932.1	RefSeq	tRNA	30323	30406	.	-	.	ID=rna-ArthCt096;Parent=gene-ArthCt096;Dbxref=GeneID:1466266;gbkey=tRNA;gene=trnY;locus_tag=ArthCt096;product=tRNA-Tyr
+NC_000932.1	RefSeq	exon	30323	30406	.	-	.	ID=exon-ArthCt096-1;Parent=rna-ArthCt096;Dbxref=GeneID:1466266;gbkey=tRNA;gene=trnY;locus_tag=ArthCt096;product=tRNA-Tyr
+NC_000932.1	RefSeq	gene	30466	30538	.	-	.	ID=gene-ArthCt097;Dbxref=GeneID:1466265;Name=trnE;gbkey=Gene;gene=trnE;gene_biotype=tRNA;locus_tag=ArthCt097
+NC_000932.1	RefSeq	tRNA	30466	30538	.	-	.	ID=rna-ArthCt097;Parent=gene-ArthCt097;Dbxref=GeneID:1466265;gbkey=tRNA;gene=trnE;locus_tag=ArthCt097;product=tRNA-Glu
+NC_000932.1	RefSeq	exon	30466	30538	.	-	.	ID=exon-ArthCt097-1;Parent=rna-ArthCt097;Dbxref=GeneID:1466265;gbkey=tRNA;gene=trnE;locus_tag=ArthCt097;product=tRNA-Glu
+NC_000932.1	RefSeq	gene	31369	31440	.	+	.	ID=gene-ArthCt098;Dbxref=GeneID:1466263;Name=trnT;gbkey=Gene;gene=trnT;gene_biotype=tRNA;locus_tag=ArthCt098
+NC_000932.1	RefSeq	tRNA	31369	31440	.	+	.	ID=rna-ArthCt098;Parent=gene-ArthCt098;Dbxref=GeneID:1466263;gbkey=tRNA;gene=trnT;locus_tag=ArthCt098;product=tRNA-Thr
+NC_000932.1	RefSeq	exon	31369	31440	.	+	.	ID=exon-ArthCt098-1;Parent=rna-ArthCt098;Dbxref=GeneID:1466263;gbkey=tRNA;gene=trnT;locus_tag=ArthCt098;product=tRNA-Thr
+NC_000932.1	RefSeq	gene	32711	33772	.	+	.	ID=gene-ArthCp017;Dbxref=GeneID:844775;Name=psbD;gbkey=Gene;gene=psbD;gene_biotype=protein_coding;locus_tag=ArthCp017
+NC_000932.1	RefSeq	CDS	32711	33772	.	+	0	ID=cds-NP_051054.1;Parent=gene-ArthCp017;Dbxref=Genbank:NP_051054.1,GeneID:844775;Name=NP_051054.1;gbkey=CDS;gene=psbD;locus_tag=ArthCp017;product=photosystem II protein D2;protein_id=NP_051054.1;transl_table=11
+NC_000932.1	RefSeq	gene	33720	35141	.	+	.	ID=gene-ArthCp018;Dbxref=GeneID:844773;Name=psbC;gbkey=Gene;gene=psbC;gene_biotype=protein_coding;locus_tag=ArthCp018
+NC_000932.1	RefSeq	CDS	33720	35141	.	+	0	ID=cds-NP_051055.1;Parent=gene-ArthCp018;Dbxref=Genbank:NP_051055.1,GeneID:844773;Name=NP_051055.1;Note=CP43;gbkey=CDS;gene=psbC;locus_tag=ArthCp018;product=photosystem II 44 kDa protein;protein_id=NP_051055.1;transl_table=11
+NC_000932.1	RefSeq	gene	35312	35403	.	-	.	ID=gene-ArthCt117;Dbxref=GeneID:4042810;Name=trnS;gbkey=Gene;gene=trnS;gene_biotype=tRNA;locus_tag=ArthCt117
+NC_000932.1	RefSeq	tRNA	35312	35403	.	-	.	ID=rna-ArthCt117;Parent=gene-ArthCt117;Dbxref=GeneID:4042810;gbkey=tRNA;gene=trnS;locus_tag=ArthCt117;product=tRNA-Ser
+NC_000932.1	RefSeq	exon	35312	35403	.	-	.	ID=exon-ArthCt117-1;Parent=rna-ArthCt117;Dbxref=GeneID:4042810;gbkey=tRNA;gene=trnS;locus_tag=ArthCt117;product=tRNA-Ser
+NC_000932.1	RefSeq	gene	35751	35939	.	+	.	ID=gene-ArthCp019;Dbxref=GeneID:844774;Name=psbZ;gbkey=Gene;gene=psbZ;gene_biotype=protein_coding;locus_tag=ArthCp019
+NC_000932.1	RefSeq	CDS	35751	35939	.	+	0	ID=cds-NP_051056.1;Parent=gene-ArthCp019;Dbxref=Genbank:NP_051056.1,GeneID:844774;Name=NP_051056.1;Note=YCF9;gbkey=CDS;gene=psbZ;locus_tag=ArthCp019;product=photosystem II protein Z;protein_id=NP_051056.1;transl_table=11
+NC_000932.1	RefSeq	gene	36490	36560	.	+	.	ID=gene-ArthCt116;Dbxref=GeneID:4042809;Name=trnG;gbkey=Gene;gene=trnG;gene_biotype=tRNA;locus_tag=ArthCt116
+NC_000932.1	RefSeq	tRNA	36490	36560	.	+	.	ID=rna-ArthCt116;Parent=gene-ArthCt116;Dbxref=GeneID:4042809;gbkey=tRNA;gene=trnG;locus_tag=ArthCt116;product=tRNA-Gly
+NC_000932.1	RefSeq	exon	36490	36560	.	+	.	ID=exon-ArthCt116-1;Parent=rna-ArthCt116;Dbxref=GeneID:4042809;gbkey=tRNA;gene=trnG;locus_tag=ArthCt116;product=tRNA-Gly
+NC_000932.1	RefSeq	gene	36704	36777	.	-	.	ID=gene-ArthCt099;Dbxref=GeneID:1466262;Name=trnfM;gbkey=Gene;gene=trnfM;gene_biotype=tRNA;locus_tag=ArthCt099
+NC_000932.1	RefSeq	tRNA	36704	36777	.	-	.	ID=rna-ArthCt099;Parent=gene-ArthCt099;Dbxref=GeneID:1466262;Note=fMet;gbkey=tRNA;gene=trnfM;locus_tag=ArthCt099;product=tRNA-Met
+NC_000932.1	RefSeq	exon	36704	36777	.	-	.	ID=exon-ArthCt099-1;Parent=rna-ArthCt099;Dbxref=GeneID:1466262;Note=fMet;gbkey=tRNA;gene=trnfM;locus_tag=ArthCt099;product=tRNA-Met
+NC_000932.1	RefSeq	gene	36938	37240	.	-	.	ID=gene-ArthCp020;Dbxref=GeneID:844771;Name=rps14;gbkey=Gene;gene=rps14;gene_biotype=protein_coding;locus_tag=ArthCp020
+NC_000932.1	RefSeq	CDS	36938	37240	.	-	0	ID=cds-NP_051057.1;Parent=gene-ArthCp020;Dbxref=Genbank:NP_051057.1,GeneID:844771;Name=NP_051057.1;gbkey=CDS;gene=rps14;locus_tag=ArthCp020;product=ribosomal protein S14;protein_id=NP_051057.1;transl_table=11
+NC_000932.1	RefSeq	gene	37375	39579	.	-	.	ID=gene-ArthCp021;Dbxref=GeneID:844770;Name=psaB;gbkey=Gene;gene=psaB;gene_biotype=protein_coding;locus_tag=ArthCp021
+NC_000932.1	RefSeq	CDS	37375	39579	.	-	0	ID=cds-NP_051058.1;Parent=gene-ArthCp021;Dbxref=Genbank:NP_051058.1,GeneID:844770;Name=NP_051058.1;Note=PsaB;gbkey=CDS;gene=psaB;locus_tag=ArthCp021;product=photosystem I P700 chlorophyll a apoprotein A2;protein_id=NP_051058.1;transl_table=11
+NC_000932.1	RefSeq	gene	39605	41857	.	-	.	ID=gene-ArthCp022;Dbxref=GeneID:844768;Name=psaA;gbkey=Gene;gene=psaA;gene_biotype=protein_coding;locus_tag=ArthCp022
+NC_000932.1	RefSeq	CDS	39605	41857	.	-	0	ID=cds-NP_051059.1;Parent=gene-ArthCp022;Dbxref=Genbank:NP_051059.1,GeneID:844768;Name=NP_051059.1;Note=PsaA;gbkey=CDS;gene=psaA;locus_tag=ArthCp022;product=photosystem I P700 chlorophyll a apoprotein A1;protein_id=NP_051059.1;transl_table=11
+NC_000932.1	RefSeq	gene	42584	44591	.	-	.	ID=gene-ArthCp023;Dbxref=GeneID:844767;Name=ycf3;gbkey=Gene;gene=ycf3;gene_biotype=protein_coding;locus_tag=ArthCp023
+NC_000932.1	RefSeq	CDS	44466	44591	.	-	0	ID=cds-NP_051060.2;Parent=gene-ArthCp023;Dbxref=Genbank:NP_051060.2,GeneID:844767;Name=NP_051060.2;gbkey=CDS;gene=ycf3;locus_tag=ArthCp023;product=photosystem I assembly protein Ycf3;protein_id=NP_051060.2;transl_table=11
+NC_000932.1	RefSeq	CDS	43524	43751	.	-	0	ID=cds-NP_051060.2;Parent=gene-ArthCp023;Dbxref=Genbank:NP_051060.2,GeneID:844767;Name=NP_051060.2;gbkey=CDS;gene=ycf3;locus_tag=ArthCp023;product=photosystem I assembly protein Ycf3;protein_id=NP_051060.2;transl_table=11
+NC_000932.1	RefSeq	CDS	42584	42736	.	-	0	ID=cds-NP_051060.2;Parent=gene-ArthCp023;Dbxref=Genbank:NP_051060.2,GeneID:844767;Name=NP_051060.2;gbkey=CDS;gene=ycf3;locus_tag=ArthCp023;product=photosystem I assembly protein Ycf3;protein_id=NP_051060.2;transl_table=11
+NC_000932.1	RefSeq	gene	44827	44913	.	+	.	ID=gene-ArthCt125;Dbxref=GeneID:5563232;Name=trnS;gbkey=Gene;gene=trnS;gene_biotype=tRNA;locus_tag=ArthCt125
+NC_000932.1	RefSeq	tRNA	44827	44913	.	+	.	ID=rna-ArthCt125;Parent=gene-ArthCt125;Dbxref=GeneID:5563232;gbkey=tRNA;gene=trnS;locus_tag=ArthCt125;product=tRNA-Ser
+NC_000932.1	RefSeq	exon	44827	44913	.	+	.	ID=exon-ArthCt125-1;Parent=rna-ArthCt125;Dbxref=GeneID:5563232;gbkey=tRNA;gene=trnS;locus_tag=ArthCt125;product=tRNA-Ser
+NC_000932.1	RefSeq	gene	45223	45828	.	-	.	ID=gene-ArthCp024;Dbxref=GeneID:844765;Name=rps4;gbkey=Gene;gene=rps4;gene_biotype=protein_coding;locus_tag=ArthCp024
+NC_000932.1	RefSeq	CDS	45223	45828	.	-	0	ID=cds-NP_051061.1;Parent=gene-ArthCp024;Dbxref=Genbank:NP_051061.1,GeneID:844765;Name=NP_051061.1;gbkey=CDS;gene=rps4;locus_tag=ArthCp024;product=ribosomal protein S4;protein_id=NP_051061.1;transl_table=11
+NC_000932.1	RefSeq	gene	46213	46285	.	-	.	ID=gene-ArthCt100;Dbxref=GeneID:1466275;Name=ArthCt100;gbkey=Gene;gene_biotype=tRNA;locus_tag=ArthCt100
+NC_000932.1	RefSeq	tRNA	46213	46285	.	-	.	ID=rna-ArthCt100;Parent=gene-ArthCt100;Dbxref=GeneID:1466275;gbkey=tRNA;locus_tag=ArthCt100;product=tRNA-Thr
+NC_000932.1	RefSeq	exon	46213	46285	.	-	.	ID=exon-ArthCt100-1;Parent=rna-ArthCt100;Dbxref=GeneID:1466275;gbkey=tRNA;locus_tag=ArthCt100;product=tRNA-Thr
+NC_000932.1	RefSeq	gene	46894	47490	.	+	.	ID=gene-ArthCt101;Dbxref=GeneID:1466259;Name=trnL;gbkey=Gene;gene=trnL;gene_biotype=tRNA;locus_tag=ArthCt101
+NC_000932.1	RefSeq	tRNA	46894	47490	.	+	.	ID=rna-ArthCt101;Parent=gene-ArthCt101;Dbxref=GeneID:1466259;gbkey=tRNA;gene=trnL;locus_tag=ArthCt101;product=tRNA-Leu
+NC_000932.1	RefSeq	exon	46894	46928	.	+	.	ID=exon-ArthCt101-1;Parent=rna-ArthCt101;Dbxref=GeneID:1466259;gbkey=tRNA;gene=trnL;locus_tag=ArthCt101;product=tRNA-Leu
+NC_000932.1	RefSeq	exon	47441	47490	.	+	.	ID=exon-ArthCt101-2;Parent=rna-ArthCt101;Dbxref=GeneID:1466259;gbkey=tRNA;gene=trnL;locus_tag=ArthCt101;product=tRNA-Leu
+NC_000932.1	RefSeq	gene	48175	48247	.	+	.	ID=gene-ArthCt102;Dbxref=GeneID:1466253;Name=trnF;gbkey=Gene;gene=trnF;gene_biotype=tRNA;locus_tag=ArthCt102
+NC_000932.1	RefSeq	tRNA	48175	48247	.	+	.	ID=rna-ArthCt102;Parent=gene-ArthCt102;Dbxref=GeneID:1466253;gbkey=tRNA;gene=trnF;locus_tag=ArthCt102;product=tRNA-Phe
+NC_000932.1	RefSeq	exon	48175	48247	.	+	.	ID=exon-ArthCt102-1;Parent=rna-ArthCt102;Dbxref=GeneID:1466253;gbkey=tRNA;gene=trnF;locus_tag=ArthCt102;product=tRNA-Phe
+NC_000932.1	RefSeq	gene	48677	49153	.	-	.	ID=gene-ArthCp025;Dbxref=GeneID:844763;Name=ndhJ;gbkey=Gene;gene=ndhJ;gene_biotype=protein_coding;locus_tag=ArthCp025
+NC_000932.1	RefSeq	CDS	48677	49153	.	-	0	ID=cds-NP_051062.1;Parent=gene-ArthCp025;Dbxref=Genbank:NP_051062.1,GeneID:844763;Name=NP_051062.1;gbkey=CDS;gene=ndhJ;locus_tag=ArthCp025;product=NADH dehydrogenase subunit J;protein_id=NP_051062.1;transl_table=11
+NC_000932.1	RefSeq	gene	49257	49934	.	-	.	ID=gene-ArthCp026;Dbxref=GeneID:844761;Name=ndhK;gbkey=Gene;gene=ndhK;gene_biotype=protein_coding;locus_tag=ArthCp026
+NC_000932.1	RefSeq	CDS	49257	49934	.	-	0	ID=cds-NP_051063.1;Parent=gene-ArthCp026;Dbxref=Genbank:NP_051063.1,GeneID:844761;Name=NP_051063.1;gbkey=CDS;gene=ndhK;locus_tag=ArthCp026;product=NADH dehydrogenase subunit K;protein_id=NP_051063.1;transl_table=11
+NC_000932.1	RefSeq	gene	50001	50363	.	-	.	ID=gene-ArthCp027;Dbxref=GeneID:844762;Name=ndhC;gbkey=Gene;gene=ndhC;gene_biotype=protein_coding;gene_synonym=ndh3;locus_tag=ArthCp027
+NC_000932.1	RefSeq	CDS	50001	50363	.	-	0	ID=cds-NP_051064.1;Parent=gene-ArthCp027;Dbxref=Genbank:NP_051064.1,GeneID:844762;Name=NP_051064.1;gbkey=CDS;gene=ndhC;locus_tag=ArthCp027;product=NADH dehydrogenase subunit 3;protein_id=NP_051064.1;transl_table=11
+NC_000932.1	RefSeq	gene	51199	51871	.	-	.	ID=gene-ArthCt103;Dbxref=GeneID:1466261;Name=trnV;gbkey=Gene;gene=trnV;gene_biotype=tRNA;locus_tag=ArthCt103
+NC_000932.1	RefSeq	tRNA	51199	51871	.	-	.	ID=rna-ArthCt103;Parent=gene-ArthCt103;Dbxref=GeneID:1466261;gbkey=tRNA;gene=trnV;locus_tag=ArthCt103;product=tRNA-Val
+NC_000932.1	RefSeq	exon	51833	51871	.	-	.	ID=exon-ArthCt103-1;Parent=rna-ArthCt103;Dbxref=GeneID:1466261;gbkey=tRNA;gene=trnV;locus_tag=ArthCt103;product=tRNA-Val
+NC_000932.1	RefSeq	exon	51199	51233	.	-	.	ID=exon-ArthCt103-2;Parent=rna-ArthCt103;Dbxref=GeneID:1466261;gbkey=tRNA;gene=trnV;locus_tag=ArthCt103;product=tRNA-Val
+NC_000932.1	RefSeq	gene	52056	52128	.	+	.	ID=gene-ArthCt104;Dbxref=GeneID:1466257;Name=trnM;gbkey=Gene;gene=trnM;gene_biotype=tRNA;locus_tag=ArthCt104
+NC_000932.1	RefSeq	tRNA	52056	52128	.	+	.	ID=rna-ArthCt104;Parent=gene-ArthCt104;Dbxref=GeneID:1466257;gbkey=tRNA;gene=trnM;locus_tag=ArthCt104;product=tRNA-Met
+NC_000932.1	RefSeq	exon	52056	52128	.	+	.	ID=exon-ArthCt104-1;Parent=rna-ArthCt104;Dbxref=GeneID:1466257;gbkey=tRNA;gene=trnM;locus_tag=ArthCt104;product=tRNA-Met
+NC_000932.1	RefSeq	gene	52265	52663	.	-	.	ID=gene-ArthCp028;Dbxref=GeneID:844758;Name=atpE;gbkey=Gene;gene=atpE;gene_biotype=protein_coding;locus_tag=ArthCp028
+NC_000932.1	RefSeq	CDS	52265	52663	.	-	0	ID=cds-NP_051065.1;Parent=gene-ArthCp028;Dbxref=Genbank:NP_051065.1,GeneID:844758;Name=NP_051065.1;gbkey=CDS;gene=atpE;locus_tag=ArthCp028;product=ATP synthase CF1 epsilon subunit;protein_id=NP_051065.1;transl_table=11
+NC_000932.1	RefSeq	gene	52660	54156	.	-	.	ID=gene-ArthCp029;Dbxref=GeneID:844757;Name=atpB;gbkey=Gene;gene=atpB;gene_biotype=protein_coding;locus_tag=ArthCp029
+NC_000932.1	RefSeq	CDS	52660	54156	.	-	0	ID=cds-NP_051066.1;Parent=gene-ArthCp029;Dbxref=Genbank:NP_051066.1,GeneID:844757;Name=NP_051066.1;Note=ATP synthase CF1 beta subunit;gbkey=CDS;gene=atpB;locus_tag=ArthCp029;product=ATP synthase CF1 beta subunit;protein_id=NP_051066.1;transl_table=11
+NC_000932.1	RefSeq	gene	54958	56397	.	+	.	ID=gene-ArthCp030;Dbxref=GeneID:844754;Name=rbcL;gbkey=Gene;gene=rbcL;gene_biotype=protein_coding;locus_tag=ArthCp030
+NC_000932.1	RefSeq	CDS	54958	56397	.	+	0	ID=cds-NP_051067.1;Parent=gene-ArthCp030;Dbxref=Genbank:NP_051067.1,GeneID:844754;Name=NP_051067.1;gbkey=CDS;gene=rbcL;locus_tag=ArthCp030;product=ribulose-1%2C5-bisphosphate carboxylase/oxygenase large subunit;protein_id=NP_051067.1;transl_table=11
+NC_000932.1	RefSeq	gene	57075	58541	.	+	.	ID=gene-ArthCp031;Dbxref=GeneID:844755;Name=accD;gbkey=Gene;gene=accD;gene_biotype=protein_coding;locus_tag=ArthCp031
+NC_000932.1	RefSeq	CDS	57075	58541	.	+	0	ID=cds-NP_051068.1;Parent=gene-ArthCp031;Dbxref=Genbank:NP_051068.1,GeneID:844755;Name=NP_051068.1;gbkey=CDS;gene=accD;locus_tag=ArthCp031;product=acetyl-CoA carboxylase beta subunit;protein_id=NP_051068.1;transl_table=11
+NC_000932.1	RefSeq	gene	59247	59360	.	+	.	ID=gene-ArthCp032;Dbxref=GeneID:844753;Name=psaI;gbkey=Gene;gene=psaI;gene_biotype=protein_coding;locus_tag=ArthCp032
+NC_000932.1	RefSeq	CDS	59247	59360	.	+	0	ID=cds-NP_051069.1;Parent=gene-ArthCp032;Dbxref=Genbank:NP_051069.1,GeneID:844753;Name=NP_051069.1;gbkey=CDS;gene=psaI;locus_tag=ArthCp032;product=photosystem I subunit VIII;protein_id=NP_051069.1;transl_table=11
+NC_000932.1	RefSeq	gene	59772	60326	.	+	.	ID=gene-ArthCp033;Dbxref=GeneID:844752;Name=ycf4;gbkey=Gene;gene=ycf4;gene_biotype=protein_coding;locus_tag=ArthCp033
+NC_000932.1	RefSeq	CDS	59772	60326	.	+	0	ID=cds-NP_051070.1;Parent=gene-ArthCp033;Dbxref=Genbank:NP_051070.1,GeneID:844752;Name=NP_051070.1;gbkey=CDS;gene=ycf4;locus_tag=ArthCp033;product=photosystem I assembly protein Ycf4;protein_id=NP_051070.1;transl_table=11
+NC_000932.1	RefSeq	gene	60741	61430	.	+	.	ID=gene-ArthCp034;Dbxref=GeneID:844747;Name=cemA;gbkey=Gene;gene=cemA;gene_biotype=protein_coding;gene_synonym=ycf10;locus_tag=ArthCp034
+NC_000932.1	RefSeq	CDS	60741	61430	.	+	0	ID=cds-NP_051071.1;Parent=gene-ArthCp034;Dbxref=Genbank:NP_051071.1,GeneID:844747;Name=NP_051071.1;gbkey=CDS;gene=cemA;locus_tag=ArthCp034;product=envelope membrane protein;protein_id=NP_051071.1;transl_table=11
+NC_000932.1	RefSeq	gene	61657	62619	.	+	.	ID=gene-ArthCp035;Dbxref=GeneID:844748;Name=petA;gbkey=Gene;gene=petA;gene_biotype=protein_coding;locus_tag=ArthCp035
+NC_000932.1	RefSeq	CDS	61657	62619	.	+	0	ID=cds-NP_051072.1;Parent=gene-ArthCp035;Dbxref=Genbank:NP_051072.1,GeneID:844748;Name=NP_051072.1;Note=component of cytochrome b6/f complex;gbkey=CDS;gene=petA;locus_tag=ArthCp035;product=cytochrome f;protein_id=NP_051072.1;transl_table=11
+NC_000932.1	RefSeq	gene	63538	63660	.	-	.	ID=gene-ArthCp036;Dbxref=GeneID:844749;Name=psbJ;gbkey=Gene;gene=psbJ;gene_biotype=protein_coding;locus_tag=ArthCp036
+NC_000932.1	RefSeq	CDS	63538	63660	.	-	0	ID=cds-NP_051073.1;Parent=gene-ArthCp036;Dbxref=Genbank:NP_051073.1,GeneID:844749;Name=NP_051073.1;gbkey=CDS;gene=psbJ;locus_tag=ArthCp036;product=photosystem II protein J;protein_id=NP_051073.1;transl_table=11
+NC_000932.1	RefSeq	gene	63804	63920	.	-	.	ID=gene-ArthCp037;Dbxref=GeneID:844751;Name=psbL;gbkey=Gene;gene=psbL;gene_biotype=protein_coding;locus_tag=ArthCp037
+NC_000932.1	RefSeq	CDS	63804	63920	.	-	0	ID=cds-NP_051074.1;Parent=gene-ArthCp037;Dbxref=Genbank:NP_051074.1,GeneID:844751;Name=NP_051074.1;gbkey=CDS;gene=psbL;locus_tag=ArthCp037;product=photosystem II protein L;protein_id=NP_051074.1;transl_table=11
+NC_000932.1	RefSeq	gene	63942	64061	.	-	.	ID=gene-ArthCp038;Dbxref=GeneID:844746;Name=psbF;gbkey=Gene;gene=psbF;gene_biotype=protein_coding;locus_tag=ArthCp038
+NC_000932.1	RefSeq	CDS	63942	64061	.	-	0	ID=cds-NP_051075.1;Parent=gene-ArthCp038;Dbxref=Genbank:NP_051075.1,GeneID:844746;Name=NP_051075.1;gbkey=CDS;gene=psbF;locus_tag=ArthCp038;product=photosystem II protein VI;protein_id=NP_051075.1;transl_table=11
+NC_000932.1	RefSeq	gene	64071	64322	.	-	.	ID=gene-ArthCp039;Dbxref=GeneID:844745;Name=psbE;gbkey=Gene;gene=psbE;gene_biotype=protein_coding;locus_tag=ArthCp039
+NC_000932.1	RefSeq	CDS	64071	64322	.	-	0	ID=cds-NP_051076.1;Parent=gene-ArthCp039;Dbxref=Genbank:NP_051076.1,GeneID:844745;Name=NP_051076.1;gbkey=CDS;gene=psbE;locus_tag=ArthCp039;product=photosystem II protein V;protein_id=NP_051076.1;transl_table=11
+NC_000932.1	RefSeq	gene	65712	65807	.	+	.	ID=gene-ArthCp040;Dbxref=GeneID:844744;Name=petL;gbkey=Gene;gene=petL;gene_biotype=protein_coding;locus_tag=ArthCp040
+NC_000932.1	RefSeq	CDS	65712	65807	.	+	0	ID=cds-NP_051077.1;Parent=gene-ArthCp040;Dbxref=Genbank:NP_051077.1,GeneID:844744;Name=NP_051077.1;gbkey=CDS;gene=petL;locus_tag=ArthCp040;product=cytochrome b6/f complex subunit VI;protein_id=NP_051077.1;transl_table=11
+NC_000932.1	RefSeq	gene	65998	66111	.	+	.	ID=gene-ArthCp041;Dbxref=GeneID:844743;Name=petG;gbkey=Gene;gene=petG;gene_biotype=protein_coding;locus_tag=ArthCp041
+NC_000932.1	RefSeq	CDS	65998	66111	.	+	0	ID=cds-NP_051078.1;Parent=gene-ArthCp041;Dbxref=Genbank:NP_051078.1,GeneID:844743;Name=NP_051078.1;Note=required for the either the stability or assembly of the cytochrome b6/f complex;gbkey=CDS;gene=petG;locus_tag=ArthCp041;product=cytochrome b6/f complex subunit V;protein_id=NP_051078.1;transl_table=11
+NC_000932.1	RefSeq	gene	66229	66302	.	-	.	ID=gene-ArthCt105;Dbxref=GeneID:1466245;Name=trnW;gbkey=Gene;gene=trnW;gene_biotype=tRNA;locus_tag=ArthCt105
+NC_000932.1	RefSeq	tRNA	66229	66302	.	-	.	ID=rna-ArthCt105;Parent=gene-ArthCt105;Dbxref=GeneID:1466245;gbkey=tRNA;gene=trnW;locus_tag=ArthCt105;product=tRNA-Trp
+NC_000932.1	RefSeq	exon	66229	66302	.	-	.	ID=exon-ArthCt105-1;Parent=rna-ArthCt105;Dbxref=GeneID:1466245;gbkey=tRNA;gene=trnW;locus_tag=ArthCt105;product=tRNA-Trp
+NC_000932.1	RefSeq	gene	66490	66563	.	-	.	ID=gene-ArthCt106;Dbxref=GeneID:1466244;Name=trnP;gbkey=Gene;gene=trnP;gene_biotype=tRNA;locus_tag=ArthCt106
+NC_000932.1	RefSeq	tRNA	66490	66563	.	-	.	ID=rna-ArthCt106;Parent=gene-ArthCt106;Dbxref=GeneID:1466244;gbkey=tRNA;gene=trnP;locus_tag=ArthCt106;product=tRNA-Pro
+NC_000932.1	RefSeq	exon	66490	66563	.	-	.	ID=exon-ArthCt106-1;Parent=rna-ArthCt106;Dbxref=GeneID:1466244;gbkey=tRNA;gene=trnP;locus_tag=ArthCt106;product=tRNA-Pro
+NC_000932.1	RefSeq	gene	66929	67063	.	+	.	ID=gene-ArthCp042;Dbxref=GeneID:844738;Name=psaJ;gbkey=Gene;gene=psaJ;gene_biotype=protein_coding;locus_tag=ArthCp042
+NC_000932.1	RefSeq	CDS	66929	67063	.	+	0	ID=cds-NP_051079.1;Parent=gene-ArthCp042;Dbxref=Genbank:NP_051079.1,GeneID:844738;Name=NP_051079.1;gbkey=CDS;gene=psaJ;locus_tag=ArthCp042;product=photosystem I subunit IX;protein_id=NP_051079.1;transl_table=11
+NC_000932.1	RefSeq	gene	67488	67688	.	+	.	ID=gene-ArthCp043;Dbxref=GeneID:844737;Name=rpl33;gbkey=Gene;gene=rpl33;gene_biotype=protein_coding;locus_tag=ArthCp043
+NC_000932.1	RefSeq	CDS	67488	67688	.	+	0	ID=cds-NP_051080.1;Parent=gene-ArthCp043;Dbxref=Genbank:NP_051080.1,GeneID:844737;Name=NP_051080.1;gbkey=CDS;gene=rpl33;locus_tag=ArthCp043;product=ribosomal protein L33;protein_id=NP_051080.1;transl_table=11
+NC_000932.1	RefSeq	gene	67917	68222	.	+	.	ID=gene-ArthCp044;Dbxref=GeneID:844736;Name=rps18;gbkey=Gene;gene=rps18;gene_biotype=protein_coding;locus_tag=ArthCp044
+NC_000932.1	RefSeq	CDS	67917	68222	.	+	0	ID=cds-NP_051081.1;Parent=gene-ArthCp044;Dbxref=Genbank:NP_051081.1,GeneID:844736;Name=NP_051081.1;gbkey=CDS;gene=rps18;locus_tag=ArthCp044;product=ribosomal protein S18;protein_id=NP_051081.1;transl_table=11
+NC_000932.1	RefSeq	gene	68512	68865	.	-	.	ID=gene-ArthCp045;Dbxref=GeneID:844735;Name=rpl20;gbkey=Gene;gene=rpl20;gene_biotype=protein_coding;locus_tag=ArthCp045
+NC_000932.1	RefSeq	CDS	68512	68865	.	-	0	ID=cds-NP_051082.1;Parent=gene-ArthCp045;Dbxref=Genbank:NP_051082.1,GeneID:844735;Name=NP_051082.1;gbkey=CDS;gene=rpl20;locus_tag=ArthCp045;product=ribosomal protein L20;protein_id=NP_051082.1;transl_table=11
+NC_000932.1	RefSeq	gene	69611	69724	.	-	.	ID=gene-ArthCp047;Dbxref=GeneID:844801;Name=rps12;exception=trans-splicing;gbkey=Gene;gene=rps12;gene_biotype=protein_coding;locus_tag=ArthCp047;part=1/2
+NC_000932.1	RefSeq	gene	139856	140650	.	+	.	ID=gene-ArthCp047;Dbxref=GeneID:844801;Name=rps12;exception=trans-splicing;gbkey=Gene;gene=rps12;gene_biotype=protein_coding;locus_tag=ArthCp047;part=2/2
+NC_000932.1	RefSeq	CDS	69611	69724	.	-	0	ID=cds-NP_051038.1;Parent=gene-ArthCp047;Dbxref=Genbank:NP_051038.1,GeneID:844801;Name=NP_051038.1;Note=trans-spliced;exception=trans-splicing;gbkey=CDS;gene=rps12;locus_tag=ArthCp047;product=ribosomal protein S12;protein_id=NP_051038.1;transl_table=11
+NC_000932.1	RefSeq	CDS	139856	140087	.	+	0	ID=cds-NP_051038.1;Parent=gene-ArthCp047;Dbxref=Genbank:NP_051038.1,GeneID:844801;Name=NP_051038.1;Note=trans-spliced;exception=trans-splicing;gbkey=CDS;gene=rps12;locus_tag=ArthCp047;product=ribosomal protein S12;protein_id=NP_051038.1;transl_table=11
+NC_000932.1	RefSeq	CDS	140625	140650	.	+	2	ID=cds-NP_051038.1;Parent=gene-ArthCp047;Dbxref=Genbank:NP_051038.1,GeneID:844801;Name=NP_051038.1;Note=trans-spliced;exception=trans-splicing;gbkey=CDS;gene=rps12;locus_tag=ArthCp047;product=ribosomal protein S12;protein_id=NP_051038.1;transl_table=11
+NC_000932.1	RefSeq	gene	69910	71882	.	-	.	ID=gene-ArthCp048;Dbxref=GeneID:844734;Name=clpP;gbkey=Gene;gene=clpP;gene_biotype=protein_coding;locus_tag=ArthCp048
+NC_000932.1	RefSeq	CDS	71812	71882	.	-	0	ID=cds-NP_051083.1;Parent=gene-ArthCp048;Dbxref=Genbank:NP_051083.1,GeneID:844734;Name=NP_051083.1;gbkey=CDS;gene=clpP;locus_tag=ArthCp048;product=ATP-dependent Clp protease proteolytic subunit;protein_id=NP_051083.1;transl_table=11
+NC_000932.1	RefSeq	CDS	70653	70944	.	-	1	ID=cds-NP_051083.1;Parent=gene-ArthCp048;Dbxref=Genbank:NP_051083.1,GeneID:844734;Name=NP_051083.1;gbkey=CDS;gene=clpP;locus_tag=ArthCp048;product=ATP-dependent Clp protease proteolytic subunit;protein_id=NP_051083.1;transl_table=11
+NC_000932.1	RefSeq	CDS	69910	70137	.	-	0	ID=cds-NP_051083.1;Parent=gene-ArthCp048;Dbxref=Genbank:NP_051083.1,GeneID:844734;Name=NP_051083.1;gbkey=CDS;gene=clpP;locus_tag=ArthCp048;product=ATP-dependent Clp protease proteolytic subunit;protein_id=NP_051083.1;transl_table=11
+NC_000932.1	RefSeq	gene	72371	73897	.	+	.	ID=gene-ArthCp049;Dbxref=GeneID:844733;Name=psbB;gbkey=Gene;gene=psbB;gene_biotype=protein_coding;locus_tag=ArthCp049
+NC_000932.1	RefSeq	CDS	72371	73897	.	+	0	ID=cds-NP_051084.1;Parent=gene-ArthCp049;Dbxref=Genbank:NP_051084.1,GeneID:844733;Name=NP_051084.1;Note=PSII 47 kDa protein;gbkey=CDS;gene=psbB;locus_tag=ArthCp049;product=photosystem II 47 kDa protein;protein_id=NP_051084.1;transl_table=11
+NC_000932.1	RefSeq	gene	74082	74183	.	+	.	ID=gene-ArthCp050;Dbxref=GeneID:844731;Name=psbT;gbkey=Gene;gene=psbT;gene_biotype=protein_coding;locus_tag=ArthCp050
+NC_000932.1	RefSeq	CDS	74082	74183	.	+	0	ID=cds-NP_051085.1;Parent=gene-ArthCp050;Dbxref=Genbank:NP_051085.1,GeneID:844731;Name=NP_051085.1;gbkey=CDS;gene=psbT;locus_tag=ArthCp050;product=photosystem II protein T;protein_id=NP_051085.1;transl_table=11
+NC_000932.1	RefSeq	gene	74249	74380	.	-	.	ID=gene-ArthCp051;Dbxref=GeneID:844732;Name=psbN;gbkey=Gene;gene=psbN;gene_biotype=protein_coding;locus_tag=ArthCp051
+NC_000932.1	RefSeq	CDS	74249	74380	.	-	0	ID=cds-NP_051086.1;Parent=gene-ArthCp051;Dbxref=Genbank:NP_051086.1,GeneID:844732;Name=NP_051086.1;gbkey=CDS;gene=psbN;locus_tag=ArthCp051;product=photosystem II protein N;protein_id=NP_051086.1;transl_table=11
+NC_000932.1	RefSeq	gene	74485	74706	.	+	.	ID=gene-ArthCp052;Dbxref=GeneID:844730;Name=psbH;gbkey=Gene;gene=psbH;gene_biotype=protein_coding;locus_tag=ArthCp052
+NC_000932.1	RefSeq	CDS	74485	74706	.	+	0	ID=cds-NP_051087.1;Parent=gene-ArthCp052;Dbxref=Genbank:NP_051087.1,GeneID:844730;Name=NP_051087.1;Note=photosystem II phosphoprotein;gbkey=CDS;gene=psbH;locus_tag=ArthCp052;product=photosystem II protein H;protein_id=NP_051087.1;transl_table=11
+NC_000932.1	RefSeq	gene	74841	76292	.	+	.	ID=gene-ArthCp053;Dbxref=GeneID:844729;Name=petB;gbkey=Gene;gene=petB;gene_biotype=protein_coding;locus_tag=ArthCp053
+NC_000932.1	RefSeq	CDS	74841	74846	.	+	0	ID=cds-NP_051088.1;Parent=gene-ArthCp053;Dbxref=Genbank:NP_051088.1,GeneID:844729;Name=NP_051088.1;gbkey=CDS;gene=petB;locus_tag=ArthCp053;product=cytochrome b6;protein_id=NP_051088.1;transl_table=11
+NC_000932.1	RefSeq	CDS	75651	76292	.	+	0	ID=cds-NP_051088.1;Parent=gene-ArthCp053;Dbxref=Genbank:NP_051088.1,GeneID:844729;Name=NP_051088.1;gbkey=CDS;gene=petB;locus_tag=ArthCp053;product=cytochrome b6;protein_id=NP_051088.1;transl_table=11
+NC_000932.1	RefSeq	gene	76481	77672	.	+	.	ID=gene-ArthCp054;Dbxref=GeneID:844728;Name=petD;gbkey=Gene;gene=petD;gene_biotype=protein_coding;locus_tag=ArthCp054
+NC_000932.1	RefSeq	CDS	76481	76488	.	+	0	ID=cds-NP_051089.1;Parent=gene-ArthCp054;Dbxref=Genbank:NP_051089.1,GeneID:844728;Name=NP_051089.1;gbkey=CDS;gene=petD;locus_tag=ArthCp054;product=cytochrome b6/f complex subunit IV;protein_id=NP_051089.1;transl_table=11
+NC_000932.1	RefSeq	CDS	77198	77672	.	+	1	ID=cds-NP_051089.1;Parent=gene-ArthCp054;Dbxref=Genbank:NP_051089.1,GeneID:844728;Name=NP_051089.1;gbkey=CDS;gene=petD;locus_tag=ArthCp054;product=cytochrome b6/f complex subunit IV;protein_id=NP_051089.1;transl_table=11
+NC_000932.1	RefSeq	gene	77901	78890	.	-	.	ID=gene-ArthCp055;Dbxref=GeneID:844727;Name=rpoA;gbkey=Gene;gene=rpoA;gene_biotype=protein_coding;locus_tag=ArthCp055
+NC_000932.1	RefSeq	CDS	77901	78890	.	-	0	ID=cds-NP_051090.1;Parent=gene-ArthCp055;Dbxref=Genbank:NP_051090.1,GeneID:844727;Name=NP_051090.1;gbkey=CDS;gene=rpoA;locus_tag=ArthCp055;product=RNA polymerase alpha subunit;protein_id=NP_051090.1;transl_table=11
+NC_000932.1	RefSeq	gene	78960	79376	.	-	.	ID=gene-ArthCp056;Dbxref=GeneID:844726;Name=rps11;gbkey=Gene;gene=rps11;gene_biotype=protein_coding;locus_tag=ArthCp056
+NC_000932.1	RefSeq	CDS	78960	79376	.	-	0	ID=cds-NP_051091.1;Parent=gene-ArthCp056;Dbxref=Genbank:NP_051091.1,GeneID:844726;Name=NP_051091.1;gbkey=CDS;gene=rps11;locus_tag=ArthCp056;product=ribosomal protein S11;protein_id=NP_051091.1;transl_table=11
+NC_000932.1	RefSeq	gene	79489	79602	.	-	.	ID=gene-ArthCp057;Dbxref=GeneID:844725;Name=rpl36;gbkey=Gene;gene=rpl36;gene_biotype=protein_coding;gene_synonym=secX;locus_tag=ArthCp057
+NC_000932.1	RefSeq	CDS	79489	79602	.	-	0	ID=cds-NP_051092.1;Parent=gene-ArthCp057;Dbxref=Genbank:NP_051092.1,GeneID:844725;Name=NP_051092.1;gbkey=CDS;gene=rpl36;locus_tag=ArthCp057;product=ribosomal protein L36;protein_id=NP_051092.1;transl_table=11
+NC_000932.1	RefSeq	gene	80068	80472	.	-	.	ID=gene-ArthCp058;Dbxref=GeneID:844724;Name=rps8;gbkey=Gene;gene=rps8;gene_biotype=protein_coding;locus_tag=ArthCp058
+NC_000932.1	RefSeq	CDS	80068	80472	.	-	0	ID=cds-NP_051093.1;Parent=gene-ArthCp058;Dbxref=Genbank:NP_051093.1,GeneID:844724;Name=NP_051093.1;gbkey=CDS;gene=rps8;locus_tag=ArthCp058;product=ribosomal protein S8;protein_id=NP_051093.1;transl_table=11
+NC_000932.1	RefSeq	gene	80696	81064	.	-	.	ID=gene-ArthCp059;Dbxref=GeneID:844723;Name=rpl14;gbkey=Gene;gene=rpl14;gene_biotype=protein_coding;locus_tag=ArthCp059
+NC_000932.1	RefSeq	CDS	80696	81064	.	-	0	ID=cds-NP_051094.1;Parent=gene-ArthCp059;Dbxref=Genbank:NP_051094.1,GeneID:844723;Name=NP_051094.1;gbkey=CDS;gene=rpl14;locus_tag=ArthCp059;product=ribosomal protein L14;protein_id=NP_051094.1;transl_table=11
+NC_000932.1	RefSeq	gene	81189	82652	.	-	.	ID=gene-ArthCp060;Dbxref=GeneID:844722;Name=rpl16;gbkey=Gene;gene=rpl16;gene_biotype=protein_coding;locus_tag=ArthCp060
+NC_000932.1	RefSeq	CDS	82644	82652	.	-	0	ID=cds-NP_051095.1;Parent=gene-ArthCp060;Dbxref=Genbank:NP_051095.1,GeneID:844722;Name=NP_051095.1;gbkey=CDS;gene=rpl16;locus_tag=ArthCp060;product=ribosomal protein L16;protein_id=NP_051095.1;transl_table=11
+NC_000932.1	RefSeq	CDS	81189	81587	.	-	0	ID=cds-NP_051095.1;Parent=gene-ArthCp060;Dbxref=Genbank:NP_051095.1,GeneID:844722;Name=NP_051095.1;gbkey=CDS;gene=rpl16;locus_tag=ArthCp060;product=ribosomal protein L16;protein_id=NP_051095.1;transl_table=11
+NC_000932.1	RefSeq	gene	82826	83482	.	-	.	ID=gene-ArthCp061;Dbxref=GeneID:844719;Name=rps3;gbkey=Gene;gene=rps3;gene_biotype=protein_coding;locus_tag=ArthCp061
+NC_000932.1	RefSeq	CDS	82826	83482	.	-	0	ID=cds-NP_051096.1;Parent=gene-ArthCp061;Dbxref=Genbank:NP_051096.1,GeneID:844719;Name=NP_051096.1;gbkey=CDS;gene=rps3;locus_tag=ArthCp061;product=ribosomal protein S3;protein_id=NP_051096.1;transl_table=11
+NC_000932.1	RefSeq	gene	83467	83949	.	-	.	ID=gene-ArthCp062;Dbxref=GeneID:844721;Name=rpl22;gbkey=Gene;gene=rpl22;gene_biotype=protein_coding;locus_tag=ArthCp062
+NC_000932.1	RefSeq	CDS	83467	83949	.	-	0	ID=cds-NP_051097.1;Parent=gene-ArthCp062;Dbxref=Genbank:NP_051097.1,GeneID:844721;Name=NP_051097.1;gbkey=CDS;gene=rpl22;locus_tag=ArthCp062;product=ribosomal protein L22;protein_id=NP_051097.1;transl_table=11
+NC_000932.1	RefSeq	gene	84005	84283	.	-	.	ID=gene-ArthCp063;Dbxref=GeneID:844720;Name=rps19;gbkey=Gene;gene=rps19;gene_biotype=protein_coding;locus_tag=ArthCp063
+NC_000932.1	RefSeq	CDS	84005	84283	.	-	0	ID=cds-NP_051098.1;Parent=gene-ArthCp063;Dbxref=Genbank:NP_051098.1,GeneID:844720;Name=NP_051098.1;gbkey=CDS;gene=rps19;locus_tag=ArthCp063;product=ribosomal protein S19;protein_id=NP_051098.1;transl_table=11
+NC_000932.1	RefSeq	gene	84337	85843	.	-	.	ID=gene-ArthCp064;Dbxref=GeneID:844718;Name=rpl2;gbkey=Gene;gene=rpl2;gene_biotype=protein_coding;locus_tag=ArthCp064
+NC_000932.1	RefSeq	CDS	85454	85843	.	-	0	ID=cds-NP_051099.1;Parent=gene-ArthCp064;Dbxref=Genbank:NP_051099.1,GeneID:844718;Name=NP_051099.1;gbkey=CDS;gene=rpl2;locus_tag=ArthCp064;product=ribosomal protein L2;protein_id=NP_051099.1;transl_table=11
+NC_000932.1	RefSeq	CDS	84337	84771	.	-	0	ID=cds-NP_051099.1;Parent=gene-ArthCp064;Dbxref=Genbank:NP_051099.1,GeneID:844718;Name=NP_051099.1;gbkey=CDS;gene=rpl2;locus_tag=ArthCp064;product=ribosomal protein L2;protein_id=NP_051099.1;transl_table=11
+NC_000932.1	RefSeq	gene	85862	86143	.	-	.	ID=gene-ArthCp065;Dbxref=GeneID:844717;Name=rpl23;gbkey=Gene;gene=rpl23;gene_biotype=protein_coding;locus_tag=ArthCp065
+NC_000932.1	RefSeq	CDS	85862	86143	.	-	0	ID=cds-NP_051100.1;Parent=gene-ArthCp065;Dbxref=Genbank:NP_051100.1,GeneID:844717;Name=NP_051100.1;gbkey=CDS;gene=rpl23;locus_tag=ArthCp065;product=ribosomal protein L23;protein_id=NP_051100.1;transl_table=11
+NC_000932.1	RefSeq	gene	86312	86385	.	-	.	ID=gene-ArthCt113;Dbxref=GeneID:4042812;Name=trnI;gbkey=Gene;gene=trnI;gene_biotype=tRNA;locus_tag=ArthCt113
+NC_000932.1	RefSeq	tRNA	86312	86385	.	-	.	ID=rna-ArthCt113;Parent=gene-ArthCt113;Dbxref=GeneID:4042812;Note=CAU%3B C in the first position of the anticodon assumed to be post-transcriptionally modified to lysidine%2C which pairs with A rather than G tRNA with a methionine anticodonpost-transcriptionally modified to have tRNA isoleucine activity;gbkey=tRNA;gene=trnI;locus_tag=ArthCt113;product=tRNA-Ile
+NC_000932.1	RefSeq	exon	86312	86385	.	-	.	ID=exon-ArthCt113-1;Parent=rna-ArthCt113;Dbxref=GeneID:4042812;Note=CAU%3B C in the first position of the anticodon assumed to be post-transcriptionally modified to lysidine%2C which pairs with A rather than G tRNA with a methionine anticodonpost-transcriptionally modified to have tRNA isoleucine activity;gbkey=tRNA;gene=trnI;locus_tag=ArthCt113;product=tRNA-Ile
+NC_000932.1	RefSeq	gene	86474	93358	.	+	.	ID=gene-ArthCp066;Dbxref=GeneID:844715;Name=ycf2;gbkey=Gene;gene=ycf2;gene_biotype=protein_coding;locus_tag=ArthCp066
+NC_000932.1	RefSeq	CDS	86474	93358	.	+	0	ID=cds-NP_051101.1;Parent=gene-ArthCp066;Dbxref=Genbank:NP_051101.1,GeneID:844715;Name=NP_051101.1;Note=hypothetical protein RF2;gbkey=CDS;gene=ycf2;locus_tag=ArthCp066;product=Ycf2;protein_id=NP_051101.1;transl_table=11
+NC_000932.1	RefSeq	gene	94276	94356	.	-	.	ID=gene-ArthCt126;Dbxref=GeneID:5563230;Name=trnL;gbkey=Gene;gene=trnL;gene_biotype=tRNA;locus_tag=ArthCt126
+NC_000932.1	RefSeq	tRNA	94276	94356	.	-	.	ID=rna-ArthCt126;Parent=gene-ArthCt126;Dbxref=GeneID:5563230;gbkey=tRNA;gene=trnL;locus_tag=ArthCt126;product=tRNA-Leu
+NC_000932.1	RefSeq	exon	94276	94356	.	-	.	ID=exon-ArthCt126-1;Parent=rna-ArthCt126;Dbxref=GeneID:5563230;gbkey=tRNA;gene=trnL;locus_tag=ArthCt126;product=tRNA-Leu
+NC_000932.1	RefSeq	gene	94941	97164	.	-	.	ID=gene-ArthCp068;Dbxref=GeneID:844713;Name=ndhB;gbkey=Gene;gene=ndhB;gene_biotype=protein_coding;gene_synonym=ndh2;locus_tag=ArthCp068
+NC_000932.1	RefSeq	CDS	96388	97164	.	-	0	ID=cds-NP_051103.2;Parent=gene-ArthCp068;Dbxref=Genbank:NP_051103.2,GeneID:844713;Name=NP_051103.2;gbkey=CDS;gene=ndhB;locus_tag=ArthCp068;product=NADH dehydrogenase subunit 2;protein_id=NP_051103.2;transl_table=11
+NC_000932.1	RefSeq	CDS	94941	95702	.	-	0	ID=cds-NP_051103.2;Parent=gene-ArthCp068;Dbxref=Genbank:NP_051103.2,GeneID:844713;Name=NP_051103.2;gbkey=CDS;gene=ndhB;locus_tag=ArthCp068;product=NADH dehydrogenase subunit 2;protein_id=NP_051103.2;transl_table=11
+NC_000932.1	RefSeq	gene	97478	97945	.	-	.	ID=gene-ArthCp069;Dbxref=GeneID:844712;Name=rps7;gbkey=Gene;gene=rps7;gene_biotype=protein_coding;locus_tag=ArthCp069
+NC_000932.1	RefSeq	CDS	97478	97945	.	-	0	ID=cds-NP_051104.1;Parent=gene-ArthCp069;Dbxref=Genbank:NP_051104.1,GeneID:844712;Name=NP_051104.1;gbkey=CDS;gene=rps7;locus_tag=ArthCp069;product=ribosomal protein S7;protein_id=NP_051104.1;transl_table=11
+NC_000932.1	RefSeq	gene	69611	69724	.	-	.	ID=gene-ArthCp001;Dbxref=GeneID:1466250;Name=rps12;exception=trans-splicing;gbkey=Gene;gene=rps12;gene_biotype=protein_coding;locus_tag=ArthCp001;part=1/2
+NC_000932.1	RefSeq	gene	97999	98793	.	-	.	ID=gene-ArthCp001;Dbxref=GeneID:1466250;Name=rps12;exception=trans-splicing;gbkey=Gene;gene=rps12;gene_biotype=protein_coding;locus_tag=ArthCp001;part=2/2
+NC_000932.1	RefSeq	CDS	69611	69724	.	-	0	ID=cds-NP_051037.1;Parent=gene-ArthCp001;Dbxref=Genbank:NP_051037.1,GeneID:1466250;Name=NP_051037.1;exception=trans-splicing;gbkey=CDS;gene=rps12;locus_tag=ArthCp001;product=ribosomal protein S12;protein_id=NP_051037.1;transl_table=11
+NC_000932.1	RefSeq	CDS	98562	98793	.	-	0	ID=cds-NP_051037.1;Parent=gene-ArthCp001;Dbxref=Genbank:NP_051037.1,GeneID:1466250;Name=NP_051037.1;exception=trans-splicing;gbkey=CDS;gene=rps12;locus_tag=ArthCp001;product=ribosomal protein S12;protein_id=NP_051037.1;transl_table=11
+NC_000932.1	RefSeq	CDS	97999	98024	.	-	2	ID=cds-NP_051037.1;Parent=gene-ArthCp001;Dbxref=Genbank:NP_051037.1,GeneID:1466250;Name=NP_051037.1;exception=trans-splicing;gbkey=CDS;gene=rps12;locus_tag=ArthCp001;product=ribosomal protein S12;protein_id=NP_051037.1;transl_table=11
+NC_000932.1	RefSeq	gene	100709	100780	.	+	.	ID=gene-Arthct121;Dbxref=GeneID:4386141;Name=trnV;gbkey=Gene;gene=trnV;gene_biotype=tRNA;locus_tag=Arthct121
+NC_000932.1	RefSeq	tRNA	100709	100780	.	+	.	ID=rna-Arthct121;Parent=gene-Arthct121;Dbxref=GeneID:4386141;gbkey=tRNA;gene=trnV;locus_tag=Arthct121;product=tRNA-Val
+NC_000932.1	RefSeq	exon	100709	100780	.	+	.	ID=exon-Arthct121-1;Parent=rna-Arthct121;Dbxref=GeneID:4386141;gbkey=tRNA;gene=trnV;locus_tag=Arthct121;product=tRNA-Val
+NC_000932.1	RefSeq	gene	101012	102502	.	+	.	ID=gene-ArthCr086;Dbxref=GeneID:1466254;Name=rrn16S;gbkey=Gene;gene=rrn16S;gene_biotype=rRNA;locus_tag=ArthCr086
+NC_000932.1	RefSeq	rRNA	101012	102502	.	+	.	ID=rna-ArthCr086;Parent=gene-ArthCr086;Dbxref=GeneID:1466254;gbkey=rRNA;gene=rrn16S;locus_tag=ArthCr086;product=16S ribosomal RNA
+NC_000932.1	RefSeq	exon	101012	102502	.	+	.	ID=exon-ArthCr086-1;Parent=rna-ArthCr086;Dbxref=GeneID:1466254;gbkey=rRNA;gene=rrn16S;locus_tag=ArthCr086;product=16S ribosomal RNA
+NC_000932.1	RefSeq	gene	102801	103601	.	+	.	ID=gene-ArthCt107;Dbxref=GeneID:1466260;Name=trnI;gbkey=Gene;gene=trnI;gene_biotype=tRNA;locus_tag=ArthCt107
+NC_000932.1	RefSeq	tRNA	102801	103601	.	+	.	ID=rna-ArthCt107;Parent=gene-ArthCt107;Dbxref=GeneID:1466260;gbkey=tRNA;gene=trnI;locus_tag=ArthCt107;product=tRNA-Ile
+NC_000932.1	RefSeq	exon	102801	102837	.	+	.	ID=exon-ArthCt107-1;Parent=rna-ArthCt107;Dbxref=GeneID:1466260;gbkey=tRNA;gene=trnI;locus_tag=ArthCt107;product=tRNA-Ile
+NC_000932.1	RefSeq	exon	103567	103601	.	+	.	ID=exon-ArthCt107-2;Parent=rna-ArthCt107;Dbxref=GeneID:1466260;gbkey=tRNA;gene=trnI;locus_tag=ArthCt107;product=tRNA-Ile
+NC_000932.1	RefSeq	gene	103665	104538	.	+	.	ID=gene-ArthCt108;Dbxref=GeneID:1466258;Name=trnA;gbkey=Gene;gene=trnA;gene_biotype=tRNA;locus_tag=ArthCt108
+NC_000932.1	RefSeq	tRNA	103665	104538	.	+	.	ID=rna-ArthCt108;Parent=gene-ArthCt108;Dbxref=GeneID:1466258;gbkey=tRNA;gene=trnA;locus_tag=ArthCt108;product=tRNA-Ala
+NC_000932.1	RefSeq	exon	103665	103702	.	+	.	ID=exon-ArthCt108-1;Parent=rna-ArthCt108;Dbxref=GeneID:1466258;gbkey=tRNA;gene=trnA;locus_tag=ArthCt108;product=tRNA-Ala
+NC_000932.1	RefSeq	exon	104504	104538	.	+	.	ID=exon-ArthCt108-2;Parent=rna-ArthCt108;Dbxref=GeneID:1466258;gbkey=tRNA;gene=trnA;locus_tag=ArthCt108;product=tRNA-Ala
+NC_000932.1	RefSeq	gene	104691	107500	.	+	.	ID=gene-ArthCr087;Dbxref=GeneID:1466252;Name=rrn23S;gbkey=Gene;gene=rrn23S;gene_biotype=rRNA;locus_tag=ArthCr087
+NC_000932.1	RefSeq	rRNA	104691	107500	.	+	.	ID=rna-ArthCr087;Parent=gene-ArthCr087;Dbxref=GeneID:1466252;gbkey=rRNA;gene=rrn23S;locus_tag=ArthCr087;product=23S ribosomal RNA
+NC_000932.1	RefSeq	exon	104691	107500	.	+	.	ID=exon-ArthCr087-1;Parent=rna-ArthCr087;Dbxref=GeneID:1466252;gbkey=rRNA;gene=rrn23S;locus_tag=ArthCr087;product=23S ribosomal RNA
+NC_000932.1	RefSeq	gene	107599	107701	.	+	.	ID=gene-ArthCt109;Dbxref=GeneID:1466256;Name=rrn4.5S;gbkey=Gene;gene=rrn4.5S;gene_biotype=rRNA;locus_tag=ArthCt109
+NC_000932.1	RefSeq	rRNA	107599	107701	.	+	.	ID=rna-ArthCt109;Parent=gene-ArthCt109;Dbxref=GeneID:1466256;gbkey=rRNA;gene=rrn4.5S;locus_tag=ArthCt109;product=4.5S ribosomal RNA
+NC_000932.1	RefSeq	exon	107599	107701	.	+	.	ID=exon-ArthCt109-1;Parent=rna-ArthCt109;Dbxref=GeneID:1466256;gbkey=rRNA;gene=rrn4.5S;locus_tag=ArthCt109;product=4.5S ribosomal RNA
+NC_000932.1	RefSeq	gene	108302	108375	.	+	.	ID=gene-ArthCt127;Dbxref=GeneID:4386137;Name=trnR;gbkey=Gene;gene=trnR;gene_biotype=tRNA;locus_tag=ArthCt127
+NC_000932.1	RefSeq	tRNA	108302	108375	.	+	.	ID=rna-ArthCt127;Parent=gene-ArthCt127;Dbxref=GeneID:4386137;gbkey=tRNA;gene=trnR;locus_tag=ArthCt127;product=tRNA-Arg
+NC_000932.1	RefSeq	exon	108302	108375	.	+	.	ID=exon-ArthCt127-1;Parent=rna-ArthCt127;Dbxref=GeneID:4386137;gbkey=tRNA;gene=trnR;locus_tag=ArthCt127;product=tRNA-Arg
+NC_000932.1	RefSeq	gene	109013	109084	.	-	.	ID=gene-Arthct120;Dbxref=GeneID:4386138;Name=trnN;gbkey=Gene;gene=trnN;gene_biotype=tRNA;locus_tag=Arthct120
+NC_000932.1	RefSeq	tRNA	109013	109084	.	-	.	ID=rna-Arthct120;Parent=gene-Arthct120;Dbxref=GeneID:4386138;gbkey=tRNA;gene=trnN;locus_tag=Arthct120;product=tRNA-Asn
+NC_000932.1	RefSeq	exon	109013	109084	.	-	.	ID=exon-Arthct120-1;Parent=rna-Arthct120;Dbxref=GeneID:4386138;gbkey=tRNA;gene=trnN;locus_tag=Arthct120;product=tRNA-Asn
+NC_000932.1	RefSeq	gene	109405	110436	.	+	.	ID=gene-ArthCp070;Dbxref=GeneID:844706;Name=ycf1;gbkey=Gene;gene=ycf1;gene_biotype=protein_coding;locus_tag=ArthCp070
+NC_000932.1	RefSeq	CDS	109405	110436	.	+	0	ID=cds-NP_051105.1;Parent=gene-ArthCp070;Dbxref=Genbank:NP_051105.1,GeneID:844706;Name=NP_051105.1;gbkey=CDS;gene=ycf1;locus_tag=ArthCp070;product=hypothetical protein;protein_id=NP_051105.1;transl_table=11
+NC_000932.1	RefSeq	gene	110398	112638	.	-	.	ID=gene-ArthCp071;Dbxref=GeneID:844705;Name=ndhF;gbkey=Gene;gene=ndhF;gene_biotype=protein_coding;gene_synonym=ndh5;locus_tag=ArthCp071
+NC_000932.1	RefSeq	CDS	110398	112638	.	-	0	ID=cds-NP_051106.1;Parent=gene-ArthCp071;Dbxref=Genbank:NP_051106.1,GeneID:844705;Name=NP_051106.1;gbkey=CDS;gene=ndhF;locus_tag=ArthCp071;product=NADH dehydrogenase subunit 5;protein_id=NP_051106.1;transl_table=11
+NC_000932.1	RefSeq	gene	113449	113607	.	+	.	ID=gene-ArthCp072;Dbxref=GeneID:844704;Name=rpl32;gbkey=Gene;gene=rpl32;gene_biotype=protein_coding;locus_tag=ArthCp072
+NC_000932.1	RefSeq	CDS	113449	113607	.	+	0	ID=cds-NP_051107.1;Parent=gene-ArthCp072;Dbxref=Genbank:NP_051107.1,GeneID:844704;Name=NP_051107.1;gbkey=CDS;gene=rpl32;locus_tag=ArthCp072;product=ribosomal protein L32;protein_id=NP_051107.1;transl_table=11
+NC_000932.1	RefSeq	gene	114270	114349	.	+	.	ID=gene-Arthct122;Dbxref=GeneID:4386142;Name=trnL;gbkey=Gene;gene=trnL;gene_biotype=tRNA;locus_tag=Arthct122
+NC_000932.1	RefSeq	tRNA	114270	114349	.	+	.	ID=rna-Arthct122;Parent=gene-Arthct122;Dbxref=GeneID:4386142;gbkey=tRNA;gene=trnL;locus_tag=Arthct122;product=tRNA-Leu
+NC_000932.1	RefSeq	exon	114270	114349	.	+	.	ID=exon-Arthct122-1;Parent=rna-Arthct122;Dbxref=GeneID:4386142;gbkey=tRNA;gene=trnL;locus_tag=Arthct122;product=tRNA-Leu
+NC_000932.1	RefSeq	gene	114461	115447	.	+	.	ID=gene-ArthCp073;Dbxref=GeneID:844769;Name=ccsA;gbkey=Gene;gene=ccsA;gene_biotype=protein_coding;gene_synonym=ycf5;locus_tag=ArthCp073
+NC_000932.1	RefSeq	CDS	114461	115447	.	+	0	ID=cds-NP_051108.1;Parent=gene-ArthCp073;Dbxref=Genbank:NP_051108.1,GeneID:844769;Name=NP_051108.1;gbkey=CDS;gene=ccsA;locus_tag=ArthCp073;product=cytochrome c biogenesis protein;protein_id=NP_051108.1;transl_table=11
+NC_000932.1	RefSeq	gene	115665	117167	.	-	.	ID=gene-ArthCp074;Dbxref=GeneID:844756;Name=ndhD;gbkey=Gene;gene=ndhD;gene_biotype=protein_coding;gene_synonym=ndh4;locus_tag=ArthCp074
+NC_000932.1	RefSeq	CDS	115665	117167	.	-	0	ID=cds-NP_051109.2;Parent=gene-ArthCp074;Dbxref=Genbank:NP_051109.2,GeneID:844756;Name=NP_051109.2;exception=RNA editing;gbkey=CDS;gene=ndhD;locus_tag=ArthCp074;product=NADH dehydrogenase subunit 4;protein_id=NP_051109.2;transl_table=11
+NC_000932.1	RefSeq	gene	117318	117563	.	-	.	ID=gene-ArthCp075;Dbxref=GeneID:844750;Name=psaC;gbkey=Gene;gene=psaC;gene_biotype=protein_coding;locus_tag=ArthCp075
+NC_000932.1	RefSeq	CDS	117318	117563	.	-	0	ID=cds-NP_051110.1;Parent=gene-ArthCp075;Dbxref=Genbank:NP_051110.1,GeneID:844750;Name=NP_051110.1;Note=9 kDa protein;gbkey=CDS;gene=psaC;locus_tag=ArthCp075;product=photosystem I subunit VII;protein_id=NP_051110.1;transl_table=11
+NC_000932.1	RefSeq	gene	117804	118109	.	-	.	ID=gene-ArthCp076;Dbxref=GeneID:844741;Name=ndhE;gbkey=Gene;gene=ndhE;gene_biotype=protein_coding;gene_synonym=ndh4L;locus_tag=ArthCp076
+NC_000932.1	RefSeq	CDS	117804	118109	.	-	0	ID=cds-NP_051111.1;Parent=gene-ArthCp076;Dbxref=Genbank:NP_051111.1,GeneID:844741;Name=NP_051111.1;gbkey=CDS;gene=ndhE;locus_tag=ArthCp076;product=NADH dehydrogenase subunit 4L;protein_id=NP_051111.1;transl_table=11
+NC_000932.1	RefSeq	gene	118377	118907	.	-	.	ID=gene-ArthCp077;Dbxref=GeneID:844739;Name=ndhG;gbkey=Gene;gene=ndhG;gene_biotype=protein_coding;locus_tag=ArthCp077
+NC_000932.1	RefSeq	CDS	118377	118907	.	-	0	ID=cds-NP_051112.1;Parent=gene-ArthCp077;Dbxref=Genbank:NP_051112.1,GeneID:844739;Name=NP_051112.1;gbkey=CDS;gene=ndhG;locus_tag=ArthCp077;product=NADH dehydrogenase subunit 6;protein_id=NP_051112.1;transl_table=11
+NC_000932.1	RefSeq	gene	119244	119762	.	-	.	ID=gene-ArthCp078;Dbxref=GeneID:844806;Name=ndhI;gbkey=Gene;gene=ndhI;gene_biotype=protein_coding;gene_synonym=frxB;locus_tag=ArthCp078
+NC_000932.1	RefSeq	CDS	119244	119762	.	-	0	ID=cds-NP_051113.1;Parent=gene-ArthCp078;Dbxref=Genbank:NP_051113.1,GeneID:844806;Name=NP_051113.1;gbkey=CDS;gene=ndhI;locus_tag=ArthCp078;product=NADH dehydrogenase subunit I;protein_id=NP_051113.1;transl_table=11
+NC_000932.1	RefSeq	gene	119847	122009	.	-	.	ID=gene-ArthCp079;Dbxref=GeneID:844804;Name=ndhA;gbkey=Gene;gene=ndhA;gene_biotype=protein_coding;gene_synonym=ndh1;locus_tag=ArthCp079
+NC_000932.1	RefSeq	CDS	121457	122009	.	-	0	ID=cds-NP_051114.1;Parent=gene-ArthCp079;Dbxref=Genbank:NP_051114.1,GeneID:844804;Name=NP_051114.1;gbkey=CDS;gene=ndhA;locus_tag=ArthCp079;product=NADH dehydrogenase subunit 1;protein_id=NP_051114.1;transl_table=11
+NC_000932.1	RefSeq	CDS	119847	120376	.	-	2	ID=cds-NP_051114.1;Parent=gene-ArthCp079;Dbxref=Genbank:NP_051114.1,GeneID:844804;Name=NP_051114.1;gbkey=CDS;gene=ndhA;locus_tag=ArthCp079;product=NADH dehydrogenase subunit 1;protein_id=NP_051114.1;transl_table=11
+NC_000932.1	RefSeq	gene	122011	123192	.	-	.	ID=gene-ArthCp080;Dbxref=GeneID:844805;Name=ndhH;gbkey=Gene;gene=ndhH;gene_biotype=protein_coding;locus_tag=ArthCp080
+NC_000932.1	RefSeq	CDS	122011	123192	.	-	0	ID=cds-NP_051115.1;Parent=gene-ArthCp080;Dbxref=Genbank:NP_051115.1,GeneID:844805;Name=NP_051115.1;gbkey=CDS;gene=ndhH;locus_tag=ArthCp080;product=NADH dehydrogenase subunit 7;protein_id=NP_051115.1;transl_table=11
+NC_000932.1	RefSeq	gene	123296	123562	.	-	.	ID=gene-ArthCp081;Dbxref=GeneID:844799;Name=rps15;gbkey=Gene;gene=rps15;gene_biotype=protein_coding;locus_tag=ArthCp081
+NC_000932.1	RefSeq	CDS	123296	123562	.	-	0	ID=cds-NP_051116.1;Parent=gene-ArthCp081;Dbxref=Genbank:NP_051116.1,GeneID:844799;Name=NP_051116.1;gbkey=CDS;gene=rps15;locus_tag=ArthCp081;product=ribosomal protein S15;protein_id=NP_051116.1;transl_table=11
+NC_000932.1	RefSeq	gene	123884	129244	.	-	.	ID=gene-Arthcp087;Dbxref=GeneID:4386139;Name=ycf1;gbkey=Gene;gene=ycf1;gene_biotype=protein_coding;locus_tag=Arthcp087
+NC_000932.1	RefSeq	CDS	123884	129244	.	-	0	ID=cds-NP_051117.1;Parent=gene-Arthcp087;Dbxref=Genbank:NP_051117.1,GeneID:4386139;Name=NP_051117.1;gbkey=CDS;gene=ycf1;locus_tag=Arthcp087;product=Ycf1;protein_id=NP_051117.1;transl_table=11
+NC_000932.1	RefSeq	gene	129565	129636	.	+	.	ID=gene-ArthCt110;Dbxref=GeneID:1466255;Name=trnN;gbkey=Gene;gene=trnN;gene_biotype=tRNA;locus_tag=ArthCt110
+NC_000932.1	RefSeq	tRNA	129565	129636	.	+	.	ID=rna-ArthCt110;Parent=gene-ArthCt110;Dbxref=GeneID:1466255;gbkey=tRNA;gene=trnN;locus_tag=ArthCt110;product=tRNA-Asn
+NC_000932.1	RefSeq	exon	129565	129636	.	+	.	ID=exon-ArthCt110-1;Parent=rna-ArthCt110;Dbxref=GeneID:1466255;gbkey=tRNA;gene=trnN;locus_tag=ArthCt110;product=tRNA-Asn
+NC_000932.1	RefSeq	gene	130274	130347	.	-	.	ID=gene-ArthCt115;Dbxref=GeneID:4042808;Name=trnR;gbkey=Gene;gene=trnR;gene_biotype=tRNA;locus_tag=ArthCt115
+NC_000932.1	RefSeq	tRNA	130274	130347	.	-	.	ID=rna-ArthCt115;Parent=gene-ArthCt115;Dbxref=GeneID:4042808;gbkey=tRNA;gene=trnR;locus_tag=ArthCt115;product=tRNA-Arg
+NC_000932.1	RefSeq	exon	130274	130347	.	-	.	ID=exon-ArthCt115-1;Parent=rna-ArthCt115;Dbxref=GeneID:4042808;gbkey=tRNA;gene=trnR;locus_tag=ArthCt115;product=tRNA-Arg
+NC_000932.1	RefSeq	gene	130580	130700	.	-	.	ID=gene-ArthCr091;Dbxref=GeneID:4042818;Name=ArthCr091;gbkey=Gene;gene_biotype=rRNA;locus_tag=ArthCr091
+NC_000932.1	RefSeq	rRNA	130580	130700	.	-	.	ID=rna-ArthCr091;Parent=gene-ArthCr091;Dbxref=GeneID:4042818;gbkey=rRNA;locus_tag=ArthCr091;product=5S ribosomal RNA
+NC_000932.1	RefSeq	exon	130580	130700	.	-	.	ID=exon-ArthCr091-1;Parent=rna-ArthCr091;Dbxref=GeneID:4042818;gbkey=rRNA;locus_tag=ArthCr091;product=5S ribosomal RNA
+NC_000932.1	RefSeq	gene	130948	131050	.	-	.	ID=gene-ArthCr090;Dbxref=GeneID:4042816;Name=ArthCr090;gbkey=Gene;gene_biotype=rRNA;locus_tag=ArthCr090
+NC_000932.1	RefSeq	rRNA	130948	131050	.	-	.	ID=rna-ArthCr090;Parent=gene-ArthCr090;Dbxref=GeneID:4042816;gbkey=rRNA;locus_tag=ArthCr090;product=4.5S ribosomal RNA
+NC_000932.1	RefSeq	exon	130948	131050	.	-	.	ID=exon-ArthCr090-1;Parent=rna-ArthCr090;Dbxref=GeneID:4042816;gbkey=rRNA;locus_tag=ArthCr090;product=4.5S ribosomal RNA
+NC_000932.1	RefSeq	gene	131149	133958	.	-	.	ID=gene-ArthCr089;Dbxref=GeneID:4042814;Name=ArthCr089;gbkey=Gene;gene_biotype=rRNA;locus_tag=ArthCr089
+NC_000932.1	RefSeq	rRNA	131149	133958	.	-	.	ID=rna-ArthCr089;Parent=gene-ArthCr089;Dbxref=GeneID:4042814;gbkey=rRNA;locus_tag=ArthCr089;product=23S ribosomal RNA
+NC_000932.1	RefSeq	exon	131149	133958	.	-	.	ID=exon-ArthCr089-1;Parent=rna-ArthCr089;Dbxref=GeneID:4042814;gbkey=rRNA;locus_tag=ArthCr089;product=23S ribosomal RNA
+NC_000932.1	RefSeq	gene	134111	134984	.	-	.	ID=gene-ArthCt114;Dbxref=GeneID:4042813;Name=trnA;gbkey=Gene;gene=trnA;gene_biotype=tRNA;locus_tag=ArthCt114
+NC_000932.1	RefSeq	tRNA	134111	134984	.	-	.	ID=rna-ArthCt114;Parent=gene-ArthCt114;Dbxref=GeneID:4042813;gbkey=tRNA;gene=trnA;locus_tag=ArthCt114;product=tRNA-Ala
+NC_000932.1	RefSeq	exon	134947	134984	.	-	.	ID=exon-ArthCt114-1;Parent=rna-ArthCt114;Dbxref=GeneID:4042813;gbkey=tRNA;gene=trnA;locus_tag=ArthCt114;product=tRNA-Ala
+NC_000932.1	RefSeq	exon	134111	134145	.	-	.	ID=exon-ArthCt114-2;Parent=rna-ArthCt114;Dbxref=GeneID:4042813;gbkey=tRNA;gene=trnA;locus_tag=ArthCt114;product=tRNA-Ala
+NC_000932.1	RefSeq	gene	135048	135848	.	-	.	ID=gene-ArthCt124;Dbxref=GeneID:5563231;Name=trnI;gbkey=Gene;gene=trnI;gene_biotype=tRNA;locus_tag=ArthCt124
+NC_000932.1	RefSeq	tRNA	135048	135848	.	-	.	ID=rna-ArthCt124;Parent=gene-ArthCt124;Dbxref=GeneID:5563231;gbkey=tRNA;gene=trnI;locus_tag=ArthCt124;product=tRNA-Ile
+NC_000932.1	RefSeq	exon	135812	135848	.	-	.	ID=exon-ArthCt124-1;Parent=rna-ArthCt124;Dbxref=GeneID:5563231;gbkey=tRNA;gene=trnI;locus_tag=ArthCt124;product=tRNA-Ile
+NC_000932.1	RefSeq	exon	135048	135082	.	-	.	ID=exon-ArthCt124-2;Parent=rna-ArthCt124;Dbxref=GeneID:5563231;gbkey=tRNA;gene=trnI;locus_tag=ArthCt124;product=tRNA-Ile
+NC_000932.1	RefSeq	gene	136147	137637	.	-	.	ID=gene-ArthCr088;Dbxref=GeneID:4042819;Name=ArthCr088;gbkey=Gene;gene_biotype=rRNA;locus_tag=ArthCr088
+NC_000932.1	RefSeq	rRNA	136147	137637	.	-	.	ID=rna-ArthCr088;Parent=gene-ArthCr088;Dbxref=GeneID:4042819;gbkey=rRNA;locus_tag=ArthCr088;product=16S ribosomal RNA
+NC_000932.1	RefSeq	exon	136147	137637	.	-	.	ID=exon-ArthCr088-1;Parent=rna-ArthCr088;Dbxref=GeneID:4042819;gbkey=rRNA;locus_tag=ArthCr088;product=16S ribosomal RNA
+NC_000932.1	RefSeq	gene	137869	137940	.	-	.	ID=gene-ArthCt112;Dbxref=GeneID:4042817;Name=ArthCt112;gbkey=Gene;gene_biotype=tRNA;locus_tag=ArthCt112
+NC_000932.1	RefSeq	tRNA	137869	137940	.	-	.	ID=rna-ArthCt112;Parent=gene-ArthCt112;Dbxref=GeneID:4042817;gbkey=tRNA;locus_tag=ArthCt112;product=tRNA-Val
+NC_000932.1	RefSeq	exon	137869	137940	.	-	.	ID=exon-ArthCt112-1;Parent=rna-ArthCt112;Dbxref=GeneID:4042817;gbkey=tRNA;locus_tag=ArthCt112;product=tRNA-Val
+NC_000932.1	RefSeq	gene	140704	141171	.	+	.	ID=gene-ArthCp088;Dbxref=GeneID:4386140;Name=rps7;gbkey=Gene;gene=rps7;gene_biotype=protein_coding;locus_tag=ArthCp088
+NC_000932.1	RefSeq	CDS	140704	141171	.	+	0	ID=cds-NP_051118.1;Parent=gene-ArthCp088;Dbxref=Genbank:NP_051118.1,GeneID:4386140;Name=NP_051118.1;gbkey=CDS;gene=rps7;locus_tag=ArthCp088;product=ribosomal protein S7;protein_id=NP_051118.1;transl_table=11
+NC_000932.1	RefSeq	gene	141485	143708	.	+	.	ID=gene-ArthCp086;Dbxref=GeneID:4042815;Name=ndhB;gbkey=Gene;gene=ndhB;gene_biotype=protein_coding;gene_synonym=ndh2;locus_tag=ArthCp086
+NC_000932.1	RefSeq	CDS	141485	142261	.	+	0	ID=cds-NP_051119.2;Parent=gene-ArthCp086;Dbxref=Genbank:NP_051119.2,GeneID:4042815;Name=NP_051119.2;gbkey=CDS;gene=ndhB;locus_tag=ArthCp086;product=NADH dehydrogenase subunit 2;protein_id=NP_051119.2;transl_table=11
+NC_000932.1	RefSeq	CDS	142947	143708	.	+	0	ID=cds-NP_051119.2;Parent=gene-ArthCp086;Dbxref=Genbank:NP_051119.2,GeneID:4042815;Name=NP_051119.2;gbkey=CDS;gene=ndhB;locus_tag=ArthCp086;product=NADH dehydrogenase subunit 2;protein_id=NP_051119.2;transl_table=11
+NC_000932.1	RefSeq	gene	144293	144373	.	+	.	ID=gene-ArthCt118;Dbxref=GeneID:4042811;Name=trnL;gbkey=Gene;gene=trnL;gene_biotype=tRNA;locus_tag=ArthCt118
+NC_000932.1	RefSeq	tRNA	144293	144373	.	+	.	ID=rna-ArthCt118;Parent=gene-ArthCt118;Dbxref=GeneID:4042811;gbkey=tRNA;gene=trnL;locus_tag=ArthCt118;product=tRNA-Leu
+NC_000932.1	RefSeq	exon	144293	144373	.	+	.	ID=exon-ArthCt118-1;Parent=rna-ArthCt118;Dbxref=GeneID:4042811;gbkey=tRNA;gene=trnL;locus_tag=ArthCt118;product=tRNA-Leu
+NC_000932.1	RefSeq	gene	145291	152175	.	-	.	ID=gene-ArthCp083;Dbxref=GeneID:1466248;Name=ycf2;gbkey=Gene;gene=ycf2;gene_biotype=protein_coding;locus_tag=ArthCp083
+NC_000932.1	RefSeq	CDS	145291	152175	.	-	0	ID=cds-NP_051121.1;Parent=gene-ArthCp083;Dbxref=Genbank:NP_051121.1,GeneID:1466248;Name=NP_051121.1;Note=hypothetical protein RF2;gbkey=CDS;gene=ycf2;locus_tag=ArthCp083;product=Ycf2;protein_id=NP_051121.1;transl_table=11
+NC_000932.1	RefSeq	gene	152264	152337	.	+	.	ID=gene-ArthCt111;Dbxref=GeneID:1466274;Name=trnI;gbkey=Gene;gene=trnI;gene_biotype=tRNA;locus_tag=ArthCt111
+NC_000932.1	RefSeq	tRNA	152264	152337	.	+	.	ID=rna-ArthCt111;Parent=gene-ArthCt111;Dbxref=GeneID:1466274;Note=CAU%3B C in the first position of the anticodon assumed to be post-transcriptionally modified to lysidine%2C which pairs with A rather than G tRNA with a methionine anticodonpost-transcriptionally modified to have tRNA isoleucine activity;gbkey=tRNA;gene=trnI;locus_tag=ArthCt111;product=tRNA-Ile
+NC_000932.1	RefSeq	exon	152264	152337	.	+	.	ID=exon-ArthCt111-1;Parent=rna-ArthCt111;Dbxref=GeneID:1466274;Note=CAU%3B C in the first position of the anticodon assumed to be post-transcriptionally modified to lysidine%2C which pairs with A rather than G tRNA with a methionine anticodonpost-transcriptionally modified to have tRNA isoleucine activity;gbkey=tRNA;gene=trnI;locus_tag=ArthCt111;product=tRNA-Ile
+NC_000932.1	RefSeq	gene	152506	152787	.	+	.	ID=gene-ArthCp084;Dbxref=GeneID:1466247;Name=rpl23;gbkey=Gene;gene=rpl23;gene_biotype=protein_coding;locus_tag=ArthCp084
+NC_000932.1	RefSeq	CDS	152506	152787	.	+	0	ID=cds-NP_051122.1;Parent=gene-ArthCp084;Dbxref=Genbank:NP_051122.1,GeneID:1466247;Name=NP_051122.1;gbkey=CDS;gene=rpl23;locus_tag=ArthCp084;product=ribosomal protein L23;protein_id=NP_051122.1;transl_table=11
+NC_000932.1	RefSeq	gene	152806	154312	.	+	.	ID=gene-ArthCp085;Dbxref=GeneID:1466246;Name=rpl2;gbkey=Gene;gene=rpl2;gene_biotype=protein_coding;locus_tag=ArthCp085
+NC_000932.1	RefSeq	CDS	152806	153195	.	+	0	ID=cds-NP_051123.1;Parent=gene-ArthCp085;Dbxref=Genbank:NP_051123.1,GeneID:1466246;Name=NP_051123.1;gbkey=CDS;gene=rpl2;locus_tag=ArthCp085;product=ribosomal protein L2;protein_id=NP_051123.1;transl_table=11
+NC_000932.1	RefSeq	CDS	153878	154312	.	+	0	ID=cds-NP_051123.1;Parent=gene-ArthCp085;Dbxref=Genbank:NP_051123.1,GeneID:1466246;Name=NP_051123.1;gbkey=CDS;gene=rpl2;locus_tag=ArthCp085;product=ribosomal protein L2;protein_id=NP_051123.1;transl_table=11
+
