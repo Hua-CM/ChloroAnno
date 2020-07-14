@@ -132,7 +132,6 @@ def main(genbank_path, new_gff_path, seq_id, species_id):
                             # rna
                             child_feature.id = 'rna_' + species_id + '%03d' % gene_count
                             child_attributes = ['ID=' + child_feature.id,
-                                                'Name=' + child_feature.qualifiers['gene'][0],
                                                 'Parent=' + ele.id,
                                                 'product=' + child_feature.qualifiers['product'][0]
                                                 ]

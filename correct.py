@@ -7,24 +7,38 @@
 # @E-mail: njbxhzy@hotmail.com
 
 """
-思路：根据locus匹配PGA gff中对应的feature进行替换。主要解决3倍数问题和stop codon问题。采用整体替换的方法(包括children)。
-考虑到gffutils为sqlite数据库，不适合修改，故考虑使用gffutils查询，pandas修改的方式
-多拷贝的直接报错手改
+问题：整合程度不够，目前没有整合PGA中有而GeSeq中没有的
+思路： 根据locus直接插（插完需要检查）
+问题： attribute自动加入pseudo=True
 """
 
 import gffutils
 import pandas as pd
+import numpy as np
 from Bio import SeqIO
-from gff2gff4GeSeq import get_record
+from check import CheckCp
 import os
 
 get_seq = lambda seq, start, end: seq.seq[start - 1:end]
 
 
+def flatten(ls):
+    def faction(lis):
+        for i in lis:
+            if isinstance(i, list):
+                faction(i)
+            else:
+                flatten_list.append(i)
+
+    flatten_list = []
+    faction(ls)
+    return flatten_list
+
+
 class CorrectGff:
     gff_fields = ["seqid", "source", "type", "start", "end", "score", "strand", "phase", "attributes"]
 
-    def __init__(self, gff_path_ge, gff_path_pga, seq_path, gff_new_path, species_pre, seq_id):
+    def __init__(self, gff_path_ge, gff_path_pga, seq_path, gff_new_path, seq_id, species_pre):
         self.species_pre = species_pre
         self.seq_id = seq_id
         self.seq = SeqIO.read(seq_path, 'fasta')
@@ -55,6 +69,9 @@ class CorrectGff:
             reset_index().\
             rename(columns={0: 'child_list', 1: 'gene_id'})
         self.geseq_dialect = self.geseq_dialect.merge(tmp_df, how='right')
+        self.geseq_dialect['locus'] = self.gff_corrected.loc[self.gff_corrected.index.isin(self.geseq_dialect['index']), 'attributes'].\
+            apply(lambda x: {k.split('=')[0]: k.split('=')[1] for k in x.split(';')}['Name']).\
+            reset_index(drop=True)
 
     def create_pga_dialect(self):
         # gene.id - index - locus - child_index(list)
@@ -94,7 +111,7 @@ class CorrectGff:
             gain_list.append(self.pga_dialect.loc[self.pga_dialect['index'] == locus_idx, 'index'].to_list())
             gain_list = [k for x in gain_list for k in x]
         elif len(self.pga_dialect.loc[self.pga_dialect['locus'] == locus]) == 0:
-            print('please check', locus, gene_feature.start, gene_feature.end)
+            print('please check', locus, gene_feature.start, gene_feature.end, '(it is not in PGA)')
             return
         else:
             gain_list = self.pga_dialect.loc[self.pga_dialect['locus'] == locus, 'child_list'].to_list()
@@ -102,6 +119,14 @@ class CorrectGff:
             gain_list = [k for x in gain_list for k in x]
         self.gff_corrected.drop(drop_list, inplace=True)
         self.gff_corrected = self.gff_corrected.append(self.gff_pga.loc[gain_list])
+
+    def _add_record(self, locus_ls):
+        tmp_list = np.array(self.pga_dialect.loc[self.pga_dialect['locus'].isin(locus_ls), ['index', 'child_list']]).tolist()
+        gain_list = flatten(tmp_list)
+        self.gff_corrected = self.gff_corrected.append(self.gff_pga.loc[gain_list])
+
+    def _add_pseudo(self, gene):
+        self.gff_corrected.loc[self.gff_corrected['attributes'].str.startswith('ID='+gene.id), 'attributes'] += ';pseudo=true'
 
     def correct_gff(self):
         print('Auto correct start')
@@ -116,55 +141,24 @@ class CorrectGff:
                 continue
             elif strand == '-':
                 seq_combined = seq_combined.reverse_complement()
-            if ('*' in seq_combined.translate(table=11).rstrip('*')) or (not len(seq_combined) % 3 == 0):
+            try:
+                seq_combined.translate(table=11, cds=True)
+            except:
                 self._correct_record(gene)
         print('Auto correct done')
 
+    def add_pga(self):
+        add_list = []
+        for locus in self.pga_dialect['locus'].to_list():
+            if locus not in self.geseq_dialect['locus'].to_list():
+                add_list.append(locus)
+        self._add_record(add_list)
+
     def renumber(self):
-        print('Renumber gene id')
         self.gff_corrected.to_csv(self.gff_new_path, sep='\t', index=False, header=False)
-        gff_new = gffutils.create_db(self.gff_new_path, ':memory:', merge_strategy='create_unique')
-        feature_list = []
-        gene_count = 0
-        for gene in gff_new.features_of_type('gene', order_by='start'):
-            gene_count += 1
-            gene_id = self.species_pre + '%03d' % gene_count
-            gene_name = gene.attributes['Name'][0]
-            gene_type = gene.attributes['gene_biotype'][0]
-            gene_attributes = ['ID=' + gene_id,
-                               'Name=' + gene_name,
-                               'gene_biotype=' + gene_type
-                               ]
-            feature_list.append(get_record(gene, 'gene', gene_attributes))
-            child_count = 0
-            if gene_type == 'protein_coding':
-                for cds in gff_new.children(gene, featuretype='CDS', order_by='start'):
-                    child_count += 1
-                    cds_attributes = ['ID=' + 'cds_' + gene_id + '_' + str(child_count),
-                                      'Parent=' + gene_id,
-                                      'product=' + cds.attributes['product'][0]]
-                    cds_record = get_record(cds, 'CDS', cds_attributes)
-                    cds_record.update({'phase': cds.frame})
-                    feature_list.append(cds_record)
-            else:
-                for rna in gff_new.children(gene, featuretype=('tRNA', 'rRNA')):
-                    rna_attributes = ['ID=' + 'rna_' + gene_id + '_1',
-                                      'Parent=' + gene_id,
-                                      'product=' + rna.attributes['product'][0]]
-                    feature_list.append(get_record(gene, gene_type, rna_attributes))
-                for exon in gff_new.children(gene, featuretype='exon', order_by='start'):
-                    child_count += 1
-                    exon_attributes = ['ID=' + 'exon_' + gene_id + '_' + str(child_count),
-                                       'Parent=' 'rna_' + gene_id + '_1'
-                                       ]
-                    feature_list.append(get_record(exon, 'exon', exon_attributes))
-        result_gff = pd.DataFrame.from_dict({index: record for index, record in enumerate(feature_list)}, 'index')
-        result_gff['seqid'] = self.seq_id
-        result_gff['score'] = '.'
-        result_gff['source'] = 'GeSeq'
-        result_gff = result_gff[["seqid", "source", "type", "start", "end", "score", "strand", "phase", "attributes"]]
-        result_gff.to_csv(self.gff_new_path, sep='\t', index=False, header=False)
-        print('Renumber done')
+        tmp_check = CheckCp(self.gff_new_path)
+        self.gff_corrected = tmp_check.renumber(self.species_pre, self.seq_id)
+        self.gff_corrected.to_csv(self.gff_new_path, sep='\t', index=False, header=False)
 
     def check(self):
         print('Auto check start')
@@ -183,6 +177,32 @@ class CorrectGff:
             try:
                 seq_combined.translate(table=11, cds=True).rstrip('*')
             except Exception as e:
-                print(gene.id)
+                print(gene.id, gene.attributes['Name'][0])
                 print(e)
+                self._add_pseudo(gene)
+        self.gff_corrected.to_csv(self.gff_new_path, sep='\t', index=False, header=False)
         print('Auto check done')
+
+    def check2(self):
+        tmp_check = CheckCp(self.gff_new_path)
+        tmp_check.check_region()
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(
+        description='Combine GeSeq and PGA annotation results ')
+    parser.add_argument('-i', '--info_table', required=True,
+                        help='<file_path>  information table which has four columns: Geseq gff path, '
+                             'result path, seqid, locus prefix')
+    args = parser.parse_args()
+    info_table = pd.read_table(args.info_table, names=['gff_path_ge', 'gff_path_pga', 'seq_path', 'gff_new_path', 'seq_id', 'species_pre'])
+    for ind, row in info_table.iterrows():
+        a = CorrectGff(*row.to_list())
+        a.create_geseq_dialect()
+        a.create_pga_dialect()
+        a.correct_gff()
+        a.add_pga()
+        a.renumber()
+        a.check()
+        a.check2()

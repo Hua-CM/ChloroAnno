@@ -7,9 +7,9 @@
 # @E-mail: njbxhzy@hotmail.com
 
 import pandas as pd
-import portion as pt
 import gffutils
 import os
+from check import CheckCp
 
 tb_cds = pd.read_table('cds.txt')
 tb_rna = pd.read_table('rna.txt')
@@ -46,7 +46,7 @@ def change_gff(raw_gff_path, new_gff_path, seqid, species_pre):
         gene_count += 1
         gene_id = species_pre + '%03d' % gene_count
         gene_name = gene.attributes['gene'][0]
-        if gene_name == 'rps12':
+        if (gene_name == 'rps12') or ('fragment' in gene_name):
             continue
         elif gene_name in replace_dict.keys():
             gene_name = replace_dict[gene_name]
@@ -69,8 +69,6 @@ def change_gff(raw_gff_path, new_gff_path, seqid, species_pre):
                 cds_record = get_record(exon, 'CDS', cds_attributes)
                 cds_record.update({'phase': next_phase})
                 next_phase = (3 - ((exon.end - exon.start+1-next_phase) % 3)) % 3
-                if cds_attributes[-1] == 'product=hypothetical protein' and (not gene_name.startwith('orf')):
-                    print('check' + gene_name)
                 feature_list.append(cds_record)
             if child_count == 0:
                 cds_attributes = ['ID=' + 'cds_' + gene_id + '_1',
@@ -79,8 +77,6 @@ def change_gff(raw_gff_path, new_gff_path, seqid, species_pre):
                 # change phase
                 cds_record = get_record(gene, 'CDS', cds_attributes)
                 cds_record.update({'phase': next_phase})
-                if cds_attributes[-1] == 'product=hypothetical protein' and (not gene_name.startwith('orf')):
-                    print('check ' + gene_name)
                 feature_list.append(cds_record)
         # RNA
         else:
@@ -107,23 +103,10 @@ def change_gff(raw_gff_path, new_gff_path, seqid, species_pre):
     print('change done')
 
 
-def check_duplicate_region(gff_path):
-    gff_file = gffutils.create_db(gff_path, ':memory:', merge_strategy='create_unique')
-    region_list = []
-    locus_list = []
-    for gene in gff_file.features_of_type('gene', order_by='start'):
-        region_list.append(pt.closed(gene.start, gene.end))
-        locus_list.append([gene.attributes['Name'][0]])
-    for i in range(len(region_list)-1):
-        if not region_list[i] < region_list[i+1]:
-            print(locus_list[i], region_list[i], ' and ', locus_list[i+1], region_list[i+1], ' are duplicated')
-    print('check duplicated region done')
-
-
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(
-        description='This is the script for change GeSeq result gff to a version that meet submission requirement')
+        description='Change GeSeq result gff to a version that meet submission requirement')
     parser.add_argument('-i', '--info_table', required=True,
                         help='<file_path>  information table which has four columns: Geseq gff path, '
                              'result path, seqid, locus prefix')
@@ -131,4 +114,7 @@ if __name__ == '__main__':
     info_table = pd.read_table(args.info_table, names=['raw_gff_path', 'new_gff_path', 'seq_id', 'species_id'])
     for ind, row in info_table.iterrows():
         change_gff(*row.to_list())
-        check_duplicate_region(row['new_gff_path'])
+        tmp_check = CheckCp(row['new_gff_path'])
+        tmp_check.check_name()
+        tmp_check.check_region()
+
