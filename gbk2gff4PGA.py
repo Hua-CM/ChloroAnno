@@ -12,8 +12,8 @@ import os
 from Bio import SeqIO
 from Bio.SeqFeature import SeqFeature, FeatureLocation, CompoundLocation
 
-tb_cds = pd.read_table('cds.txt')
-tb_rna = pd.read_table('rna.txt')
+tb_cds = pd.read_table('ref/cds.txt')
+tb_rna = pd.read_table('ref/rna.txt')
 product_dict = {record['name']: record['product'] for record in tb_cds.to_dict('records')}
 rna_dict = {record['name']: record['product'] for record in tb_rna.to_dict('records')}
 
@@ -136,6 +136,7 @@ def main(genbank_path, new_gff_path, seq_id, species_id):
                                                 'product=' + child_feature.qualifiers['product'][0]
                                                 ]
                             records_list.append(get_record(child_feature, child_attributes))
+                            exon_list = []
                             exon_count = 0
                             # exon
                             for exon in reversed(child_feature.location.parts):
@@ -143,7 +144,9 @@ def main(genbank_path, new_gff_path, seq_id, species_id):
                                 exon_feature = SeqFeature(exon, type='exon')
                                 exon_feature.id = 'exon_' + species_id + '%03d' % gene_count + '_' + '%d' % exon_count
                                 exon_attributes = ['ID=' + exon_feature.id, 'Parent=' + child_feature.id]
-                                records_list.append(get_record(exon_feature, exon_attributes))
+                                exon_list.append(get_record(exon_feature, exon_attributes))
+                            if exon_count > 1:
+                                records_list += exon_list
         elif ele.type == 'repeat_region':
             IR_count += 1
             gene_attributes = ['ID=IR' + str(IR_count), 'note=Inverted repeats']

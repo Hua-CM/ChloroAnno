@@ -16,8 +16,8 @@ from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 from Bio.Seq import Seq
 from collections import OrderedDict
 
-tb_map = pd.read_table('cds.txt')
-tb_trna = pd.read_table('rna.txt')
+tb_map = pd.read_table('ref/cds.txt')
+tb_trna = pd.read_table('ref/rna.txt')
 product_dict = {record['name']: record['product'] for record in tb_map.to_dict('records')}
 trna_dict = {record['name']: record['product'] for record in tb_trna.to_dict('records')}
 

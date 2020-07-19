@@ -11,8 +11,8 @@ import gffutils
 import os
 from check import CheckCp
 
-tb_cds = pd.read_table('cds.txt')
-tb_rna = pd.read_table('rna.txt')
+tb_cds = pd.read_table('ref/cds.txt')
+tb_rna = pd.read_table('ref/rna.txt')
 product_dict = {record['name']: record['product'] for record in tb_cds.to_dict('records')}
 rna_dict = {record['name']: record['product'] for record in tb_rna.to_dict('records')}
 replace_dict = {'petE':	 'petG',
@@ -83,8 +83,6 @@ def change_gff(raw_gff_path, new_gff_path, seqid, species_pre):
             rna_attributes = ['ID=' + 'rna_' + gene_id,
                               'Parent=' + gene_id,
                               'product=' + rna_dict.get(gene_name, 'hypothetical protein')]
-            if rna_attributes[-1] == 'product=hypothetical protein':
-                print('check ' + gene_name)
             feature_list.append(get_record(gene, gene_type, rna_attributes))
             for exon in gff_file.children(gene,
                                           featuretype='exon',

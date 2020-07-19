@@ -16,8 +16,12 @@ import gffutils
 import pandas as pd
 import numpy as np
 from Bio import SeqIO
+from Bio.Data import CodonTable
 from check import CheckCp
 import os
+
+chloro_table = CodonTable.unambiguous_dna_by_id[11]
+chloro_table.start_codons.append('ACG')
 
 get_seq = lambda seq, start, end: seq.seq[start - 1:end]
 
@@ -59,7 +63,7 @@ class CorrectGff:
         return index, {k.split('=')[0]: k.split('=')[1] for k in attributes.split(';')}['Parent']
 
     def create_geseq_dialect(self):
-        # gene.id - index - child_index(list)
+        # gene.id - locus - index - child_index(list)
         self.geseq_dialect['gene_id'] = self.gff_corrected.loc[self.gff_corrected['type'] == 'gene', 'attributes']. \
             apply(lambda x: x.split(';')[0].split('=')[1])
         self.geseq_dialect['index'] = self.gff_corrected.index.to_series()
@@ -68,6 +72,18 @@ class CorrectGff:
             groupby(1).agg(list).\
             reset_index().\
             rename(columns={0: 'child_list', 1: 'gene_id'})
+        try:
+            tmp_df2 = self.gff_corrected.loc[self.gff_corrected['type'].isin(['tRNA', 'exon'])].\
+                apply(lambda x: self.get_parent(x.name, x['attributes']), axis=1, result_type="expand")
+            tmp_df2[1] = tmp_df2.apply(lambda x: str.replace(x[1], 'rna_', ''), axis=1)
+            tmp_df2 = tmp_df2.\
+                groupby(1).\
+                agg(list).\
+                reset_index().\
+                rename(columns={0: 'child_list', 1: 'gene_id'})
+            tmp_df = tmp_df.append(tmp_df2, ignore_index=True)
+        except:
+            pass
         self.geseq_dialect = self.geseq_dialect.merge(tmp_df, how='right')
         self.geseq_dialect['locus'] = self.gff_corrected.loc[self.gff_corrected.index.isin(self.geseq_dialect['index']), 'attributes'].\
             apply(lambda x: {k.split('=')[0]: k.split('=')[1] for k in x.split(';')}['Name']).\
@@ -83,6 +99,15 @@ class CorrectGff:
             groupby(1).agg(list).\
             reset_index().\
             rename(columns={0: 'child_list', 1: 'gene_id'})
+        tmp_df2 = self.gff_pga.loc[self.gff_pga['type'].isin(['tRNA', 'exon'])].\
+            apply(lambda x: self.get_parent(x.name, x['attributes']), axis=1, result_type="expand")
+        tmp_df2[1] = tmp_df2.apply(lambda x: str.replace(x[1], 'rna_', ''), axis=1)
+        tmp_df2 = tmp_df2.\
+            groupby(1).\
+            agg(list).\
+            reset_index().\
+            rename(columns={0: 'child_list', 1: 'gene_id'})
+        tmp_df =tmp_df.append(tmp_df2, ignore_index=True)
         self.pga_dialect = self.pga_dialect.merge(tmp_df, how='right')
         self.pga_dialect['locus'] = self.gff_pga.loc[self.gff_pga.index.isin(self.pga_dialect['index']), 'attributes'].\
             apply(lambda x: {k.split('=')[0]: k.split('=')[1] for k in x.split(';')}['Name']).\
@@ -131,25 +156,34 @@ class CorrectGff:
     def correct_gff(self):
         print('Auto correct start')
         for gene in self.gff.features_of_type('gene', order_by='start'):
-            seq_combined = ""
-            strand = ""
-            for cds in self.gff.children(gene, featuretype='CDS', order_by='start'):
-                seq = get_seq(self.seq, cds.start, cds.end)
-                strand = cds.strand
-                seq_combined += seq
-            if seq_combined == '':
-                continue
-            elif strand == '-':
-                seq_combined = seq_combined.reverse_complement()
-            try:
-                seq_combined.translate(table=11, cds=True)
-            except:
-                self._correct_record(gene)
+            if gene.attributes['gene_biotype'][0] == 'protein_coding':
+                seq_combined = ""
+                for cds in self.gff.children(gene,
+                                             featuretype='CDS',
+                                             order_by='start',
+                                             reverse=False if gene.strand == '+' else True):
+                    seq = get_seq(self.seq, cds.start, cds.end)
+                    if cds.strand == '-':
+                        seq_combined += seq.reverse_complement()
+                    else:
+                        seq_combined += seq
+                try:
+                    seq_combined.translate(cds=True, table=chloro_table)
+                except:
+                    self._correct_record(gene)
+            elif gene.attributes['gene_biotype'][0] == 'tRNA':
+                ge_st, ge_ed = gene.start, gene.end
+                idx_list = self.pga_dialect.loc[self.pga_dialect['locus'] == gene.attributes['Name'][0], 'index'].to_list()
+                if idx_list:
+                    pga_st_list = self.gff_pga.loc[idx_list, 'start'].to_list()
+                    pga_ed_list = self.gff_pga.loc[idx_list, 'end'].to_list()
+                    if (ge_st not in pga_st_list) or (ge_ed not in pga_ed_list):
+                        self._correct_record(gene)
         print('Auto correct done')
 
-    def add_pga(self):
+    def add_trna(self):
         add_list = []
-        for locus in self.pga_dialect['locus'].to_list():
+        for locus in [x for x in self.pga_dialect['locus'].to_list() if x.startswith('trn')]:
             if locus not in self.geseq_dialect['locus'].to_list():
                 add_list.append(locus)
         self._add_record(add_list)
@@ -157,7 +191,7 @@ class CorrectGff:
     def renumber(self):
         self.gff_corrected.to_csv(self.gff_new_path, sep='\t', index=False, header=False)
         tmp_check = CheckCp(self.gff_new_path)
-        self.gff_corrected = tmp_check.renumber(self.species_pre, self.seq_id)
+        self.gff_corrected = tmp_check.renumber(self.seq_id, self.species_pre)
         self.gff_corrected.to_csv(self.gff_new_path, sep='\t', index=False, header=False)
 
     def check(self):
@@ -165,17 +199,19 @@ class CorrectGff:
         gff_new = gffutils.create_db(self.gff_new_path, ':memory:', merge_strategy='create_unique')
         for gene in gff_new.features_of_type('gene', order_by='start'):
             seq_combined = ""
-            strand = ""
-            for cds in gff_new.children(gene, featuretype='CDS', order_by='start'):
+            for cds in gff_new.children(gene,
+                                        featuretype='CDS',
+                                        order_by='start',
+                                        reverse=False if gene.strand == '+' else True):
                 seq = get_seq(self.seq, cds.start, cds.end)
-                strand = cds.strand
-                seq_combined += seq
+                if cds.strand == '-':
+                    seq_combined += seq.reverse_complement()
+                else:
+                    seq_combined += seq
             if seq_combined == '':
                 continue
-            elif strand == '-':
-                seq_combined = seq_combined.reverse_complement()
             try:
-                seq_combined.translate(table=11, cds=True).rstrip('*')
+                seq_combined.translate(table=chloro_table, cds=True)
             except Exception as e:
                 print(gene.id, gene.attributes['Name'][0])
                 print(e)
@@ -202,7 +238,7 @@ if __name__ == '__main__':
         a.create_geseq_dialect()
         a.create_pga_dialect()
         a.correct_gff()
-        a.add_pga()
+        a.add_trna()
         a.renumber()
         a.check()
         a.check2()

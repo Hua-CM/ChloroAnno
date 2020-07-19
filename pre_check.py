@@ -7,9 +7,8 @@
 # @E-mail: njbxhzy@hotmail.com
 
 """
-fix position还是不太行，trnH和末尾基因之间的间区太小了（50bp左右） 考虑不基于注释的校正
-PGA缺少trnH注释是因为trnH有跨末尾和开头的情况，genbank转gff的时候被过滤了，想办法处理这个问题即可（考虑直接解析genbank文件）
-Geseq注释不出来的是要取反义链
+这个脚本有个前提：trnH要么被注释，要么正好在头尾gap上，且头尾gap的只有这一个feature（但是不排除IR区可能跨头尾，
+真是头疼， 现在只能默认IR区不跨头尾，一个可能的处理方式是在PGA注释的时候给IR设置一个非常大的值，让IR注释不出来）
 """
 
 
@@ -27,6 +26,10 @@ class FixPosition:
         self.out_path = out_path
 
     def _fix_postiion(self):
+        """
+        Note: This function give tacit consent to that trnH-GUG appears in genome
+        :return:
+        """
         print('fix position')
         with warnings.catch_warnings(record=True) as w:
             pga_seq = SeqIO.read(self.path, 'genbank')
@@ -48,12 +51,12 @@ class FixPosition:
                 t_end = t_location.end
                 t_strand = t_location.strand
             if t_strand == 1:
-                part1, part2 = pga_seq.seq[0: int(t_end)], pga_seq.seq[int(t_end):]
+                part1, part2 = pga_seq.seq[0: int(t_end)+5], pga_seq.seq[int(t_end)+5:]
                 seq_fixed = part2 + part1
                 seq_fixed = SeqRecord(seq=seq_fixed, id=pga_seq.id, description='')
                 seq_fixed.seq = seq_fixed.seq.reverse_complement()
             else:
-                part1, part2 = pga_seq.seq[0: int(t_start)], pga_seq.seq[int(t_start):]
+                part1, part2 = pga_seq.seq[0: int(t_start)-5], pga_seq.seq[int(t_start)-5:]
                 seq_fixed = part2 + part1
                 seq_fixed = SeqRecord(seq=seq_fixed, id=pga_seq.id, description='')
             SeqIO.write(seq_fixed, self.out_path, 'fasta')
@@ -69,6 +72,9 @@ class FixPosition:
             print('matK loss!')
         if ('rbcL' not in gene_name_list) and ('rbcl' not in gene_name_list):
             print('rbcL loss!')
+        if 'trnH-GUG' not in gene_name_list:
+            print('trnH loss!')
+            return
         # check and fix position
         try:
             pga_seq.features.sort(key=lambda x: x.location.start)

@@ -19,11 +19,16 @@ import gffutils
 import portion as pt
 import pandas as pd
 from Bio import SeqIO
+from Bio.Data import CodonTable
+import os
 
 get_seq = lambda seq, start, end: seq.seq[start - 1:end]
 
-tb_cds = pd.read_table('cds.txt')
-tb_rna = pd.read_table('rna.txt')
+chloro_table = CodonTable.unambiguous_dna_by_id[11]
+chloro_table.start_codons.append('ACG')
+
+tb_cds = pd.read_table('ref/cds.txt')
+tb_rna = pd.read_table('ref/rna.txt')
 
 standard_name_list = [record['name'] for record in tb_cds.to_dict('records')]
 standard_name_list += [record['name'] for record in tb_rna.to_dict('records')]
@@ -71,7 +76,7 @@ class CheckCp:
         :return: messages
         """
         gene_name_list = []
-        for gene in self.gff.features_of_type('Name', order_by='start'):
+        for gene in self.gff.features_of_type('gene', order_by='start'):
             gene_name_list.append(gene.attributes['Name'][0])
         for gene_name in gene_name_list:
             if not ((gene_name in CheckCp.standard_name_list) or gene_name.startswith('orf')):
@@ -93,7 +98,7 @@ class CheckCp:
                       ' are duplicated')
         print('check duplicated region done')
 
-    def renumber(self, species_pre, seq_id):
+    def renumber(self, seq_id, species_pre):
         print('Renumber gene id')
         feature_list = []
         gene_count = 0
@@ -152,8 +157,169 @@ class CheckCp:
             elif strand == '-':
                 seq_combined = seq_combined.reverse_complement()
             try:
-                seq_combined.translate(table=11, cds=True).rstrip('*')
+                seq_combined.translate(table=chloro_table, cds=True)
             except Exception as e:
                 print(gene.id)
                 print(e)
         print('Auto check done')
+
+
+def add_rps12(geseq_gff, new_gff, seq_path, species_pre):
+    """
+
+    :param geseq_gff: raw geseq gff file
+    :param new_gff: renumbered gff
+    :param species_pre:
+    :return:
+    """
+    if type(new_gff) == str:
+        new_gff = pd.read_table(new_gff,
+                                comment='#',
+                                names=["seqid", "source", "type", "start", "end", "score", "strand", "phase", "attributes"])
+    raw_gff = pd.read_table(geseq_gff,
+                            comment='#',
+                            names=["seqid", "source", "type", "start", "end", "score", "strand", "phase", "attributes"])
+    seq = SeqIO.read(seq_path, 'fasta')
+    gene_count = sum(new_gff['type'] == 'gene')
+    # get rps12
+    features_list = []
+    gene_features = raw_gff[(raw_gff['attributes'].str.contains('rps12')) & (raw_gff['type'] == 'gene')]
+    part1 = gene_features[gene_features.duplicated(subset=['start', 'end'])].iloc[0]
+    part2 = gene_features.drop_duplicates(keep=False)
+    err_list = []
+    for idx, part in part2.iterrows():
+        gene_count += 1
+        gene_id = species_pre + '%03d' % gene_count
+        part_attributes = ['ID=' + gene_id,
+                           'Name=rps12',
+                           'gene_biotype = protein_coding'
+                           ]
+        cds1 = raw_gff[(raw_gff['start'] == part.start) & (raw_gff['type'] == 'exon')].iloc[0]
+        cds2 = raw_gff[(raw_gff['end'] == part.end) & (raw_gff['type'] == 'exon')].iloc[0]
+        cds1_attributes = ['ID=' + 'cds_' + gene_id + '_1',
+                           'Parent=' + gene_id,
+                           'product=30S ribosomal protein S12']
+        cds2_attributes = ['ID=' + 'cds_' + gene_id + '_2',
+                           'Parent=' + gene_id,
+                           'product=30S ribosomal protein S12']
+        cds3_attributes = ['ID=' + 'cds_' + gene_id + '_3',
+                           'Parent=' + gene_id,
+                           'product=30S ribosomal protein S12']
+        features_list.append(get_record(part1, 'gene', part_attributes + ['part=1/2']))
+        features_list.append(get_record(part, 'gene', part_attributes + ['part=2/2']))
+        features_list.append(get_record(part1, 'CDS', cds1_attributes))
+        features_list.append(get_record(cds1, 'CDS', cds2_attributes))
+        features_list.append(get_record(cds2, 'CDS', cds3_attributes))
+        # check translation
+        seq_part1 = get_seq(seq, part1.start, part1.end)
+        if part1.strand == '-':
+            seq_part1 = seq_part1.reverse_complement()
+        seq_combined = ''
+        for feature in [cds1, cds2]:
+            seq_combined += get_seq(seq, feature.start, feature.end)
+        if cds1.strand == '-':
+            seq_combined.reverse_complement()
+        seq_combined = seq_part1 + seq_combined
+        try:
+            seq_combined.translate(table=chloro_table, cds=True)
+        except Exception as e:
+            print(gene_id)
+            print(e)
+            err_list.append(gene_id)
+    rps12_df = pd.DataFrame.from_dict({idx: feature for idx, feature in enumerate(features_list)}, 'index')
+    rps12_df.loc[rps12_df['type'] == 'CDS', 'phase'] = 0
+    rps12_df['seqid'] = new_gff.seqid.to_list()[0]
+    rps12_df['source'] = 'GeSeq'
+    rps12_df['score'] = '.'
+    for err_id in err_list:
+        rps12_df.loc[rps12_df['attributes'].str.startswith('ID='+err_id), 'attributes'] += ';pseudo=true'
+    new_gff = new_gff.append(rps12_df, sort=False)
+    return new_gff
+
+
+def add2_rps12(pga_gb, new_gff, species_pre):
+    def _get_record(location, fea_type, attributes):
+        return {'type': fea_type,
+                'start': location.start+1,
+                'end': location.end,
+                'strand': '-' if location.strand == -1 else '+',
+                'phase': '.',
+                'attributes': ";".join(attributes)}
+    if type(new_gff) == str:
+        new_gff = pd.read_table(new_gff,
+                                comment='#',
+                                names=["seqid", "source", "type", "start", "end", "score", "strand", "phase", "attributes"])
+    genome = SeqIO.read(pga_gb, 'genbank')
+    features_list = []
+    err_list = []
+    gene_count = sum(new_gff['type'] == 'gene')
+    rps12_list = [ele for ele in genome.features if ele.type == 'CDS' and ele.qualifiers.get('gene') == ['rps12']]
+    part1 = [part for part in rps12_list if len(part.location.parts) == 1][0]
+    part2_list = [part for part in rps12_list if len(part.location.parts) > 1]
+    for part in part2_list:
+        gene_count += 1
+        gene_id = species_pre + '%03d' % gene_count
+        part_attributes = ['ID=' + gene_id,
+                           'Name=rps12',
+                           'gene_biotype = protein_coding'
+                           ]
+        features_list.append(_get_record(part1.location, 'gene', part_attributes + ['part=1/2']))
+        features_list.append(_get_record(part.location, 'gene', part_attributes + ['part=2/2']))
+        cds_count = 1
+        cds_attributes = ['ID=' + 'cds_' + gene_id + '_' + str(cds_count),
+                          'Parent=' + gene_id,
+                          'product=30S ribosomal protein S12']
+        features_list.append(_get_record(part1.location, 'CDS', cds_attributes))
+        seq_part1 = get_seq(genome, part1.location.start+1, part1.location.end)
+        if part1.location.strand == -1:
+            seq_part1 = seq_part1.reverse_complement()
+        seq_combined = ''
+        for cds in part.location.parts:
+            cds_count += 1
+            cds_attributes = ['ID=' + 'cds_' + gene_id + '_' + str(cds_count),
+                              'Parent=' + gene_id,
+                              'product=30S ribosomal protein S12']
+            features_list.append(_get_record(cds, 'CDS', cds_attributes))
+            if cds.strand == -1:
+                seq_combined += get_seq(genome, cds.start+1, cds.end).reverse_complement()
+            else:
+                seq_combined += get_seq(genome, cds.start+1, cds.end)
+        seq_combined = seq_part1 + seq_combined
+        try:
+            seq_combined.translate(table=chloro_table, cds=True)
+        except Exception as e:
+            print(gene_id)
+            print(e)
+            err_list.append(gene_id)
+    rps12_df = pd.DataFrame.from_dict({idx: feature for idx, feature in enumerate(features_list)}, 'index')
+    rps12_df.loc[rps12_df['type'] == 'CDS', 'phase'] = 0
+    rps12_df['seqid'] = new_gff.seqid.to_list()[0]
+    rps12_df['source'] = 'GeSeq'
+    rps12_df['score'] = '.'
+    for err_id in err_list:
+        rps12_df.loc[rps12_df['attributes'].str.startswith('ID='+err_id), 'attributes'] += ';pseudo=true'
+    new_gff = new_gff.append(rps12_df, sort=False)
+    return new_gff
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(
+        description='Change GeSeq result gff to a version that meet submission requirement')
+    parser.add_argument('-i', '--info_table', required=True,
+                        help='<file_path>  information table which has four columns: Geseq gff path, '
+                             'result path, seqid, locus prefix')
+    args = parser.parse_args()
+    info_table = pd.read_table(args.info_table,
+                               names=['raw_gff_path', 'new_gff_path', 'pga_gb_path',
+                                      'seq_id', 'species_pre'])
+    for ind, row in info_table.iterrows():
+        print(os.path.basename(row['raw_gff_path']))
+        tmp_check = CheckCp(row['raw_gff_path'])
+        tmp_df = tmp_check.renumber(*row[['seq_id', 'species_pre']])
+        try:
+            tmp_df = add2_rps12(row['pga_gb_path'], tmp_df, row['species_pre'])
+        except:
+            print('please manually add rps12')
+        finally:
+            tmp_df.to_csv(row['new_gff_path'], sep='\t', index=False, header=False)

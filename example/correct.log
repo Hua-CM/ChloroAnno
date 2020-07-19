@@ -1,0 +1,27 @@
+Start correct 632122LY0201.gff
+Auto correct start
+Auto correct done
+Renumber gene id
+Renumber done
+Auto check start
+Auto check done
+['trnK-UUU'] [1658,4290]  and  ['matK'] [2001,3509]  are duplicated
+['psbD'] [31891,32952]  and  ['psbC'] [32936,34321]  are duplicated
+['atpE'] [51143,51541]  and  ['atpB'] [51538,53034]  are duplicated
+['rps3'] [81936,82592]  and  ['rpl22'] [82577,83059]  are duplicated
+check duplicated region done
+Start correct 500231LY0607.gff
+Auto correct start
+Auto correct done
+Renumber gene id
+Renumber done
+Auto check start
+SCBAA053 cemA
+First codon 'GGC' is not a start codon
+SCBAA105 ndhD
+First codon 'AAC' is not a start codon
+Auto check done
+['trnK-UUU'] [1661,4249]  and  ['matK'] [1956,3491]  are duplicated
+['psbD'] [33291,34352]  and  ['psbC'] [34300,35721]  are duplicated
+['atpE'] [52966,53367]  and  ['atpB'] [53364,54851]  are duplicated
+check duplicated region done
