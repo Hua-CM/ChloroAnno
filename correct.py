@@ -6,22 +6,12 @@
 # @Note:
 # @E-mail: njbxhzy@hotmail.com
 
-"""
-问题：整合程度不够，目前没有整合PGA中有而GeSeq中没有的
-思路： 根据locus直接插（插完需要检查）
-问题： attribute自动加入pseudo=True
-"""
-
 import gffutils
 import pandas as pd
 import numpy as np
 from Bio import SeqIO
-from Bio.Data import CodonTable
-from check import CheckCp
+from check import CheckCp, add2_rps12
 import os
-
-chloro_table = CodonTable.unambiguous_dna_by_id[11]
-chloro_table.start_codons.append('ACG')
 
 get_seq = lambda seq, start, end: seq.seq[start - 1:end]
 
@@ -168,7 +158,7 @@ class CorrectGff:
                     else:
                         seq_combined += seq
                 try:
-                    seq_combined.translate(cds=True, table=chloro_table)
+                    seq_combined.translate(cds=True, table=11)
                 except:
                     self._correct_record(gene)
             elif gene.attributes['gene_biotype'][0] == 'tRNA':
@@ -210,8 +200,10 @@ class CorrectGff:
                     seq_combined += seq
             if seq_combined == '':
                 continue
+            elif seq_combined.__len__() <= 33:
+                print('The CDS length of', gene.id, 'is less than 33 bp')
             try:
-                seq_combined.translate(table=chloro_table, cds=True)
+                seq_combined.translate(table=11, cds=True)
             except Exception as e:
                 print(gene.id, gene.attributes['Name'][0])
                 print(e)
@@ -226,19 +218,54 @@ class CorrectGff:
 
 if __name__ == '__main__':
     import argparse
+
+    # wrapper for sub-command line
+    def combine(_args):
+        info_table = pd.read_table(_args.info_table,
+                                   names=['gff_path_ge', 'gff_path_pga', 'seq_path', 'gff_new_path', 'seq_id',
+                                          'species_pre'])
+        for ind, row in info_table.iterrows():
+            a = CorrectGff(*row.to_list())
+            a.create_geseq_dialect()
+            a.create_pga_dialect()
+            a.correct_gff()
+            a.add_trna()
+            a.renumber()
+            a.check()
+            a.check2()
+
+    def rps12(_args):
+        info_table = pd.read_table(_args.info_table,
+                                   names=['raw_gff_path', 'new_gff_path', 'pga_gb_path',
+                                          'seq_id', 'species_pre'])
+        for ind, row in info_table.iterrows():
+            print(os.path.basename(row['raw_gff_path']))
+            tmp_check = CheckCp(row['raw_gff_path'])
+            tmp_df = tmp_check.renumber(*row[['seq_id', 'species_pre']])
+            try:
+                tmp_df = add2_rps12(row['pga_gb_path'], tmp_df, row['species_pre'])
+            except:
+                print('please manually add rps12')
+            finally:
+                tmp_df.to_csv(row['new_gff_path'], sep='\t', index=False, header=False)
+
+    # command line parser
     parser = argparse.ArgumentParser(
         description='Combine GeSeq and PGA annotation results ')
-    parser.add_argument('-i', '--info_table', required=True,
-                        help='<file_path>  information table which has four columns: Geseq gff path, '
-                             'result path, seqid, locus prefix')
+
+    subparsers = parser.add_subparsers(help='combine for combining GeSeq and PGA results; '
+                                            'rps12 for adding rps12 and renumber')
+    # for step6
+    parser_a = subparsers.add_parser('combine', help='add help')
+    parser_a.add_argument('-i', '--info_table', required=True,
+                          help='<file_path>  information table which has four columns: Geseq gff path, '
+                               'result path, seqid, locus prefix')
+    parser_a.set_defaults(func=combine)
+    # for step8
+    parser_b = subparsers.add_parser('rps12', help='add help')
+    parser_b.add_argument('-i', '--info_table', required=True,
+                          help='<file_path>  information table which has four columns: Geseq gff path, '
+                               'result path, seqid, locus prefix')
+    parser_b.set_defaults(func=rps12)
     args = parser.parse_args()
-    info_table = pd.read_table(args.info_table, names=['gff_path_ge', 'gff_path_pga', 'seq_path', 'gff_new_path', 'seq_id', 'species_pre'])
-    for ind, row in info_table.iterrows():
-        a = CorrectGff(*row.to_list())
-        a.create_geseq_dialect()
-        a.create_pga_dialect()
-        a.correct_gff()
-        a.add_trna()
-        a.renumber()
-        a.check()
-        a.check2()
+    args.func(args)

@@ -19,13 +19,9 @@ import gffutils
 import portion as pt
 import pandas as pd
 from Bio import SeqIO
-from Bio.Data import CodonTable
 import os
 
 get_seq = lambda seq, start, end: seq.seq[start - 1:end]
-
-chloro_table = CodonTable.unambiguous_dna_by_id[11]
-chloro_table.start_codons.append('ACG')
 
 tb_cds = pd.read_table('ref/cds.txt')
 tb_rna = pd.read_table('ref/rna.txt')
@@ -105,12 +101,9 @@ class CheckCp:
         for gene in self.gff.features_of_type('gene', order_by='start'):
             gene_count += 1
             gene_id = species_pre + '%03d' % gene_count
-            gene_name = gene.attributes['Name'][0]
+            gene_attributes = ['ID=' + gene_id]
             gene_type = gene.attributes['gene_biotype'][0]
-            gene_attributes = ['ID=' + gene_id,
-                               'Name=' + gene_name,
-                               'gene_biotype=' + gene_type
-                               ]
+            gene_attributes += [_[0] + '=' + _[1][0] for _ in gene.attributes.items() if not _[0] == 'ID']
             feature_list.append(get_record(gene, 'gene', gene_attributes))
             child_count = 0
             if gene_type == 'protein_coding':
@@ -147,17 +140,21 @@ class CheckCp:
         print('Auto check start')
         for gene in self.gff.features_of_type('gene', order_by='start'):
             seq_combined = ""
-            strand = ""
-            for cds in self.gff.children(gene, featuretype='CDS', order_by='start'):
+            for cds in self.gff.children(gene,
+                                         featuretype='CDS',
+                                         order_by='start',
+                                         reverse=False if gene.strand == '+' else True):
                 seq = get_seq(geo_seq, cds.start, cds.end)
-                strand = cds.strand
-                seq_combined += seq
+                if cds.strand == '-':
+                    seq_combined += seq.reverse_complement()
+                else:
+                    seq_combined += seq
             if seq_combined == '':
                 continue
-            elif strand == '-':
-                seq_combined = seq_combined.reverse_complement()
+            elif seq_combined.__len__() <= 33:
+                print('The CDS length of', gene.id, 'is less than 33 bp')
             try:
-                seq_combined.translate(table=chloro_table, cds=True)
+                seq_combined.translate(table=11, cds=True)
             except Exception as e:
                 print(gene.id)
                 print(e)
@@ -221,7 +218,7 @@ def add_rps12(geseq_gff, new_gff, seq_path, species_pre):
             seq_combined.reverse_complement()
         seq_combined = seq_part1 + seq_combined
         try:
-            seq_combined.translate(table=chloro_table, cds=True)
+            seq_combined.translate(table=11, cds=True)
         except Exception as e:
             print(gene_id)
             print(e)
@@ -286,7 +283,7 @@ def add2_rps12(pga_gb, new_gff, species_pre):
                 seq_combined += get_seq(genome, cds.start+1, cds.end)
         seq_combined = seq_part1 + seq_combined
         try:
-            seq_combined.translate(table=chloro_table, cds=True)
+            seq_combined.translate(table=11, cds=True)
         except Exception as e:
             print(gene_id)
             print(e)
@@ -310,16 +307,8 @@ if __name__ == '__main__':
                         help='<file_path>  information table which has four columns: Geseq gff path, '
                              'result path, seqid, locus prefix')
     args = parser.parse_args()
-    info_table = pd.read_table(args.info_table,
-                               names=['raw_gff_path', 'new_gff_path', 'pga_gb_path',
-                                      'seq_id', 'species_pre'])
+    info_table = pd.read_table(args.info_table, names=['raw_gff_path', 'seq_path'])
     for ind, row in info_table.iterrows():
         print(os.path.basename(row['raw_gff_path']))
         tmp_check = CheckCp(row['raw_gff_path'])
-        tmp_df = tmp_check.renumber(*row[['seq_id', 'species_pre']])
-        try:
-            tmp_df = add2_rps12(row['pga_gb_path'], tmp_df, row['species_pre'])
-        except:
-            print('please manually add rps12')
-        finally:
-            tmp_df.to_csv(row['new_gff_path'], sep='\t', index=False, header=False)
+        tmp_check.check_cds(row['seq_path'])

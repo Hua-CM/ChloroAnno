@@ -7,10 +7,8 @@
 # @E-mail: njbxhzy@hotmail.com
 
 """
-这个脚本有个前提：trnH要么被注释，要么正好在头尾gap上，且头尾gap的只有这一个feature（但是不排除IR区可能跨头尾，
-真是头疼， 现在只能默认IR区不跨头尾，一个可能的处理方式是在PGA注释的时候给IR设置一个非常大的值，让IR注释不出来）
+现在的脚本没法处理两个trnH的情况，准备补充下trnH前后有psbA的情况作为进一步判断
 """
-
 
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
@@ -21,9 +19,9 @@ import warnings
 
 
 class FixPosition:
-    def __init__(self, gb_path_pga, out_path):
-        self.path = gb_path_pga
-        self.out_path = out_path
+    def __init__(self, _gb_path_pga, _out_path):
+        self.path = _gb_path_pga
+        self.out_path = _out_path
 
     def _fix_postiion(self):
         """
@@ -75,6 +73,9 @@ class FixPosition:
         if 'trnH-GUG' not in gene_name_list:
             print('trnH loss!')
             return
+        # check ambiguous nucleotide
+        if re.compile('[^ATCGNatcgn]').findall(str(pga_seq.seq)):
+            print('Genome contain invalid characters (not ATCGNatcgn)')
         # check and fix position
         try:
             pga_seq.features.sort(key=lambda x: x.location.start)
