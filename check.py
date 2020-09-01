@@ -302,13 +302,42 @@ def add2_rps12(pga_gb, new_gff, species_pre):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(
-        description='Change GeSeq result gff to a version that meet submission requirement')
+        description='Check your chloroplast genome gff file')
+
     parser.add_argument('-i', '--info_table', required=True,
-                        help='<file_path>  information table which has four columns: Geseq gff path, '
-                             'result path, seqid, locus prefix')
+                        help='<file_path>  meta information table which has five columns: Geseq gff path, seq path, '
+                             'seqid, locus prefix, renumber result path. If you do not need renumber, just provide gff '
+                             'and seq')
+
+    parser.add_argument('-c', '--cds', action='store_true', default=False,
+                        help='check cds legitimacy')
+
+    parser.add_argument('-s', '--hs', action='store_true', default=False,
+                        help='check house-keeping gene (matK, rbcL)')
+
+    parser.add_argument('-n', '--name', action='store_true', default=False,
+                        help='check whether gene names are legal name')
+
+    parser.add_argument('-r', '--region', action='store_true', default=False,
+                        help='check whether gene region duplicated')
+
+    parser.add_argument('-e', '--renumber', action='store_true', default=False,
+                        help='renumber gene locus suffix')
+
     args = parser.parse_args()
-    info_table = pd.read_table(args.info_table, names=['raw_gff_path', 'seq_path'])
+
+    info_table = pd.read_table(args.info_table, names=['raw_gff_path', 'seq_path', 'seq_id', 'prefix', 'result'])
     for ind, row in info_table.iterrows():
         print(os.path.basename(row['raw_gff_path']))
         tmp_check = CheckCp(row['raw_gff_path'])
-        tmp_check.check_cds(row['seq_path'])
+        if args.cds:
+            tmp_check.check_cds(row['seq_path'])
+        if args.renumber:
+            result_gff = tmp_check.renumber(row['seq_id'], row['prefix'])
+            result_gff.to_csv(row['result'], sep='\t', index=False)
+        if args.hs:
+            tmp_check.check_hs()
+        if args.name:
+            tmp_check.check_name()
+        if args.region:
+            tmp_check.check_region()
