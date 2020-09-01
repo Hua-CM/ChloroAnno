@@ -61,7 +61,10 @@ def change_gff(raw_gff_path, new_gff_path, seqid, species_pre):
         # protein coding gene
         if gene_type == 'protein_coding':
             next_phase = 0
-            for exon in gff_file.children(gene, featuretype='exon', order_by='start'):
+            for exon in gff_file.children(gene,
+                                          featuretype='exon',
+                                          order_by='start',
+                                          reverse=False if gene.strand == '+' else True):
                 child_count += 1
                 cds_attributes = ['ID=' + 'cds_' + gene_id + '_' + str(child_count),
                                   'Parent=' + gene_id,
