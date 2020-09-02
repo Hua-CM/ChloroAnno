@@ -1,5 +1,5 @@
 # ChloroplastAnnotation
-**更新日期：2020-08-11**  
+**更新日期：2020-09-01**  
 叶绿体基因组注释流程
 使用软件自动注释的结果不仅不符合NCBI的格式要求，而且一般还会有生物学问题，故记录下处理流程。
 
@@ -111,9 +111,11 @@ python correct.py combine -i correct_info.txt > correct_info.txt
 3. 序列中是否有终止密码子
 4. 序列长度是否为3的倍数
 5. CDS是否过短（小于33bp)
-5. tRNA位置信息是否正确
-6. 是否存在tRNA缺失(GeSeq的注释有时候会莫名其妙少很多tRNA)，及自动插补
-7. 基因组区域是否存在重叠
+6. tRNA位置信息是否正确
+7. 是否存在tRNA缺失(GeSeq的注释有时候会莫名其妙少很多tRNA)，及自动插补
+8. 基因组区域是否存在重叠
+9. 添加pseudo gene标注
+10. 添加ACG密码子的RNA editing标注
 
 以上功能均为自动实现，对于两个GeSeq和PGA注释都有问题的基因（例如根据两个注释gff文件，其实密码子都有问题），会输出到log中，并且
 在gff文件中该基因的attributes会标注"pseudo=true"
@@ -179,9 +181,3 @@ gff转gbk的脚本为[gff2gbk.py](gff2gbk.py)
 2. rps12目前只能针对高等植物，低等植物的还不行
 3. 步骤7中的校正与插补功能会引起部分重复（如psbZ，trnM-CAU），目前尚不知道问题在哪，后期可能会排除。不过该步骤之后紧接手工校
 正，所以不影响结果，只是会增加手工校正工作量。
-4. check.py中的CheckCp类的功能比较完善，但是命令行接口还没完善，需要进一步完善
-5. RNA-editiong的情况（如部分植物的ndhD的start codon是ACG->AUG)目前在check中只能标注pseudo，需要人手工转为exception。
-
-
-
-
