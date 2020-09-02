@@ -143,6 +143,10 @@ class CorrectGff:
     def _add_pseudo(self, gene):
         self.gff_corrected.loc[self.gff_corrected['attributes'].str.startswith('ID='+gene.id), 'attributes'] += ';pseudo=true'
 
+    def _add_rna_editing(self, gene):
+        self.gff_corrected.loc[self.gff_corrected['attributes'].str.startswith('ID=cds_' + gene.id), 'attributes'] \
+            += ';exception=RNA editing'
+
     def correct_gff(self):
         print('Auto correct start')
         for gene in self.gff.features_of_type('gene', order_by='start'):
@@ -205,9 +209,12 @@ class CorrectGff:
             try:
                 seq_combined.translate(table=11, cds=True)
             except Exception as e:
-                print(gene.id, gene.attributes['Name'][0])
-                print(e)
-                self._add_pseudo(gene)
+                if e.__str__() == "First codon 'ACG' is not a start codon":
+                    self._add_rna_editing(gene)
+                else:
+                    print(gene.id, gene.attributes['Name'][0])
+                    print(e)
+                    self._add_pseudo(gene)
         self.gff_corrected.to_csv(self.gff_new_path, sep='\t', index=False, header=False)
         print('Auto check done')
 

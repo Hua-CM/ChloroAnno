@@ -139,25 +139,31 @@ class CheckCp:
         geo_seq = SeqIO.read(seq_path, 'fasta')
         print('Auto check start')
         for gene in self.gff.features_of_type('gene', order_by='start'):
-            seq_combined = ""
-            for cds in self.gff.children(gene,
-                                         featuretype='CDS',
-                                         order_by='start',
-                                         reverse=False if gene.strand == '+' else True):
-                seq = get_seq(geo_seq, cds.start, cds.end)
-                if cds.strand == '-':
-                    seq_combined += seq.reverse_complement()
-                else:
-                    seq_combined += seq
-            if seq_combined == '':
-                continue
-            elif seq_combined.__len__() <= 33:
-                print('The CDS length of', gene.id, 'is less than 33 bp')
-            try:
-                seq_combined.translate(table=11, cds=True)
-            except Exception as e:
-                print(gene.id)
-                print(e)
+            if gene.attributes['gene_biotype'] == ['protein_coding']:
+                seq_combined = ""
+                cds_count = 0
+                for cds in self.gff.children(gene,
+                                             featuretype='CDS',
+                                             order_by='start',
+                                             reverse=False if gene.strand == '+' else True):
+
+                    if (cds_count == 0) and (not cds.frame == '0'):
+                        print('check ', gene.id, ' frame')
+                    seq = get_seq(geo_seq, cds.start, cds.end)
+                    if cds.strand == '-':
+                        seq_combined += seq.reverse_complement()
+                    else:
+                        seq_combined += seq
+                    cds_count += 1
+                if seq_combined == '':
+                    continue
+                elif seq_combined.__len__() <= 33:
+                    print('The CDS length of', gene.id, 'is less than 33 bp')
+                try:
+                    seq_combined.translate(table=11, cds=True)
+                except Exception as e:
+                    print(gene.id)
+                    print(e)
         print('Auto check done')
 
 
@@ -189,7 +195,7 @@ def add_rps12(geseq_gff, new_gff, seq_path, species_pre):
         gene_id = species_pre + '%03d' % gene_count
         part_attributes = ['ID=' + gene_id,
                            'Name=rps12',
-                           'gene_biotype = protein_coding'
+                           'gene_biotype=protein_coding'
                            ]
         cds1 = raw_gff[(raw_gff['start'] == part.start) & (raw_gff['type'] == 'exon')].iloc[0]
         cds2 = raw_gff[(raw_gff['end'] == part.end) & (raw_gff['type'] == 'exon')].iloc[0]
@@ -258,7 +264,7 @@ def add2_rps12(pga_gb, new_gff, species_pre):
         gene_id = species_pre + '%03d' % gene_count
         part_attributes = ['ID=' + gene_id,
                            'Name=rps12',
-                           'gene_biotype = protein_coding'
+                           'gene_biotype=protein_coding'
                            ]
         features_list.append(_get_record(part1.location, 'gene', part_attributes + ['part=1/2']))
         features_list.append(_get_record(part.location, 'gene', part_attributes + ['part=2/2']))
