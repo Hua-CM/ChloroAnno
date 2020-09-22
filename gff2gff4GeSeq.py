@@ -11,7 +11,7 @@ import gffutils
 import os
 from check import CheckCp
 
-location = os.path.abspath(__file__)
+location = os.path.abspath(os.path.join(__file__, '..'))
 tb_cds = pd.read_table(os.path.join(location, 'ref/cds.txt'))
 tb_rna = pd.read_table(os.path.join(location, 'ref/rna.txt'))
 product_dict = {record['name']: record['product'] for record in tb_cds.to_dict('records')}

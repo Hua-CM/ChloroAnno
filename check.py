@@ -23,7 +23,7 @@ import os
 
 get_seq = lambda seq, start, end: seq.seq[start - 1:end]
 
-location = os.path.abspath(__file__)
+location = os.path.abspath(os.path.join(__file__, '..'))
 tb_cds = pd.read_table(os.path.join(location, 'ref/cds.txt'))
 tb_rna = pd.read_table(os.path.join(location, 'ref/rna.txt'))
 
