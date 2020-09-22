@@ -140,25 +140,31 @@ class CheckCp:
         geo_seq = SeqIO.read(seq_path, 'fasta')
         print('Auto check start')
         for gene in self.gff.features_of_type('gene', order_by='start'):
-            seq_combined = ""
-            for cds in self.gff.children(gene,
-                                         featuretype='CDS',
-                                         order_by='start',
-                                         reverse=False if gene.strand == '+' else True):
-                seq = get_seq(geo_seq, cds.start, cds.end)
-                if cds.strand == '-':
-                    seq_combined += seq.reverse_complement()
-                else:
-                    seq_combined += seq
-            if seq_combined == '':
-                continue
-            elif seq_combined.__len__() <= 33:
-                print('The CDS length of', gene.id, 'is less than 33 bp')
-            try:
-                seq_combined.translate(table=11, cds=True)
-            except Exception as e:
-                print(gene.id)
-                print(e)
+            if gene.attributes['gene_biotype'] == ['protein_coding']:
+                seq_combined = ""
+                cds_count = 0
+                for cds in self.gff.children(gene,
+                                             featuretype='CDS',
+                                             order_by='start',
+                                             reverse=False if gene.strand == '+' else True):
+
+                    if (cds_count == 0) and (not cds.frame == '0'):
+                        print('check ', gene.id, ' frame')
+                    seq = get_seq(geo_seq, cds.start, cds.end)
+                    if cds.strand == '-':
+                        seq_combined += seq.reverse_complement()
+                    else:
+                        seq_combined += seq
+                    cds_count += 1
+                if seq_combined == '':
+                    continue
+                elif seq_combined.__len__() <= 33:
+                    print('The CDS length of', gene.id, 'is less than 33 bp')
+                try:
+                    seq_combined.translate(table=11, cds=True)
+                except Exception as e:
+                    print(gene.id)
+                    print(e)
         print('Auto check done')
 
 
@@ -190,7 +196,7 @@ def add_rps12(geseq_gff, new_gff, seq_path, species_pre):
         gene_id = species_pre + '%03d' % gene_count
         part_attributes = ['ID=' + gene_id,
                            'Name=rps12',
-                           'gene_biotype = protein_coding'
+                           'gene_biotype=protein_coding'
                            ]
         cds1 = raw_gff[(raw_gff['start'] == part.start) & (raw_gff['type'] == 'exon')].iloc[0]
         cds2 = raw_gff[(raw_gff['end'] == part.end) & (raw_gff['type'] == 'exon')].iloc[0]
@@ -259,7 +265,7 @@ def add2_rps12(pga_gb, new_gff, species_pre):
         gene_id = species_pre + '%03d' % gene_count
         part_attributes = ['ID=' + gene_id,
                            'Name=rps12',
-                           'gene_biotype = protein_coding'
+                           'gene_biotype=protein_coding'
                            ]
         features_list.append(_get_record(part1.location, 'gene', part_attributes + ['part=1/2']))
         features_list.append(_get_record(part.location, 'gene', part_attributes + ['part=2/2']))
@@ -303,13 +309,42 @@ def add2_rps12(pga_gb, new_gff, species_pre):
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(
-        description='Change GeSeq result gff to a version that meet submission requirement')
+        description='Check your chloroplast genome gff file')
+
     parser.add_argument('-i', '--info_table', required=True,
-                        help='<file_path>  information table which has four columns: Geseq gff path, '
-                             'result path, seqid, locus prefix')
+                        help='<file_path>  meta information table which has five columns: Geseq gff path, seq path, '
+                             'seqid, locus prefix, renumber result path. If you do not need renumber, just provide gff '
+                             'and seq')
+
+    parser.add_argument('-c', '--cds', action='store_true', default=False,
+                        help='check cds legitimacy')
+
+    parser.add_argument('-s', '--hs', action='store_true', default=False,
+                        help='check house-keeping gene (matK, rbcL)')
+
+    parser.add_argument('-n', '--name', action='store_true', default=False,
+                        help='check whether gene names are legal name')
+
+    parser.add_argument('-r', '--region', action='store_true', default=False,
+                        help='check whether gene region duplicated')
+
+    parser.add_argument('-e', '--renumber', action='store_true', default=False,
+                        help='renumber gene locus suffix')
+
     args = parser.parse_args()
-    info_table = pd.read_table(args.info_table, names=['raw_gff_path', 'seq_path'])
+
+    info_table = pd.read_table(args.info_table, names=['raw_gff_path', 'seq_path', 'seq_id', 'prefix', 'result'])
     for ind, row in info_table.iterrows():
         print(os.path.basename(row['raw_gff_path']))
         tmp_check = CheckCp(row['raw_gff_path'])
-        tmp_check.check_cds(row['seq_path'])
+        if args.cds:
+            tmp_check.check_cds(row['seq_path'])
+        if args.renumber:
+            result_gff = tmp_check.renumber(row['seq_id'], row['prefix'])
+            result_gff.to_csv(row['result'], sep='\t', index=False)
+        if args.hs:
+            tmp_check.check_hs()
+        if args.name:
+            tmp_check.check_name()
+        if args.region:
+            tmp_check.check_region()
