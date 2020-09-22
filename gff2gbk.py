@@ -15,11 +15,13 @@ from Bio.SeqFeature import ExactPosition, CompoundLocation, FeatureLocation
 from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 from Bio.Seq import Seq
 from collections import OrderedDict
+import os
 
-tb_map = pd.read_table('ref/cds.txt')
-tb_trna = pd.read_table('ref/rna.txt')
-product_dict = {record['name']: record['product'] for record in tb_map.to_dict('records')}
-trna_dict = {record['name']: record['product'] for record in tb_trna.to_dict('records')}
+location = os.path.abspath(__file__)
+tb_cds = pd.read_table(os.path.join(location, 'ref/cds.txt'))
+tb_rna = pd.read_table(os.path.join(location, 'ref/rna.txt'))
+product_dict = {record['name']: record['product'] for record in tb_cds.to_dict('records')}
+trna_dict = {record['name']: record['product'] for record in tb_rna.to_dict('records')}
 
 getstrand = lambda x: 1 if x.strand == '+' else -1
 

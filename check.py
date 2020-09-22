@@ -23,8 +23,9 @@ import os
 
 get_seq = lambda seq, start, end: seq.seq[start - 1:end]
 
-tb_cds = pd.read_table('ref/cds.txt')
-tb_rna = pd.read_table('ref/rna.txt')
+location = os.path.abspath(__file__)
+tb_cds = pd.read_table(os.path.join(location, 'ref/cds.txt'))
+tb_rna = pd.read_table(os.path.join(location, 'ref/rna.txt'))
 
 standard_name_list = [record['name'] for record in tb_cds.to_dict('records')]
 standard_name_list += [record['name'] for record in tb_rna.to_dict('records')]

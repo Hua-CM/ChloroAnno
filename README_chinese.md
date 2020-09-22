@@ -181,7 +181,4 @@ gff转gbk的脚本为[gff2gbk.py](gff2gbk.py)
 正，所以不影响结果，只是会增加手工校正工作量。
 4. check.py中的CheckCp类的功能比较完善，但是命令行接口还没完善，需要进一步完善
 5. RNA-editiong的情况（如部分植物的ndhD的start codon是ACG->AUG)目前在check中只能标注pseudo，需要人手工转为exception。
-
-
-
-
+6. gff转gbk仍待完善
