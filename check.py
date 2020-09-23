@@ -142,6 +142,8 @@ class CheckCp:
         print('Auto check start')
         for gene in self.gff.features_of_type('gene', order_by='start'):
             if gene.attributes['gene_biotype'] == ['protein_coding']:
+                if gene.attributes['Name'] == ['rps12']:
+                    continue
                 seq_combined = ""
                 cds_count = 0
                 for cds in self.gff.children(gene,

@@ -216,6 +216,8 @@ class CorrectGff:
         print('Auto check start')
         gff_new = gffutils.create_db(self.gff_new_path, ':memory:', merge_strategy='create_unique')
         for gene in gff_new.features_of_type('gene', order_by='start'):
+            if gene.attributes['Name'] == ['rps12']:
+                continue
             seq_combined = ""
             for cds in gff_new.children(gene,
                                         featuretype='CDS',
