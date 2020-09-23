@@ -177,7 +177,7 @@ gff转gbk的脚本为[gff2gbk.py](gff2gbk.py)
 
 4. RNA-editing
 RNA editing是指从参考基因组转录到RNA的生物过程是由一个特殊的酶完成的，从而使得碱基发生了替换，如下图所示。
-[![wxZPp9.th.png](https://s1.ax1x.com/2020/09/23/wxZPp9.th.png)](https://imgchr.com/i/wxZPp9)
+![wxZPp9.png](https://s1.ax1x.com/2020/09/23/wxZPp9.png)  
 需要注意的是，在基因组注释过程中，除非有直接的转录组证据，否则ACG不应当直接注释为RNA-editing，而是需要注释为pseudogene.
 
 ## 仍待完善的功能和已知Bug
