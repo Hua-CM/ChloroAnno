@@ -1,5 +1,5 @@
 # ChloroplastAnnotation
-**更新日期：2020-08-11**  
+**更新日期：2020-09-23**  
 叶绿体基因组注释流程
 使用软件自动注释的结果不仅不符合NCBI的格式要求，而且一般还会有生物学问题，故记录下处理流程。
 
@@ -114,6 +114,7 @@ python correct.py combine -i correct_info.txt > correct_info.txt
 5. tRNA位置信息是否正确
 6. 是否存在tRNA缺失(GeSeq的注释有时候会莫名其妙少很多tRNA)，及自动插补
 7. 基因组区域是否存在重叠
+8. 起始密码子可能存在RNA-editing现象的基因，自动在起始密码子后30bp寻找替代起始密码子。
 
 以上功能均为自动实现，对于两个GeSeq和PGA注释都有问题的基因（例如根据两个注释gff文件，其实密码子都有问题），会输出到log中，并且
 在gff文件中该基因的attributes会标注"pseudo=true"
@@ -174,14 +175,14 @@ gff转gbk的脚本为[gff2gbk.py](gff2gbk.py)
 一般需要校正的其实是完全重复区域的基因，如`['trnM-CAU'] [53865,53936]  and  ['trnT-GGU'] [53870,53928]  are duplicated`和
 `['rrn5'] [107057,107177]  and  ['rrn5S'] [107057,107187]  are duplicated`这种情况。
 
+4. RNA-editing
+RNA editing是指从参考基因组转录到RNA的生物过程是由一个特殊的酶完成的，从而使得碱基发生了替换，如下图所示。
+[![wxZPp9.th.png](https://s1.ax1x.com/2020/09/23/wxZPp9.th.png)](https://imgchr.com/i/wxZPp9)
+需要注意的是，在基因组注释过程中，除非有直接的转录组证据，否则ACG不应当直接注释为RNA-editing，而是需要注释为pseudogene.
+
 ## 仍待完善的功能和已知Bug
 1. 步骤6中tRNA名称校正未实现自动化
 2. rps12目前只能针对高等植物，低等植物的还不行
 3. 步骤7中的校正与插补功能会引起部分重复（如psbZ，trnM-CAU），目前尚不知道问题在哪，后期可能会排除。不过该步骤之后紧接手工校
 正，所以不影响结果，只是会增加手工校正工作量。
 4. check.py中的CheckCp类的功能比较完善，但是命令行接口还没完善，需要进一步完善
-5. RNA-editiong的情况（如部分植物的ndhD的start codon是ACG->AUG)目前在check中只能标注pseudo，需要人手工转为exception。
-
-
-
-

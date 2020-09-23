@@ -128,13 +128,14 @@ class CheckCp:
                                        'Parent=' 'rna_' + gene_id + '_1'
                                        ]
                     feature_list.append(get_record(exon, 'exon', exon_attributes))
-        result_gff = pd.DataFrame.from_dict({index: record for index, record in enumerate(feature_list)}, 'index')
-        result_gff['seqid'] = seq_id
-        result_gff['score'] = '.'
-        result_gff['source'] = 'GeSeq'
-        result_gff = result_gff[["seqid", "source", "type", "start", "end", "score", "strand", "phase", "attributes"]]
+
+        _result_gff = pd.DataFrame(feature_list)
+        _result_gff['seqid'] = seq_id
+        _result_gff['score'] = '.'
+        _result_gff['source'] = 'GeSeq'
+        _result_gff = _result_gff[["seqid", "source", "type", "start", "end", "score", "strand", "phase", "attributes"]]
         print('Renumber done')
-        return result_gff
+        return _result_gff
 
     def check_cds(self, seq_path):
         geo_seq = SeqIO.read(seq_path, 'fasta')
@@ -267,8 +268,10 @@ def add2_rps12(pga_gb, new_gff, species_pre):
                            'Name=rps12',
                            'gene_biotype=protein_coding'
                            ]
-        features_list.append(_get_record(part1.location, 'gene', part_attributes + ['part=1/2']))
-        features_list.append(_get_record(part.location, 'gene', part_attributes + ['part=2/2']))
+        features_list.append(_get_record(part1.location, 'gene', part_attributes + [
+            'Exception=trans-splicing;part=1/2']))
+        features_list.append(_get_record(part.location, 'gene', part_attributes + [
+            'Exception=trans-splicing;part=2/2']))
         cds_count = 1
         cds_attributes = ['ID=' + 'cds_' + gene_id + '_' + str(cds_count),
                           'Parent=' + gene_id,

@@ -143,9 +143,33 @@ class CorrectGff:
     def _add_pseudo(self, gene):
         self.gff_corrected.loc[self.gff_corrected['attributes'].str.startswith('ID='+gene.id), 'attributes'] += ';pseudo=true'
 
-    def _add_rna_editing(self, gene):
-        self.gff_corrected.loc[self.gff_corrected['attributes'].str.startswith('ID=cds_' + gene.id), 'attributes'] \
-            += ';exception=RNA editing'
+    def _find_start_codon(self, gene, _seq_combined):
+
+        def _find_start(_seq, _count):
+            _seq = _seq[3:]
+            _count += 1
+            if _seq == '' or _count > 9:
+                return None
+            try:
+                _seq.translate(cds=True, table=11)
+                return _count*3
+            except:
+                _find_start(_seq, _count)
+
+        shift_num = _find_start(_seq_combined, 0)
+        if shift_num is None:
+            self._add_pseudo(gene)
+            return print(gene.id, 'Maybe RNA-editing, but no alternative start codon find')
+        else:
+            print(gene.id, 'Mayebe RNA-editing, and a alternative start codon found')
+            if gene.strand == '-':
+                self.gff_corrected.loc[self.gff_corrected['attributes'].str.startswith('ID=' + gene.id), 'end'] \
+                 = int(self.gff_corrected.loc[self.gff_corrected['attributes'].str.startswith('ID=' + gene.id),
+                                              'end']) - 3*shift_num
+            else:
+                self.gff_corrected.loc[self.gff_corrected['attributes'].str.startswith('ID=' + gene.id), 'start'] \
+                 = int(self.gff_corrected.loc[self.gff_corrected['attributes'].str.startswith('ID=' + gene.id),
+                                              'start']) + 3*shift_num
 
     def correct_gff(self):
         print('Auto correct start')
@@ -210,7 +234,7 @@ class CorrectGff:
                 seq_combined.translate(table=11, cds=True)
             except Exception as e:
                 if e.__str__() == "First codon 'ACG' is not a start codon":
-                    self._add_rna_editing(gene)
+                    self._find_start_codon(gene, seq_combined)
                 else:
                     print(gene.id, gene.attributes['Name'][0])
                     print(e)
