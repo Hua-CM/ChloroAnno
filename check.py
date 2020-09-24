@@ -271,9 +271,9 @@ def add2_rps12(pga_gb, new_gff, species_pre):
                            'gene_biotype=protein_coding'
                            ]
         features_list.append(_get_record(part1.location, 'gene', part_attributes + [
-            'Exception=trans-splicing;part=1/2']))
+            'exception=trans-splicing;part=1/2']))
         features_list.append(_get_record(part.location, 'gene', part_attributes + [
-            'Exception=trans-splicing;part=2/2']))
+            'exception=trans-splicing;part=2/2']))
         cds_count = 1
         cds_attributes = ['ID=' + 'cds_' + gene_id + '_' + str(cds_count),
                           'Parent=' + gene_id,
