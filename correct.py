@@ -297,8 +297,8 @@ if __name__ == '__main__':
     # for step8
     parser_b = subparsers.add_parser('rps12', help='add help')
     parser_b.add_argument('-i', '--info_table', required=True,
-                          help='<file_path>  information table which has four columns: Geseq gff path, '
-                               'result path, seqid, locus prefix')
+                          help='<file_path>  information table which has five columns: Raw gff path, '
+                               'result path, PGA genbank file, seqid, locus prefix')
     parser_b.set_defaults(func=rps12)
     args = parser.parse_args()
     args.func(args)

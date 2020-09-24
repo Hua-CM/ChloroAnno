@@ -136,10 +136,8 @@ python correct.py rps12 -i rps12_info.txt > rps12.log
 ~~~
 
 ## 9. （可选）生成NCBI上传所需文件
-NCBI上传需要tbl文件，目前没有直接将gff改写为tbl文件的脚本，所以现在使用的策略是gff转为gbk，再
-用NCBI提供的[gbf2tbl](ftp://ftp.ncbi.nlm.nih.gov//toolbox/ncbi_tools/converters/scripts/gbf2tbl.pl)将gbk转tbl。
-gff转gbk的脚本为[gff2gbk.py](gff2gbk.py)  
-**注意：转换完后的tbl文件中rps12还是会有问题，需要人工确认**
+推荐使用NCBI最新开发的[Genome workbench](https://www.ncbi.nlm.nih.gov/tools/gbench/)
+软件。因为这个软件可以根据导入的fasta序列和gff注释生成符合上传格式的文件，比之前的软件好用太多了，强推。
 
 ## FAQ
 1. 不规范命名基因  
