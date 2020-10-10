@@ -1,5 +1,5 @@
 # ChloroplastAnnotation
-**更新日期：2020-09-23**  
+**更新日期：2020-10-10**  
 叶绿体基因组注释流程
 使用软件自动注释的结果不仅不符合NCBI的格式要求，而且一般还会有生物学问题，故记录下处理流程。
 
@@ -136,8 +136,7 @@ python correct.py rps12 -i rps12_info.txt > rps12.log
 ~~~
 
 ## 9. （可选）生成NCBI上传所需文件
-推荐使用NCBI最新开发的[Genome workbench](https://www.ncbi.nlm.nih.gov/tools/gbench/)
-软件。因为这个软件可以根据导入的fasta序列和gff注释生成符合上传格式的文件，比之前的软件好用太多了，强推。
+如果需要上传NCBI，请使用[gff2tbl.py](gff2tbl.py)转换完全正确的gff至tbl文件。由于rps12的特殊性，该基因的信息需要手动添加。
 
 ## FAQ
 1. 不规范命名基因  

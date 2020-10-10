@@ -20,7 +20,6 @@ atpG	ATP synthase subunit gamma
 atpH	ATP synthase subunit c
 atpI	ATP synthase subunit a
 atpL	ATP synthase L
-atpl	ATP synthase L
 bas1	Cytochrome P450 superfamily protein
 carA	carbamoyl phosphate synthetase A
 cbbX	rubisco expression protein
