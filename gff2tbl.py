@@ -20,7 +20,7 @@ def gff2gbl(_gff_path, _tbl_path):
             continue
         _feature_list = []
         _feature_list.append({'c1': _gene.start if _gene.strand == '+' else _gene.end,
-                              'c2': _gene.end if _gene.strand == '+' else _gene.end,
+                              'c2': _gene.end if _gene.strand == '+' else _gene.start,
                               'c3': 'gene'})
         _feature_list.append({'c4': 'gene', 'c5': _gene.attributes['Name'][0]})
         _feature_list.append({'c4': 'locus_tag', 'c5': _gene.attributes['ID'][0]})
@@ -58,7 +58,7 @@ def gff2gbl(_gff_path, _tbl_path):
                         _feature_list.append({'c1': _rna.end, 'c2': _rna.start})
             if len(_feature_list) == 0:
                 _feature_list.append({'c1': _gene.start if _gene.strand == '+' else _gene.end,
-                                      'c2': _gene.start if _gene.strand == '-' else _gene.end,
+                                      'c2': _gene.end if _gene.strand == '-' else _gene.start,
                                       'c3': _gene.attributes['gene_biotype'][0]})
                 _feature_list.append({'c4': 'product', 'c5': _product})
                 _feature_list.append({'c4': 'gene', 'c5': _gene.attributes['Name'][0]})
