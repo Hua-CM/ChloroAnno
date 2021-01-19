@@ -259,3 +259,4 @@ ycf3	Hypothetical protein
 ycf4	Hypothetical protein
 ycf15	Hypothetical protein
 ycf68	Hypothetical protein
+ycf66   Hypothetical protein

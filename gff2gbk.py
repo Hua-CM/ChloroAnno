@@ -12,7 +12,6 @@ from Bio import SeqIO
 from Bio import SeqRecord
 from Bio import SeqFeature
 from Bio.SeqFeature import ExactPosition, CompoundLocation, FeatureLocation
-from Bio.Alphabet.IUPAC import IUPACAmbiguousDNA
 from Bio.Seq import Seq
 from collections import OrderedDict
 import os
@@ -155,7 +154,7 @@ def gff2genbank(gff_path, seq_path, organism):
                       'date': '11-JUN-2020',
                       'organism': organism}
     return SeqRecord.SeqRecord(id=asm_seq.id,
-                               seq=Seq(str(asm_seq.seq), IUPACAmbiguousDNA()),
+                               seq=Seq(str(asm_seq.seq)),
                                features=seqfeature_list,
                                annotations=asm_annotation)
 
@@ -166,7 +165,7 @@ if __name__ == '__main__':
         description='Change gff to genbank format')
     parser.add_argument('-i', '--info_table', required=True,
                         help='<file_path>  information table which has four columns: Geseq gff path, '
-                             'result path, seqid, locus prefix')
+                             'seq path, organism name, output path')
     args = parser.parse_args()
     info_table = pd.read_table(args.info_table,
                                names=['gff_path', 'seq_path', 'org_name', 'output_path'])

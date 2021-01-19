@@ -624,15 +624,15 @@ FEATURES             Location/Qualifiers
                      RKEKGGYEITVENTLDGRSVVDTVPPGPELIISEGESIKVDQPLTNNPNVGGFGQGDA
                      EVVPQDPLRVQGLLLFLASVTIAQIFLVLKKKQFEKVQLAEMNF"
      gene            complement(27732..29297)
-                     /gene="ycf10"
+                     /gene="cemA"
                      /locus_tag="B2L44_pgp056"
                      /db_xref="GeneID:31080302"
      CDS             complement(27732..29297)
-                     /gene="ycf10"
+                     /gene="cemA"
                      /locus_tag="B2L44_pgp056"
                      /codon_start=1
                      /transl_table=11
-                     /product="Ycf10"
+                     /product="cemA"
                      /protein_id="YP_009346598.1"
                      /db_xref="GeneID:31080302"
                      /translation="MKFKLYWWEVFRWFSDTPSRSSERACEASRQVQHIKKDYVSYKC
@@ -1348,11 +1348,11 @@ FEATURES             Location/Qualifiers
                      /db_xref="GeneID:31080344"
                      /translation="MTSISDSQIILALISAFITSILAIRLGNELYR"
      gene            76198..76299
-                     /gene="ycf12"
+                     /gene="psb30"
                      /locus_tag="B2L44_pgp030"
                      /db_xref="GeneID:31080345"
      CDS             76198..76299
-                     /gene="ycf12"
+                     /gene="psb30"
                      /locus_tag="B2L44_pgp030"
                      /codon_start=1
                      /transl_table=11
