@@ -3,172 +3,110 @@
 # @Author : Zhongyi Hua
 # @FileName: gff2genbank.py
 # @Usage: change gff to Genbank
-# @Note:  only for our gff
+# @Note:  only for our gff in GWH!!!
 # @E-mail: njbxhzy@hotmail.com
 
-import gffutils
-import pandas as pd
+from BCBio import GFF
 from Bio import SeqIO
 from Bio import SeqRecord
-from Bio import SeqFeature
-from Bio.SeqFeature import ExactPosition, CompoundLocation, FeatureLocation
-from Bio.Seq import Seq
-from collections import OrderedDict
-import os
+from Bio.SeqFeature import SeqFeature, ExactPosition, CompoundLocation, FeatureLocation
+from collections import defaultdict
+import argparse
+import time
 
-location = os.path.abspath(os.path.join(__file__, '..'))
-tb_cds = pd.read_table(os.path.join(location, 'ref/cds.txt'))
-tb_rna = pd.read_table(os.path.join(location, 'ref/rna.txt'))
-product_dict = {record['name']: record['product'] for record in tb_cds.to_dict('records')}
-trna_dict = {record['name']: record['product'] for record in tb_rna.to_dict('records')}
 
-getstrand = lambda x: 1 if x.strand == '+' else -1
+class MySeqFeature(SeqFeature):
+    def inherit(self, A):
+        self.__dict__ = A.__dict__
+        self.location = [self.location]
+
+    def update_location(self, second_postion: FeatureLocation):
+        if not second_postion == self.location:
+            self.location += second_postion
 
 
 def gff2genbank(gff_path, seq_path, organism):
-    gff_file = gffutils.create_db(gff_path, ':memory:', merge_strategy='create_unique')
+    gff_file = [_ for _ in GFF.parse(gff_path)]
     asm_seq = SeqIO.read(seq_path, 'fasta')
-    seqfeature_list = list()
+    genbank_header = defaultdict(str, {'organism': organism,
+                                       'organelle': 'plastid:chloroplast',
+                                       'molecule_type': 'DNA',
+                                       'topology': 'circular',
+                                       'data_file_division': 'PLN',
+                                       'date': time.strftime("%d-%b-%Y", time.localtime()).upper(),
+                                       'source': 'CGIR'})
+
+    seqfeature_dict = defaultdict(MySeqFeature)
     # source feature
-    seqfeature_list.append(
-        SeqFeature.SeqFeature(FeatureLocation(ExactPosition(0), ExactPosition(len(asm_seq))),
-                              strand=1,
-                              qualifiers=OrderedDict([('organism', organism),
-                                                      ('organelle', 'plastid:chloroplast'),
-                                                      ('mol_type', 'genomic DNA')
-                                                      ]),
-                              type='source'
-                              )
-                            )
+    seqfeature_dict['source'] = MySeqFeature(FeatureLocation(ExactPosition(1), ExactPosition(len(asm_seq))),
+                                             strand=1,
+                                             qualifiers={'organism': organism,
+                                                         'organelle': 'plastid:chloroplast',
+                                                         'mol_type': "genomic DNA"},
+                                             type='source')
+    seqfeature_dict['source'].location = [seqfeature_dict['source'].location]
     # gene
-    for gene in gff_file.features_of_type('gene', order_by='start'):
-        seqfeature_list.append(
-            SeqFeature.SeqFeature(FeatureLocation(ExactPosition(gene.start-1),
-                                                  ExactPosition(gene.end),
-                                                  strand=getstrand(gene)),
-                                  strand=getstrand(gene),
-                                  type='gene',
-                                  qualifiers=OrderedDict([('gene', gene.attributes['Name'][0]),
-                                                          ('locus_tag', gene.id)
-                                                          ])
-                                  )
-                                )
+    for feature in gff_file[0].features:
+        gene = MySeqFeature()
+        gene.inherit(feature)
+        seqfeature_dict.setdefault(gene.qualifiers['ID'][0], gene).update_location(gene.location)
         # CDS
-        if gene.attributes['gene_biotype'][0] == 'protein_coding':
-            cds_list = []
-            cds_product = None
-            for cds in gff_file.children(gene, featuretype='CDS', order_by='start'):
-                cds_list.append(FeatureLocation(ExactPosition(cds.start - 1),
-                                                ExactPosition(cds.end),
-                                                strand=getstrand(cds)))
-                cds_product = cds.attributes['product'][0]
-            if len(cds_list) > 1:
-                if cds_list[0].strand == -1:
-                    cds_list.reverse()
-                location = CompoundLocation(cds_list)
-            elif len(cds_list) == 1:
-                location = cds_list[0]
+        for subfeature in gene.sub_features:
+            child = MySeqFeature()
+            child.inherit(subfeature)
+            if gene.qualifiers['gene_biotype'][0] == 'protein_coding':
+                _prefix = 'cds_'
+            elif gene.qualifiers['gene_biotype'][0] == 'rRNA':
+                _prefix = 'rrna_'
+            elif gene.qualifiers['gene_biotype'][0] == 'tRNA':
+                _prefix = 'trna_'
             else:
-                location = None
-            if location is not None:
-                seqfeature_list.append(
-                    SeqFeature.SeqFeature(location,
-                                          strand=getstrand(gene),
-                                          type='CDS',
-                                          qualifiers=OrderedDict([('gene', gene.attributes['Name'][0]),
-                                                                  ('locus_tag', gene.id),
-                                                                  ('codon_start', 1),
-                                                                  ('transl_table', 11),
-                                                                  ('product', cds_product),
-                                                                  ('translation', location.extract(asm_seq.seq).translate(table=11).__str__().strip('*'))
-                                                                  ])
-                                          )
-                )
-        elif gene.attributes['gene_biotype'][0] == 'rRNA':
-            # rRNA
-            rrna_list = []
-            for rrna in gff_file.children(gene, featuretype='rRNA', order_by='start'):
-                rrna_product = rrna.attributes['product'][0]
-                for exon in gff_file.children(rrna, featuretype='exon', order_by='start'):
-                    rrna_list.append(FeatureLocation(ExactPosition(exon.start - 1),
-                                                     ExactPosition(exon.end),
-                                                     strand=getstrand(rrna)))
-
-                if len(rrna_list) > 1:
-                    if rrna_list[0].strand == -1:
-                        rrna_list.reverse()
-                    location = CompoundLocation(rrna_list)
-                elif len(rrna_list) <= 1:
-                    location = FeatureLocation(ExactPosition(rrna.start - 1),
-                                               ExactPosition(rrna.end),
-                                               strand=getstrand(rrna))
-                else:
-                    location = None
-                if location is not None:
-                    seqfeature_list.append(
-                        SeqFeature.SeqFeature(FeatureLocation(ExactPosition(rrna.start - 1),
-                                                              ExactPosition(rrna.end),
-                                                              strand=getstrand(rrna)),
-                                              strand=getstrand(rrna),
-                                              type='rRNA',
-                                              qualifiers=OrderedDict([('gene', gene.attributes['Name'][0]),
-                                                                      ('locus_tag', gene.id),
-                                                                      ('product', rrna_product)
-                                                                      ])
-                                              )
-                                            )
-        # tRNA
-        elif gene.attributes['gene_biotype'][0] == 'tRNA':
-            trna_list = []
-            for trna in gff_file.children(gene, featuretype='tRNA', order_by='start'):
-                trna_product = trna.attributes['product'][0]
-                for exon in gff_file.children(trna, featuretype='exon', order_by='start'):
-                    trna_list.append(FeatureLocation(ExactPosition(exon.start - 1),
-                                                     ExactPosition(exon.end),
-                                                     strand=getstrand(trna)))
-
-                if len(trna_list) > 1:
-                    if trna_list[0].strand == -1:
-                        trna_list.reverse()
-                    location = CompoundLocation(trna_list)
-                elif len(trna_list) <= 1:
-                    location = FeatureLocation(ExactPosition(trna.start - 1),
-                                               ExactPosition(trna.end),
-                                               strand=getstrand(trna))
-                else:
-                    location = None
-                if location is not None:
-                    seqfeature_list.append(
-                        SeqFeature.SeqFeature(location,
-                                              strand=getstrand(gene),
-                                              type='tRNA',
-                                              qualifiers=OrderedDict([('gene', gene.attributes['Name'][0]),
-                                                                      ('locus_tag', gene.id),
-                                                                      ('product', trna_product)
-                                                                      ])
-                                              )
-                    )
-    # annotation
-    asm_annotation = {'molecule_type': 'DNA',
-                      'topology': 'circular',
-                      'date': '11-JUN-2020',
-                      'organism': organism}
+                _prefix = 'other_'
+            seqfeature_dict.setdefault(_prefix + gene.qualifiers['ID'][0], child).update_location(child.location)
+    # reset information like NCBI
+    for _key, _feature in seqfeature_dict.items():
+        # parse location
+        if len(_feature.location) == 1:
+            _feature.location = _feature.location[0]
+        else:
+            _feature.location = CompoundLocation(_feature.location)
+        # qualifiers
+        _old = _feature.qualifiers
+        if _feature.type == 'gene':
+            new_qualitier = {'gene': _old['gene'][0],
+                             'locus_tag': _old['ID'][0]}
+        elif _feature.type in ['CDS', 'rRNA', 'tRNA']:
+            new_qualitier = {'gene': seqfeature_dict[_old['Parent'][0]].qualifiers.get('gene'),
+                             'locus_tag': _old['Parent'][0],
+                             'product': _old['product'][0],
+                             'transl_table': '11'}
+        else:
+            new_qualitier = _old
+        _feature.qualifiers = new_qualitier
+    # output
+    seqfeature_list = list(seqfeature_dict.values())
     return SeqRecord.SeqRecord(id=asm_seq.id,
-                               seq=Seq(str(asm_seq.seq)),
+                               seq=asm_seq.seq,
                                features=seqfeature_list,
-                               annotations=asm_annotation)
+                               annotations=genbank_header)
 
 
-if __name__ == '__main__':
-    import argparse
+def getArgs():
     parser = argparse.ArgumentParser(
         description='Change gff to genbank format')
     parser.add_argument('-i', '--info_table', required=True,
-                        help='<file_path>  information table which has four columns: Geseq gff path, '
+                        help='<file_path>  information table (tab-separate) which has four columns: gff path, '
                              'seq path, organism name, output path')
-    args = parser.parse_args()
-    info_table = pd.read_table(args.info_table,
-                               names=['gff_path', 'seq_path', 'org_name', 'output_path'])
-    for ind, row in info_table.iterrows():
-        genome = gff2genbank(*row.to_list()[:3])
-        SeqIO.write(genome, row.to_list()[3], 'genbank')
+    _args = parser.parse_args()
+    return _args
+
+
+def main(args):
+    with open(args.info_table) as f_in:
+        for _line in f_in.read().strip().split('\n'):
+            genome = gff2genbank(_line.split('\t')[:3])
+            SeqIO.write(genome, _line.split('\t')[3], 'genbank')
+
+
+if __name__ == '__main__':
+    main(getArgs())
