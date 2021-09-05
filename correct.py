@@ -75,9 +75,12 @@ class CorrectGff:
         except:
             pass
         self.geseq_dialect = self.geseq_dialect.merge(tmp_df, how='right')
-        self.geseq_dialect['locus'] = self.gff_corrected.loc[self.gff_corrected.index.isin(self.geseq_dialect['index']), 'attributes'].\
+        self.geseq_dialect = self.gff_corrected.loc[self.gff_corrected.index.isin(self.geseq_dialect['index']), 'attributes'].\
             apply(lambda x: {k.split('=')[0]: k.split('=')[1] for k in x.split(';')}['Name']).\
-            reset_index(drop=True)
+            reset_index().\
+            rename(columns={'attributes': 'locus'}).\
+            merge(self.geseq_dialect)
+
 
     def create_pga_dialect(self):
         # gene.id - index - locus - child_index(list)
@@ -99,9 +102,11 @@ class CorrectGff:
             rename(columns={0: 'child_list', 1: 'gene_id'})
         tmp_df =tmp_df.append(tmp_df2, ignore_index=True)
         self.pga_dialect = self.pga_dialect.merge(tmp_df, how='right')
-        self.pga_dialect['locus'] = self.gff_pga.loc[self.gff_pga.index.isin(self.pga_dialect['index']), 'attributes'].\
+        self.pga_dialect = self.gff_pga.loc[self.gff_pga.index.isin(self.pga_dialect['index']), 'attributes'].\
             apply(lambda x: {k.split('=')[0]: k.split('=')[1] for k in x.split(';')}['Name']).\
-            reset_index(drop=True)
+            reset_index().\
+            rename(columns={'attributes': 'locus'}).\
+            merge(self.pga_dialect)
 
     def _correct_record(self, gene_feature):
         """
@@ -289,13 +294,13 @@ if __name__ == '__main__':
     subparsers = parser.add_subparsers(help='combine for combining GeSeq and PGA results; '
                                             'rps12 for adding rps12 and renumber')
     # for step6
-    parser_a = subparsers.add_parser('combine', help='add help')
+    parser_a = subparsers.add_parser('combine', help='combine for combining GeSeq and PGA results')
     parser_a.add_argument('-i', '--info_table', required=True,
                           help='<file_path>  information table which has four columns: Geseq gff path, '
                                'result path, seqid, locus prefix')
     parser_a.set_defaults(func=combine)
     # for step8
-    parser_b = subparsers.add_parser('rps12', help='add help')
+    parser_b = subparsers.add_parser('rps12', help='adding rps12 and renumber')
     parser_b.add_argument('-i', '--info_table', required=True,
                           help='<file_path>  information table which has five columns: Raw gff path, '
                                'result path, PGA genbank file, seqid, locus prefix')
