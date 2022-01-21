@@ -161,7 +161,7 @@ def getArgs():
     parser = argparse.ArgumentParser(
         description='Change gff to genbank format')
     parser.add_argument('-i', '--info_table', required=True,
-                        help='<file_path>  information table (tab-separate) which has four columns:genbank path, '
+                        help='<file_path>  information table (tab-separate) which has two columns:genbank path, '
                              'gff path')
     _args = parser.parse_args()
     return _args

@@ -3,7 +3,7 @@
 # @Author : Zhongyi Hua
 # @FileName: gff2genbank.py
 # @Usage: change gff to Genbank
-# @Note:  only for our gff in GWH!!!
+# @Note:  only for gffs in GWH!!!
 # @E-mail: njbxhzy@hotmail.com
 
 from BCBio import GFF
@@ -73,13 +73,17 @@ def gff2genbank(gff_path, seq_path, organism):
         # qualifiers
         _old = _feature.qualifiers
         if _feature.type == 'gene':
-            new_qualitier = {'gene': _old['gene'][0],
-                             'locus_tag': _old['ID'][0]}
+            new_qualitier = {'gene': _old.get('gene') if 'gene' in _old else _old.get('Name'),
+                             'locus_tag': _old['ID'][0],
+                             'db_xref': 'GeneID:' + _old['Accession'][0]}
         elif _feature.type in ['CDS', 'rRNA', 'tRNA']:
             new_qualitier = {'gene': seqfeature_dict[_old['Parent'][0]].qualifiers.get('gene'),
                              'locus_tag': _old['Parent'][0],
-                             'product': _old['product'][0],
+                             'product': _old.get('product')[0] if _old.get('product') else '',
+                             'db_xref': seqfeature_dict[_old['Parent'][0]].qualifiers.get('db_xref'),
                              'transl_table': '11'}
+            if _feature.type == 'CDS':
+                new_qualitier['protein_id'] = _old.get('Protein_Accession')
         else:
             new_qualitier = _old
         _feature.qualifiers = new_qualitier
@@ -96,7 +100,7 @@ def getArgs():
         description='Change gff to genbank format')
     parser.add_argument('-i', '--info_table', required=True,
                         help='<file_path>  information table (tab-separate) which has four columns: gff path, '
-                             'seq path, organism name, output path')
+                             'fasta path, organism name, output path')
     _args = parser.parse_args()
     return _args
 
@@ -104,8 +108,11 @@ def getArgs():
 def main(args):
     with open(args.info_table) as f_in:
         for _line in f_in.read().strip().split('\n'):
-            genome = gff2genbank(_line.split('\t')[:3])
-            SeqIO.write(genome, _line.split('\t')[3], 'genbank')
+            try:
+                genome = gff2genbank(*_line.split('\t')[:3])
+                SeqIO.write(genome, _line.split('\t')[3], 'genbank')
+            except:
+                print(_line.split('\t')[1])
 
 
 if __name__ == '__main__':

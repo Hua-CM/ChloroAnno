@@ -2,11 +2,11 @@
 叶绿体基因组注释流程
 使用软件自动注释的结果不仅不符合NCBI的格式要求，而且一般还会有生物学问题，故记录下处理流程。  
 
-**更新日期：2021-09-05**  
+**更新日期：2022-01-21**  
 **更新内容：**  
-1. 彻底重写gff2gbk
-2. 新增gbk2gff工具
-3. 逐步将gffutils编写的工具换为GFF编写（个人怀疑校正与插补功能中的bug可能与此有关）
+1. 重写大部分脚本，大幅缩减了代码量。gffutils编写的工具已全部用GFF重写。
+2. 完善了reference文件
+3. 修正了校正与插补功能中的bug
 
 
 
@@ -58,23 +58,23 @@ python pre_check.py -i  pre_check_info.txt
 
 ## 4.使用GeSeq、PGA注释校正后的序列
 ### GeSeq
-[GeSeq](https://chlorobox.mpimp-golm.mpg.de/geseq.html)是目前主流的注释软件之一。首先使用GeSeq进行注释。其中，与已知数据库的比对，蛋白编码基因BLAT设置阈值为比对identity 大于85%，rRNA/tRNA基因BLAT设置阈值为比对identity大于85%。**并额外添加已有的近缘物种作为注释参考。**  
+[GeSeq](https://chlorobox.mpimp-golm.mpg.de/geseq.html)是目前主流的注释软件之一。首先使用GeSeq进行注释。其中，与已知数据库的比对，蛋白编码基因BLAT设置阈值为比对identity 大于85%，rRNA/tRNA基因BLAT设置阈值为比对identity大于85%。**并从同科的物种中额外添加一些作为注释参考（原因见PGA软件说明）。** 需要注意的是，不要勾选其他注释选项，如Chloë。   
 GeSeq注释结果的主要问题是基因命名极不规范，例如"gene-blatn_trnI-CAU_1"；其次是gene和CDS、tRNA等之间的Parent-Child关系缺失。
 因此会在步骤6中进行转换
 
 ### PGA
-[PGA](https://chlorobox.mpimp-golm.mpg.de/geseq.html)也是目前主流的注释软件之一。使用PGA进行注释，相似度阈值设置为85%。**参考物种只选择该植物类型的参考物种（如被子植物选择无油樟，裸子植物使用美叶苏铁，蕨类植物选择蛇足石杉）**  
+[PGA](https://github.com/quxiaojian/PGA)也是目前主流的注释软件之一。使用PGA进行注释，相似度阈值设置为85%。**参考物种只选择该植物类型的参考物种（如被子植物选择无油樟，裸子植物使用美叶苏铁，蕨类植物选择蛇足石杉）**  
 
-~~~bash
+~~~shell
 while read seq_name
 do
-    perl /home/assembly/tools/PGA/PGA.pl \
-          -r /annotation/ref/Angiosperm \
+    perl /path/to/PGA/PGA.pl \
+          -r /path/to/ref/Angiosperm \
           -p 85 \
           -i 100000 \
           -t /annotation/angiosperm/seq/${seq_name}.fasta \
           -o /annotation/angiosperm/gb > /dev/null
-    mv /annotation/angiosperm/gb/${seq_name}.gb /annotation/angiosperm/gb2/${seq_name}.gb
+    mv /path/to/annotation/angiosperm/gb/${seq_name}.gb /path/to/annotation/angiosperm/gb2/${seq_name}.gb
 done
 ~~~
 *ps1.* 反向重复区最短长度设为10k是因为我不想让PGA注释反向重复区，具体原因感兴趣的话可以阅读[开发文档](Development.md)  
@@ -84,7 +84,7 @@ done
 使用两个软件注释的原因是一个软件注释不准确（例如起始、终止密码子错误）。但是要注意，两个软件使用的参考物种是不同的，这是出于以下原因：如果只使用基部物种（如无油樟），则一些在近源种中才有的基因会无法注释到;如果选择了相应的近源物种，则在实际操作中会出现基因名混乱的问题。这是因为现有软件都是基于BLAST进行注释的，所以如果参考基因组中的基因名是错误的话，则注释出来的也是错误的，如参考基因组中如果错误的将atpI写成了aptI，trnK-UUU简写成trnK，则注释结果中就会出现这两种名称。显然这是不对的。基于此，我在使用两种软件进行注释时分别选取了不同的策略，从而保证注释全面、名称准确。而之所以选择GeSeq添加近源物种、PGA只使用基部物种，是因为GeSeq作为在线服务器选择近源物种较方便，同时其基因名本身就不规范（主要它的那个Reference没有公开，不知道具体内容），后期需要校正，校正一个也是校，多校正一个近源物种的也是校。另一方面，PGA对于参考文件的要求较高（见FAQ2）,每个物种的近源种都制作的话太过耗费时间。
 
 ## 5.将GeSeq、PGA注释结果转换为gff
-使用[gff2gff4GeSeq](gff2gff4GeSeq.py)将GeSeq的注释结果转换；使用[gbk2gff4PGA](gbk2gff4PGA.py)将PGA的注释结果转换。  
+使用[curate_geseq.py](curate_geseq.py)将GeSeq的注释结果转换。  
 geseq_info,txt, pga_info.txt和geseq.log请参考[example](example)文件中的示例。  
 **注意：PGA和GeSeq转换时请使用不同的前缀，否则后面的校正解析时会出问题，具体原因感兴趣的话可以阅读[开发文档](Development.md)**
 ~~~bash
@@ -106,10 +106,9 @@ python gbk2gff4PGA.py -i pga_info.txt
 基于步骤6生成的两个gff注释文件，使用[correct.py](correct.py)进行校正  
 correct_info,txt和correct.log请参考[example](example)文件中的示例。
 ~~~bash
-python correct.py combine -i correct_info.txt > correct_info.txt
-# correct_info.txt包含六列（请不要保留无列名）
-# geseq转换后gff的路径    PGA转换后的gff路径    基因组fasta文件路径    结果gff存储路径   基因组序列名    基因前缀
-
+python correct.py combine -i correct_info.txt > correct.log
+# correct_info.txt包含四列（请不要保留列名）
+# geseq转换后gff的路径    PGA genbank文件路径    结果gff存储路径   基因前缀
 ~~~
 
 目前自动检查、校正实现了以下功能：
@@ -132,7 +131,7 @@ python correct.py combine -i correct_info.txt > correct_info.txt
 根据步骤7的log文件检查每个gff文件中区域重复的基因，并且删去相应的重复条目（包括gene和其附属的CDS、exon等）。删去cds区长度小于33的基因。同时检查pseudo gene是否需要保留，详细指导见FAQ3.
 
 ## 8.重新标号与自动添加rps12基因
-由于8中删去了一些基因条目，所以需要对重新排序，否则明明只有124个基因，但是最后一个基因名却是ABMAT127会给人造成误解（从文件格式上来说并没有错，但是我强迫症）。另一方面是上述所有步骤都屏蔽了rps12基因，因为这个基因是trans-spliced基因，处理起来非常麻烦，所以放在最后加。  
+由于7中删去了一些基因条目，所以需要对重新排序，会出现否则明明只有124个基因，但是最后一个基因名却是ABMAT127会给人造成误解（从文件格式上来说并没有错，但是我强迫症）。另一方面是上述所有步骤都屏蔽了rps12基因，因为这个基因是trans-spliced基因，处理起来非常麻烦，所以放在最后加。  
 *ps:* 目前自动rps12基因只限于高等植物，这是因为低等植物和高等植物的rps12有些不一样，具体原因感兴趣的话可以阅读[开发文档](Development.md),后期可能会完善这个问题。
 
 ~~~bash
@@ -143,7 +142,7 @@ python correct.py rps12 -i rps12_info.txt > rps12.log
 ~~~
 
 ## 9. （可选）生成NCBI上传所需文件
-如果需要上传NCBI，请使用[gff2tbl.py](gff2tbl.py)转换完全正确的gff至tbl文件。由于rps12的特殊性，该基因的信息需要手动添加。
+如果需要上传NCBI，请使用[gff2tbl.py](utilities/gff2tbl.py)转换完全正确的gff至tbl文件。由于rps12的特殊性，该基因的信息需要手动添加。
 
 ## FAQ
 1. 不规范命名基因  
@@ -187,6 +186,3 @@ RNA editing是指从参考基因组转录到RNA的生物过程是由一个特殊
 ## 仍待完善的功能和已知Bug
 1. 步骤6中tRNA名称校正未实现自动化
 2. rps12目前只能针对高等植物，低等植物的还不行
-3. 步骤7中的校正与插补功能会引起部分重复（如psbZ，trnM-CAU），目前尚不知道问题在哪，后期可能会排除。不过该步骤之后紧接手工校
-正，所以不影响结果，只是会增加手工校正工作量。
-4. 使用gffutils模块编写的功能后期会全部换成GFF模块编写

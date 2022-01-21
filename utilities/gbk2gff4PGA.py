@@ -12,12 +12,6 @@ import os
 from Bio import SeqIO
 from Bio.SeqFeature import SeqFeature, FeatureLocation, CompoundLocation
 
-location = os.path.abspath(os.path.join(__file__, '..'))
-tb_cds = pd.read_table(os.path.join(location, 'ref/cds.txt'))
-tb_rna = pd.read_table(os.path.join(location, 'ref/rna.txt'))
-product_dict = {record['name']: record['product'] for record in tb_cds.to_dict('records')}
-rna_dict = {record['name']: record['product'] for record in tb_rna.to_dict('records')}
-
 
 def get_phase(genbank_feature):
     """
@@ -84,7 +78,7 @@ def get_record(record_feature, attributes):
     return feature_record
 
 
-def main(genbank_path, new_gff_path, seq_id, species_id):
+def gbk2gff(genbank_path, new_gff_path, species_id):
     print('Start change', os.path.basename(new_gff_path))
     records_list = []
     genome = SeqIO.read(genbank_path, "genbank")
@@ -154,11 +148,12 @@ def main(genbank_path, new_gff_path, seq_id, species_id):
             records_list.append(get_record(ele, gene_attributes))
     records_dict = {index: record for index, record in enumerate(records_list)}
     result_gff = pd.DataFrame.from_dict(records_dict, 'index')
-    result_gff['seqid'] = seq_id
+    result_gff['seqid'] = genome.id
     result_gff['score'] = '.'
     result_gff['source'] = 'PGA'
     result_gff = result_gff[["seqid", "source", "type", "start", "end", "score", "strand", "phase", "attributes"]]
     result_gff.to_csv(new_gff_path, sep='\t', header=False, index=False, encoding='utf8')
+    return genome.seq
 
 
 if __name__ == '__main__':
@@ -168,6 +163,6 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--info_table', required=True,
                         help='<file_path>  The sample information table')
     args = parser.parse_args()
-    info_table = pd.read_table(args.info_table, names=['genbank_path', 'new_gff_path', 'seq_id', 'species_id'])
+    info_table = pd.read_table(args.info_table, names=['genbank_path', 'new_gff_path', 'species_id'])
     for ind, row in info_table.iterrows():
-        main(*row.to_list())
+        gbk2gff(*row.to_list())

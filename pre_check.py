@@ -91,8 +91,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='Check and fix the start of chloroplast genome')
     parser.add_argument('-i', '--info_table', required=True,
-                        help='<file_path>  information table which has two columns: seq fasta path , PGA gff path, '
-                             'output fasta path')
+                        help='<file_path> information table which has two columns: PGA Genbank path, output fasta path')
     args = parser.parse_args()
     info_table = pd.read_table(args.info_table, names=['gb_path_pga', 'out_path'])
     for ind, row in info_table.iterrows():

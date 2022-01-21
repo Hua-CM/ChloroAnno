@@ -8,14 +8,15 @@
 
 import pandas as pd
 import gffutils
-import os
-from check import CheckCp
+import os, json
+from utilities.obsoleted import CheckCp
 
-location = os.path.abspath(os.path.join(__file__, '..'))
-tb_cds = pd.read_table(os.path.join(location, 'ref/cds.txt'))
-tb_rna = pd.read_table(os.path.join(location, 'ref/rna.txt'))
-product_dict = {record['name']: record['product'] for record in tb_cds.to_dict('records')}
-rna_dict = {record['name']: record['product'] for record in tb_rna.to_dict('records')}
+
+location = os.path.abspath(os.path.join(__file__, '../..'))
+with open(os.path.join(location, '../ref/cds.json')) as f_in:
+    product_dict = json.load(f_in)
+with open(os.path.join(location, '../ref/rna.json')) as f_in:
+    rna_dict = json.load(f_in)
 replace_dict = {'petE':	 'petG',
                 'psbG':	 'ndhK',
                 'lhbA':	 'psbZ'}
