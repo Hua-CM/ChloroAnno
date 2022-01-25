@@ -33,6 +33,8 @@ def tidy_gff(gff_path, _prefix):
     for feature in gff_file.features:
         if not feature.type == 'gene':
             continue
+        if feature.qualifiers.get('source') == ['Chloe']:
+            continue
         gene_type = feature.qualifiers.get('gene_biotype')[0]
         gene_name = feature.qualifiers.get('gene')[0]
         gene_count += 1
