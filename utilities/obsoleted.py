@@ -464,3 +464,70 @@ class CorrectGff:
     def check2(self):
         tmp_check = CheckCp(self.gff_new_path)
         tmp_check.check_region()
+
+class FixPosition:
+    def __init__(self, _gb_path_pga, _out_path):
+        self.path = _gb_path_pga
+        self.out_path = _out_path
+
+    def _fix_postiion(self):
+        """
+        Note: This function give tacit consent to that trnH-GUG appears in genome
+        :return:
+        """
+        print('fix position')
+        with warnings.catch_warnings(record=True) as w:
+            pga_seq = SeqIO.read(self.path, 'genbank')
+            t_location = None
+            t_start = None
+            t_end = None
+            for gene in pga_seq.features:
+                if gene.qualifiers.get('gene', ['not_gene'])[0] == 'trnH-GUG' and gene.type == 'gene':
+                    t_location = gene.location
+            if t_location is None:
+                for bio_war in w:
+                    try:
+                        t_start, t_end = re.search(r'(\d+)\.\.(\d+)', bio_war.message.__str__()).group(1, 2)
+                    except AttributeError:
+                        continue
+                t_strand = -1
+            else:
+                t_start = t_location.start
+                t_end = t_location.end
+                t_strand = t_location.strand
+            if t_strand == 1:
+                part1, part2 = pga_seq.seq[0: int(t_end)+5], pga_seq.seq[int(t_end)+5:]
+                seq_fixed = part2 + part1
+                seq_fixed = SeqRecord(seq=seq_fixed, id=pga_seq.id, description='')
+                seq_fixed.seq = seq_fixed.seq.reverse_complement()
+            else:
+                part1, part2 = pga_seq.seq[0: int(t_start)-5], pga_seq.seq[int(t_start)-5:]
+                seq_fixed = part2 + part1
+                seq_fixed = SeqRecord(seq=seq_fixed, id=pga_seq.id, description='')
+            SeqIO.write(seq_fixed, self.out_path, 'fasta')
+            print('fix done')
+
+    def check_need(self):
+        pga_seq = SeqIO.read(self.path, 'genbank')
+        # check housekeeping gene
+        gene_name_list = []
+        for gene in pga_seq.features:
+            gene_name_list.append(gene.qualifiers.get('gene', ['not_gene'])[0])
+        if ('matK' not in gene_name_list) and ('matk' not in gene_name_list):
+            print('matK loss!')
+        if ('rbcL' not in gene_name_list) and ('rbcl' not in gene_name_list):
+            print('rbcL loss!')
+        if 'trnH-GUG' not in gene_name_list:
+            print('trnH loss!')
+            return
+        # check ambiguous nucleotide
+        if re.compile('[^ATCGNatcgn]').findall(str(pga_seq.seq)):
+            print('Genome contain invalid characters (not ATCGNatcgn)')
+        # check and fix position
+        try:
+            pga_seq.features.sort(key=lambda x: x.location.start)
+        except AttributeError:
+            self._fix_postiion()
+        else:
+            if not pga_seq.features[1].qualifiers['gene'][0] == 'trnH-GUG':
+                self._fix_postiion()

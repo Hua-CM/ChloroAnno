@@ -20,6 +20,7 @@ import pandas as pd
 from Bio import SeqIO
 from BCBio import GFF
 from Bio.SeqRecord import SeqRecord
+from difflib import SequenceMatcher
 import os, json
 
 
@@ -28,9 +29,18 @@ with open(os.path.join(file_location, 'ref/cds.json')) as f_in:
     product_dict = json.load(f_in)
 with open(os.path.join(file_location, 'ref/rna.json')) as f_in:
     rna_dict = json.load(f_in)
+with open(os.path.join(file_location, 'ref/region.json')) as f_in:
+    region_set_list = [set(_) for _ in json.load(f_in).items()]
 
 standard_name_list = list(product_dict.keys())
 standard_name_list += list(rna_dict.keys())
+
+
+def del_dir(_dir):
+    for r, d, f in os.walk(_dir):
+        for files in f:
+            os.remove(os.path.join(r, files))
+        os.removedirs(r)
 
 
 def check_cds(gene, genome_seq):
@@ -43,6 +53,15 @@ def check_cds(gene, genome_seq):
     for cds in gene.sub_features:
         check_seq += cds.location.extract(genome_seq)
     check_seq.translate(table=11, cds=True)
+
+
+def correct_name(gene_name):
+    _similarities = [SequenceMatcher(None, gene_name, _name2).quick_ratio() for _name2 in standard_name_list]
+    index_max = max(range(len(_similarities)), key=_similarities.__getitem__)
+    if _similarities[index_max] > 0.8:
+        return standard_name_list[index_max]
+    else:
+        return 'incorrect'
 
 
 # Based on SeqRecord and SeqFearure
@@ -66,10 +85,14 @@ class CheckCp2:
             print('rbcL loss!')
 
     def check_name(self):
+        return_dict = {}
         for gene in self.gff.features:
             gene_name = gene.qualifiers.get('Name')[0]
             if not ((gene_name in CheckCp2.standard_name_list) or gene_name.startswith('orf')):
-                print('check ' + gene_name)
+                curated_name = correct_name(gene_name)
+                return_dict.setdefault(gene_name, curated_name)
+                print('check ' + gene_name + ' . Is it ' + curated_name + "?")
+        return return_dict
 
     def check_region(self):
         """
@@ -83,8 +106,9 @@ class CheckCp2:
             locus_list.append(gene.qualifiers.get('Name')[0])
         for i in range(len(region_list) - 1):
             if not region_list[i] < region_list[i + 1]:
-                print(locus_list[i], region_list[i], ' and ', locus_list[i + 1], region_list[i + 1],
-                      ' are duplicated')
+                if set(locus_list[i:i+2]) not in region_set_list:
+                    print(locus_list[i], region_list[i], ' and ', locus_list[i + 1], region_list[i + 1],
+                          ' are duplicated')
         print('check duplicated region done')
 
     def renumber(self, prefix):

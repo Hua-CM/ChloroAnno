@@ -12,89 +12,108 @@
 
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
-import pandas as pd
 import os
 import re
-import warnings
+from tempfile import mktemp
+from shutil import copy
+from Bio.Blast.Applications import NcbitblastnCommandline, NcbiblastnCommandline, NcbimakeblastdbCommandline
+from utilities.check import del_dir
+from collections import defaultdict
 
 
-class FixPosition:
-    def __init__(self, _gb_path_pga, _out_path):
-        self.path = _gb_path_pga
-        self.out_path = _out_path
+class CurateSequence:
+    def __init__(self, _seq_path, _out_path):
+        self.genome = _seq_path
+        self.query1 = os.path.abspath(os.path.join(__file__, '../ref/trnH.fa'))
+        self.query2 = os.path.abspath(os.path.join(__file__, '../ref/protein.fa'))
+        self.output = _out_path
+        self.tmp = mktemp()
 
-    def _fix_postiion(self):
-        """
-        Note: This function give tacit consent to that trnH-GUG appears in genome
-        :return:
-        """
-        print('fix position')
-        with warnings.catch_warnings(record=True) as w:
-            pga_seq = SeqIO.read(self.path, 'genbank')
-            t_location = None
-            t_start = None
-            t_end = None
-            for gene in pga_seq.features:
-                if gene.qualifiers.get('gene', ['not_gene'])[0] == 'trnH-GUG' and gene.type == 'gene':
-                    t_location = gene.location
-            if t_location is None:
-                for bio_war in w:
-                    try:
-                        t_start, t_end = re.search(r'(\d+)\.\.(\d+)', bio_war.message.__str__()).group(1, 2)
-                    except AttributeError:
-                        continue
-                t_strand = -1
-            else:
-                t_start = t_location.start
-                t_end = t_location.end
-                t_strand = t_location.strand
-            if t_strand == 1:
-                part1, part2 = pga_seq.seq[0: int(t_end)+5], pga_seq.seq[int(t_end)+5:]
-                seq_fixed = part2 + part1
-                seq_fixed = SeqRecord(seq=seq_fixed, id=pga_seq.id, description='')
-                seq_fixed.seq = seq_fixed.seq.reverse_complement()
-            else:
-                part1, part2 = pga_seq.seq[0: int(t_start)-5], pga_seq.seq[int(t_start)-5:]
-                seq_fixed = part2 + part1
-                seq_fixed = SeqRecord(seq=seq_fixed, id=pga_seq.id, description='')
-            SeqIO.write(seq_fixed, self.out_path, 'fasta')
-            print('fix done')
+    def _make_db(self):
+        os.mkdir(self.tmp)
+        copy(self.genome, os.path.join(self.tmp, 'genome.fa'))
+        self.genome = os.path.join(self.tmp, 'genome.fa')
+        cline = NcbimakeblastdbCommandline(input_file=self.genome, dbtype='nucl')
+        cline()
 
-    def check_need(self):
-        pga_seq = SeqIO.read(self.path, 'genbank')
-        # check housekeeping gene
-        gene_name_list = []
-        for gene in pga_seq.features:
-            gene_name_list.append(gene.qualifiers.get('gene', ['not_gene'])[0])
-        if ('matK' not in gene_name_list) and ('matk' not in gene_name_list):
+    def _blastn_wrapper(self):
+        cline = NcbiblastnCommandline(
+            query=self.query1,
+            db=self.genome,
+            evalue=0.001,
+            out=os.path.join(self.tmp, 'blastn.res'),
+            outfmt="6 qseqid sstart send sstrand evalue")
+        cline()
+
+    def _tblastn_wrapper(self):
+        cline = NcbitblastnCommandline(
+            query=self.query2,
+            db=self.genome,
+            evalue=0.001,
+            out=os.path.join(self.tmp, 'tblastn.res'),
+            outfmt="6 qseqid sstart send sstrand evalue")
+        cline()
+
+    def curate(self):
+        self._make_db()
+        self._blastn_wrapper()
+        self._tblastn_wrapper()
+
+        def _cal_dis_(gene1, gene2):
+            return abs(
+                (int(gene1.get('start')) + int(gene1.get('end'))) / 2 - (int(gene2.get('start')) + int(gene2.get('end'))) / 2
+            )
+
+        raw_seq = SeqIO.read(self.genome, 'fasta')
+        key_lst = 'start end strand evalue'.split()
+        res_dict = defaultdict()
+        with open(os.path.join(self.tmp, 'blastn.res')) as f1, open(os.path.join(self.tmp, 'tblastn.res')) as f2:
+            for line in f1.read().splitlines() + f2.read().splitlines():
+                res_dict.setdefault(line.split()[0], []).append(dict(zip(key_lst, line.split()[1:])))
+        # check housekeeping
+        if ('matK' not in res_dict) and ('matk' not in res_dict):
             print('matK loss!')
-        if ('rbcL' not in gene_name_list) and ('rbcl' not in gene_name_list):
+        if ('rbcL' not in res_dict) and ('rbcl' not in res_dict):
             print('rbcL loss!')
-        if 'trnH-GUG' not in gene_name_list:
-            print('trnH loss!')
-            return
         # check ambiguous nucleotide
-        if re.compile('[^ATCGNatcgn]').findall(str(pga_seq.seq)):
+        if re.compile('[^ATCGNatcgn]').findall(str(raw_seq.seq)):
             print('Genome contain invalid characters (not ATCGNatcgn)')
-        # check and fix position
-        try:
-            pga_seq.features.sort(key=lambda x: x.location.start)
-        except AttributeError:
-            self._fix_postiion()
+        # fix position
+        ## for multiple psbA
+        index_min = min(range(len(res_dict.get('psbA'))), key=lambda x: float(res_dict.get('psbA')[x].get('evalue')))
+        psbA = res_dict.get('psbA')[index_min]
+        ## for multiple trnH
+        dis_lst = [_cal_dis_(_gene, psbA) for _gene in res_dict.get('trnH-GUG')]
+        index_min = min(range(len(dis_lst)), key=dis_lst.__getitem__)
+        trnh = res_dict.get('trnH-GUG')[index_min]
+        if trnh.get('strand') == 'plus':
+            _start = len(raw_seq) - int(trnh.get('start')) + 1 - 5
+            raw_seq.seq = raw_seq.seq.reverse_complement()
         else:
-            if not pga_seq.features[1].qualifiers['gene'][0] == 'trnH-GUG':
-                self._fix_postiion()
+            _start = int(trnh.get('start'))
+        part1, part2 = raw_seq.seq[0: _start], raw_seq.seq[_start:]
+        seq_fixed = part2 + part1
+        seq_fixed = SeqRecord(seq=seq_fixed, id=raw_seq.id, description='')
+        SeqIO.write(seq_fixed, self.output, 'fasta')
+        del_dir(self.tmp)
 
 
-if __name__ == '__main__':
+def main():
     import argparse
     parser = argparse.ArgumentParser(
         description='Check and fix the start of chloroplast genome')
-    parser.add_argument('-i', '--info_table', required=True,
-                        help='<file_path> information table which has two columns: PGA Genbank path, output fasta path')
+    parser.add_argument('-i', '--input', required=True,
+                        help='<file_path> one sequence path per line')
+    parser.add_argument('-o', '--output', required=True,
+                        help='<directory>  output directory')
     args = parser.parse_args()
-    info_table = pd.read_table(args.info_table, names=['gb_path_pga', 'out_path'])
-    for ind, row in info_table.iterrows():
-        print(os.path.basename(row.to_list()[0]))
-        b = FixPosition(*row.to_list())
-        b.check_need()
+    with open(args.input) as f_in:
+        sequence_lst = f_in.read().splitlines()
+    for row in sequence_lst:
+        print(os.path.basename(row))
+        main_ins = CurateSequence(row, os.path.join(args.output, os.path.basename(row)))
+        main_ins.curate()
+
+
+if __name__ == '__main__':
+    main()

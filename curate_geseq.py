@@ -10,6 +10,7 @@ from BCBio import GFF
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqFeature import SeqFeature
 from utilities.check import CheckCp2, product_dict, rna_dict
+from os.path import join, split
 
 
 class MySeqFeature(SeqFeature):
@@ -25,6 +26,7 @@ class MySeqFeature(SeqFeature):
 
 def tidy_gff(gff_path, _prefix):
     gff_file = next(GFF.parse(gff_path))
+    print('check ', gff_file.id, ' start')
     gene_count = 0
     feature_lst = []
     gff_file.features.sort(key=lambda x: x.location.start)
@@ -84,13 +86,37 @@ def tidy_gff(gff_path, _prefix):
     return SeqRecord(id=gff_file.id, seq=gff_file.seq, features=feature_lst)
 
 
+def tidy_gff2(curated_gff, name_dict):
+    """
+    A second round tidy based on the CheckCp2 check results
+    :param curated_gff: The curated gff
+    :param name_dict: the incorrect name dict {incorrect name: correct name}
+    :return:
+    """
+    feature_lst = []
+    for feature in curated_gff.features:
+        _gene_name = feature.qualifiers.get('Name')[0]
+        if _gene_name in name_dict:
+            _correct = name_dict.get(_gene_name)
+            if not name_dict.get(_correct) == 'incorrect':
+                feature.qualifiers['Name'] = [_correct]
+            else:
+                continue
+        feature_lst.append(feature)
+    curated_gff.features = feature_lst
+    return curated_gff
+
+
 def parseArgs():
     import argparse
     parser = argparse.ArgumentParser(
         description='Change GeSeq result gff to a version that meet submission requirement')
     parser.add_argument('-i', '--info_table', required=True,
-                        help='<file_path>  information table which has three columns: Geseq gff path, '
-                             'result path, locus prefix')
+                        help='<file_path>  information table which has two columns: Geseq gff path, locus prefix')
+    parser.add_argument('-o', '--output', required=True,
+                        help='<directory>  output directory')
+    parser.add_argument('-a', '--auto', action="store_true", default=False,
+                        help='Correct/delete gene with incorrect name in output gff automatically')
     args = parser.parse_args()
     return args
 
@@ -99,12 +125,14 @@ def main(args):
     with open(args.info_table) as f_in:
         info_table = f_in.read().splitlines()
     for row in info_table:
-        raw_gff_path, new_gff_path, species_id = row.split()
+        raw_gff_path, species_id = row.split()
         curated_gff = tidy_gff(raw_gff_path, species_id)
         tmp_check = CheckCp2(curated_gff)
-        tmp_check.check_name()
+        name_dict = tmp_check.check_name()
         tmp_check.check_region()
-        with open(new_gff_path, 'w') as f_out:
+        if args.auto:
+            curated_gff = tidy_gff2(curated_gff, name_dict)
+        with open(join(args.output, split(raw_gff_path)[-1]), 'w') as f_out:
             GFF.write([curated_gff], f_out, include_fasta=False)
 
 
