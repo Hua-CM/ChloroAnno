@@ -1,55 +1,14 @@
+check  G451025LY0702  start
+check rps19-fragment . Is it incorrect?
+check trnS-GUC . Is it trnS-GCU?
+check rps12-fragment . Is it incorrect?
+check clpP1 . Is it clpP?
+check ycf1-fragment . Is it incorrect?
+check rps19-fragment . Is it incorrect?
 check duplicated region done
-Start change 542124LY0091.gff
-change done
-check rrn_5
-check rrn_5
-['trnK-UUU'] [1657,4242]  and  ['matK'] [1948,3483]  are duplicated
-['psbD'] [32277,33338]  and  ['psbC'] [33286,34707]  are duplicated
-['atpE'] [52375,52776]  and  ['atpB'] [52773,54269]  are duplicated
-['rps3'] [82135,82797]  and  ['rpl22'] [82782,83277]  are duplicated
-['rrn_5'] [106674,106794]  and  ['rrn5'] [106674,106794]  are duplicated
-['rrn_5'] [129601,129721]  and  ['rrn5'] [129601,129721]  are duplicated
-check duplicated region done
-Start change 532628LY0019.gff
-change done
-check tRNA-His_(GUG)
-check tRNA-Lys_(UUU)
-check tRNA-Gln_(UUG)
-check tRNA-Ser_(GCU)
-check tRNA-Gly_(UCC)
-check tRNA-Arg_(UCU)
-check tRNA-Cys_(GCA)
-check tRNA-Asp_(GUC)
-check tRNA-Tyr_(GUA)
-check tRNA-Glu_(UUC)
-check tRNA-Thr_(GGU)
-check tRNA-Ser_(UGA)
-check tRNA-Gly_(GCC)
-check trnA-FME
-check tRNA-Ser_(GGA)
-check tRNA-Thr_(UGU)
-check tRNA-Leu_(UAA)
-check tRNA-Phe_(GAA)
-check tRNA-Val_(UAC)
-check tRNA-Met_(CAU)
-check tRNA-Trp_(CCA)
-check tRNA-Pro_(UGG)
-check tRNA-His_(CAU)
-check tRNA-Leu_(CAA)
-check tRNA-Val_(GAC)
-check tRNA-Ile_(GAU)
-check tRNA-Ala_(UGC)
-check tRNA-Arg_(ACG)
-check tRNA-Asn_(GUU)
-check tRNA-Leu_(UAG)
-check tRNA-Asn_(GUU)
-check tRNA-Arg_(ACG)
-check tRNA-Ala_(UGC)
-check tRNA-Ile_(GAU)
-check tRNA-Val_(GAC)
-check tRNA-Leu_(CAA)
-check tRNA-His_(CAU)
-['tRNA-Lys_(UUU)'] [1719,4290]  and  ['matK'] [2025,3548]  are duplicated
-['psbD'] [33455,34516]  and  ['psbC'] [34464,35885]  are duplicated
-['atpE'] [53576,53977]  and  ['atpB'] [53974,55470]  are duplicated
+check  G451025LY0813  start
+check rps12-fragment . Is it incorrect?
+check clpP1 . Is it clpP?
+check rps3-fragment . Is it incorrect?
+trnP-UGG [69730,69804]  and  trnP-GGG [69732,69802]  are duplicated
 check duplicated region done

@@ -98,7 +98,7 @@ def tidy_gff2(curated_gff, name_dict):
         _gene_name = feature.qualifiers.get('Name')[0]
         if _gene_name in name_dict:
             _correct = name_dict.get(_gene_name)
-            if not name_dict.get(_correct) == 'incorrect':
+            if not _correct == 'incorrect':
                 feature.qualifiers['Name'] = [_correct]
             else:
                 continue
@@ -129,9 +129,10 @@ def main(args):
         curated_gff = tidy_gff(raw_gff_path, species_id)
         tmp_check = CheckCp2(curated_gff)
         name_dict = tmp_check.check_name()
-        tmp_check.check_region()
         if args.auto:
             curated_gff = tidy_gff2(curated_gff, name_dict)
+        tmp_check = CheckCp2(curated_gff)
+        tmp_check.check_region()
         with open(join(args.output, split(raw_gff_path)[-1]), 'w') as f_out:
             GFF.write([curated_gff], f_out, include_fasta=False)
 
