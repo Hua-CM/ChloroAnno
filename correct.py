@@ -67,12 +67,14 @@ class CorrectGff2:
                         self.curated_features.append(fixed_gene)
             else:  # rRNA and tRNA
                 self.curated_features.append(gene)
+        self.curated_features.sort(key=lambda x: x.location.start)
 
     def add_trna(self):
         geseq_trnas = [gene for gene in self._create_dialect_(self.geseq).keys() if gene.startswith('trn')]
         for gene in self.pga_dict.keys():
             if gene.startswith('trn') and (gene not in geseq_trnas):
                 self.curated_features += self.pga_dict.get(gene)
+        self.curated_features.sort(key=lambda x: x.location.start)
 
     def check(self):
         self.corrected = SeqRecord(id=self.geseq.id, seq='', features=self.curated_features)
@@ -93,13 +95,17 @@ def parseArgs():
     parser_a = subparsers.add_parser('combine', help='combine for combining GeSeq and PGA results')
     parser_a.add_argument('-i', '--info_table', required=True,
                           help='<file_path>  information table which has four columns: Geseq gff path, '
-                               'PGA genbank path, curated path, locus prefix')
+                               'PGA genbank path, locus prefix')
+    parser_a.add_argument('-o', '--output', required=True,
+                          help='<directory_path>  output directory')
     parser_a.set_defaults(subcmd='combine')
     # for step8
     parser_b = subparsers.add_parser('rps12', help='adding rps12 and renumber')
     parser_b.add_argument('-i', '--info_table', required=True,
-                          help='<file_path>  information table which has five columns: Raw gff path, '
-                               'result path, PGA genbank file, seqid, locus prefix')
+                          help='<file_path>  information table which has three columns: '
+                               'Gff path, PGA genbank file, locus prefix')
+    parser_b.add_argument('-o', '--output', required=True,
+                          help='<directory_path>  output directory')
     parser_b.set_defaults(subcmd='rps12')
     args = parser.parse_args()
     return args
@@ -108,29 +114,32 @@ def parseArgs():
 def main(args):
     if args.subcmd == 'combine':
         info_table = pd.read_table(args.info_table,
-                                   names=['gff_path_ge', 'gb_path_pga', 'out', 'species_pre'])
+                                   names=['gff_path_ge', 'gb_path_pga', 'species_pre'])
         for ind, row in info_table.iterrows():
             # use output path as a temporary curated path
-            genome_seq = gbk2gff(row['gb_path_pga'], row['out'], row['species_pre'])
-            main_ins = CorrectGff2(row['gff_path_ge'], row['out'], genome_seq, row['species_pre'])
+            outfile = os.path.join(args.output, os.path.split(row['gff_path_ge'])[-1])
+            genome_seq = gbk2gff(row['gb_path_pga'], outfile, row['species_pre'])
+            main_ins = CorrectGff2(row['gff_path_ge'], outfile, genome_seq, row['species_pre'])
             main_ins.correct_records()
             main_ins.add_trna()
             main_ins.check()
-            GFF.write([main_ins.corrected], open(row['out'], 'w'), include_fasta=False)
+            GFF.write([main_ins.corrected], open(outfile, 'w'), include_fasta=False)
 
     if args.subcmd == 'rps12':
         info_table = pd.read_table(args.info_table,
-                                   names=['raw_gff_path', 'new_gff_path', 'pga_gb_path', 'species_pre'])
+                                   names=['raw_gff_path', 'pga_gb_path', 'species_pre'])
         for ind, row in info_table.iterrows():
             print(os.path.basename(row['raw_gff_path']))
+            outfile = os.path.join(args.output, os.path.split(row['raw_gff_path'])[-1])
             tmp_check = CheckCp2(row['raw_gff_path'])
-            tmp_df = tmp_check.renumber(*row[['seq_id', 'species_pre']])
+            tmp_check.renumber(row['species_pre'])
+            # use output path as temporary file
+            GFF.write([tmp_check.gff], open(outfile, 'w'), include_fasta=False)
             try:
-                tmp_df = add_rps12(row['pga_gb_path'], tmp_df, row['species_pre'])
+                tmp_df = add_rps12(row['pga_gb_path'], outfile, row['species_pre'])
+                tmp_df.to_csv(outfile, sep='\t', index=False, header=False)
             except:
                 print('please manually add rps12')
-            finally:
-                tmp_df.to_csv(row['new_gff_path'], sep='\t', index=False, header=False)
 
 
 if __name__ == '__main__':

@@ -113,8 +113,8 @@ def parseArgs():
     import argparse
     parser = argparse.ArgumentParser(
         description='Change GeSeq result gff to a version that meet submission requirement')
-    parser.add_argument('-i', '--info_table', required=True,
-                        help='<file_path>  information table which has two columns: Geseq gff path, locus prefix')
+    parser.add_argument('-i', '--input', required=True,
+                        help='<file_path>  One Geseq gff path per line')
     parser.add_argument('-o', '--output', required=True,
                         help='<directory>  output directory')
     parser.add_argument('-a', '--auto', action="store_true", default=False,
@@ -126,9 +126,8 @@ def parseArgs():
 def main(args):
     with open(args.info_table) as f_in:
         info_table = f_in.read().splitlines()
-    for row in info_table:
-        raw_gff_path, species_id = row.split()
-        curated_gff = tidy_gff(raw_gff_path, species_id)
+    for raw_gff_path in info_table:
+        curated_gff = tidy_gff(raw_gff_path, 'GESEQ')
         tmp_check = CheckCp2(curated_gff)
         name_dict = tmp_check.check_name()
         if args.auto:

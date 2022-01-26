@@ -83,9 +83,8 @@ done
 geseq_info,txt, pga_info.txt和geseq.log请参考[example](example)文件中的示例。  
 **注意：PGA和GeSeq转换时请使用不同的前缀，否则后面的校正解析时会出问题，具体原因感兴趣的话可以阅读[开发文档](Development.md)**
 ~~~bash
-python curated_geseq.py -i geseq_info.txt -o /path/to/curated -a > geseq.log
-# geseq_info.txt包含两列（请不要保留列名）
-# GeSeq原始gff文件路径  基因前缀
+python curated_geseq.py -i geseq.lst -o /path/to/curated -a > geseq.log
+# geseq.lst  每行一个GeSeq输出文件
 ~~~
 
 转换完成后，根据log文件，手工校正每一个GeSeq中的不规范名称。**这步非常重要，因为后面的校正脚本中很多是依赖基因名的，所以必须认真。** 该步骤非常耗时间，为了节省时间，增加了`-a`选项，使用该选项的话，所有geseq.log中基因名有问题的基因都会先自动校正（如clpP1校正为clpP，ndha校正为ndhA），无法自动校正的会丢弃（比如XXX-fragment这种）。  
@@ -95,9 +94,9 @@ python curated_geseq.py -i geseq_info.txt -o /path/to/curated -a > geseq.log
 基于步骤6生成的两个gff注释文件，使用[correct.py](correct.py)进行校正  
 correct_info,txt和correct.log请参考[example](example)文件中的示例。
 ~~~bash
-python correct.py combine -i correct_info.txt > correct.log
-# correct_info.txt包含四列（请不要保留列名）
-# geseq转换后gff的路径    PGA genbank文件路径    结果gff存储路径   基因前缀
+python correct.py combine -i correct_info.txt -o correct > correct.log
+# correct_info.txt包含三列（请不要保留列名）
+# geseq转换后gff的路径    PGA genbank文件路径    基因前缀
 ~~~
 
 目前自动检查、校正实现了以下功能：
@@ -112,9 +111,9 @@ python correct.py combine -i correct_info.txt > correct.log
 8. 起始密码子可能存在RNA-editing现象的基因，自动在起始密码子后30bp寻找替代起始密码子。
 
 *注*：
-1. 以上功能均为自动实现，对于两个GeSeq和PGA注释都有问题的基因（例如根据两个注释gff文件，其实密码子都有问题），会输出到log中，并且
-在gff文件中该基因的attributes会标注"pseudo=true"
+1. 以上功能均为自动实现，对于两个GeSeq和PGA注释都有问题的基因（例如根据两个注释gff文件，其实密码子都有问题），会输出到log中，并且在gff文件中该基因的attributes会标注"pseudo=true"
 2. 由于rps12基因的特殊性，所有检查均不涉及rps12基因（脚本检测到rps12基因会自动跳过）
+3. 由于计算机计数从0开始和python的切片机制，因此log文件中位置信息的起始位点会和gff文件中的相差1，是正常现象，不是错误。
 
 ## 5. 人工检查
 根据步骤4的log文件检查每个gff文件中区域重复的基因，并且删去相应的重复条目（包括gene和其附属的CDS、exon等。常见的一些重复区域将不会report，减少工作量）。删去cds区长度小于33的基因。同时检查pseudo gene是否需要保留，详细指导见FAQ3.
@@ -166,8 +165,18 @@ python correct.py rps12 -i rps12_info.txt > rps12.log
 一般是在基因开头或末尾有几bp到一二十bp不等的重复。如atpB和atpE。  
 一般需要校正的其实是完全重复区域的基因，如`['trnM-CAU'] [53865,53936]  and  ['trnT-GGU'] [53870,53928]  are duplicated`和
 `['rrn5'] [107057,107177]  and  ['rrn5S'] [107057,107187]  are duplicated`这种情况。
+   
+3. 为什么correct步骤中有同一个基因出现两次的情况？  
+部分基因组的correct.log可能会出现类似以下的信息，其中`ndhD`和`ycf15`重复了两次。这是因为GeSeq注释中`ndhD`出现了两次，而这两个基因的CDS检查都未通过，所以自动插补了PGA注释中的`ndhD`。而PGA中只有一个`ndhD`，所以是一个基因被插补了两次，因此造成了重复。
+~~~shell
+trnI-CAU [95742,95816]  and  ycf2 [95812,102751]  are duplicated
+ndhD [133416,134919]  and  ndhD [133416,134919]  are duplicated
+ycf15 [182201,182456]  and  ycf15 [182201,182456]  are duplicated
+ycf2 [182604,189543]  and  trnI-CAU [189539,189613]  are duplicated
+check duplicated region done
+~~~
 
-4. RNA-editing  
+5. RNA-editing  
 RNA editing是指从参考基因组转录到RNA的生物过程是由一个特殊的酶完成的，从而使得碱基发生了替换，如下图所示。
 ![wxZPp9.png](https://s1.ax1x.com/2020/09/23/wxZPp9.png)  
 需要注意的是，在基因组注释过程中，除非有直接的转录组证据，否则ACG不应当直接注释为RNA-editing，而是需要注释为pseudogene.
