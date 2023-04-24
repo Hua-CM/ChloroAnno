@@ -6,20 +6,30 @@
 # @Note:
 # @E-mail: njbxhzy@hotmail.com
 
+import argparse
+from collections import defaultdict
+from pathlib import Path
+
+
 import pandas as pd
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqFeature import SeqFeature
+from BCBio import GFF
+
 from utilities.check import CheckCp2, add_rps12, check_cds
 from utilities.gbk2gff4PGA import gbk2gff
-from BCBio import GFF
-from collections import defaultdict
-import os
-import argparse
-
+from utilities import io
 
 class CorrectGff2:
-
     def __init__(self, gff_path_ge, gff_path_pga, seq_ins, species_pre):
+        """_summary_
+
+        Args:
+            gff_path_ge (_type_): _description_
+            gff_path_pga (_type_): _description_
+            seq_ins (Bio.Seq.Seq): _description_
+            species_pre (_type_): _description_
+        """
         self.geseq = next(GFF.parse(gff_path_ge))
         self.pga = next(GFF.parse(gff_path_pga))
         self.seq = seq_ins
@@ -30,6 +40,15 @@ class CorrectGff2:
 
     @staticmethod
     def _create_dialect_(_annotation: SeqRecord):
+        """I use the gene name (e.g. psbA) to link different file (GeSeq and PGA).
+        Thus, I need create a dialect.
+
+        Args:
+            _annotation (SeqRecord): a SeqRecord
+
+        Returns:
+            dialect (dict): {'name': [gene1[SeqFeature], gene2, ....]}
+        """
         _dialect = defaultdict()
         for gene in _annotation.features:
             _dialect.setdefault(gene.qualifiers.get('Name')[0], []).append(gene)
@@ -37,6 +56,16 @@ class CorrectGff2:
 
     @staticmethod
     def _cal_dis_(gene1, gene2):
+        """For gene with multiple copies, particullary tRNA, I use the gene distance 
+        to decide which gene is the one I want to replace.
+
+        Args:
+            gene1 (SeqFeature): _description_
+            gene2 (SeqFeature): _description_
+
+        Returns:
+            Distance (float) : The distance between two genes.
+        """
         return abs((gene1.location.start+gene1.location.end)/2 - (gene2.location.start+gene2.location.end)/2)
 
     def _query_gene_(self, gene: SeqFeature):
@@ -54,6 +83,7 @@ class CorrectGff2:
 
     def correct_records(self):
         for gene in self.geseq.features:
+            # Only tided GeSeq gff has 'gene_biotype' attributes
             gene_type = gene.qualifiers['gene_biotype'][0]
             if gene.qualifiers.get('Name')[0] == 'rps12':
                 continue
@@ -84,7 +114,9 @@ class CorrectGff2:
         checkIns.check_cds(self.seq, add_pseudo=True)
 
 
-def parseArgs():
+def parse_args():
+    """Parse arguments
+    """
     # command line parser
     parser = argparse.ArgumentParser(
         description='Combine GeSeq and PGA annotation results ')
@@ -93,33 +125,38 @@ def parseArgs():
                                             'rps12 for adding rps12 and renumber')
     # for step6
     parser_a = subparsers.add_parser('combine', help='combine for combining GeSeq and PGA results')
-    parser_a.add_argument('-i', '--info_table', required=True,
-                          help='<file_path>  information table which has four columns: Geseq gff path, '
+    parser_a.add_argument('-i', '--info_table', required=True, type=Path, metavar='<File path>',
+                          help='information table which has three columns: Geseq gff path, '
                                'PGA genbank path, locus prefix')
-    parser_a.add_argument('-o', '--output', required=True,
-                          help='<directory_path>  output directory')
+    parser_a.add_argument('-o', '--output', required=True, type=Path, metavar='<Dir path>',
+                          help='output directory')
     parser_a.set_defaults(subcmd='combine')
     # for step8
     parser_b = subparsers.add_parser('rps12', help='adding rps12 and renumber')
-    parser_b.add_argument('-i', '--info_table', required=True,
-                          help='<file_path>  information table which has three columns: '
+    parser_b.add_argument('-i', '--info_table', required=True, type=Path, metavar='<File path>',
+                          help='information table which has three columns: '
                                'Gff path, PGA genbank file, locus prefix')
-    parser_b.add_argument('-o', '--output', required=True,
-                          help='<directory_path>  output directory')
+    parser_b.add_argument('-o', '--output', required=True, type=Path, metavar='<Dir path>',
+                          help='output directory')
     parser_b.set_defaults(subcmd='rps12')
     args = parser.parse_args()
     return args
 
 
 def main(args):
+    """Main interface
+    """
+    if not args.output.exists():
+        args.output.mkdir()
     if args.subcmd == 'combine':
         info_table = pd.read_table(args.info_table,
-                                   names=['gff_path_ge', 'gb_path_pga', 'species_pre'])
-        for ind, row in info_table.iterrows():
+                                   names=['gff_path_ge', 'gb_path_pga', 'prefix'])
+        for idx, row in info_table.iterrows():
             # use output path as a temporary curated path
-            outfile = os.path.join(args.output, os.path.split(row['gff_path_ge'])[-1])
-            genome_seq = gbk2gff(row['gb_path_pga'], outfile, row['species_pre'])
-            main_ins = CorrectGff2(row['gff_path_ge'], outfile, genome_seq, row['species_pre'])
+            outfile = args.output / Path(row['gff_path_ge']).name
+            genbank_record = gbk2gff(row['gb_path_pga'], row['prefix'])
+            outfile # How to output?
+            main_ins = CorrectGff2(row['gff_path_ge'], outfile, genbank_record.seq, row['prefix'])
             main_ins.correct_records()
             main_ins.add_trna()
             main_ins.check()
@@ -127,20 +164,20 @@ def main(args):
 
     if args.subcmd == 'rps12':
         info_table = pd.read_table(args.info_table,
-                                   names=['raw_gff_path', 'pga_gb_path', 'species_pre'])
-        for ind, row in info_table.iterrows():
-            print(os.path.basename(row['raw_gff_path']))
-            outfile = os.path.join(args.output, os.path.split(row['raw_gff_path'])[-1])
+                                   names=['raw_gff_path', 'pga_gb_path', 'prefix'])
+        for idx, row in info_table.iterrows():
+            print(Path(row['raw_gff_path']).stem)
+            outfile = args.output / Path(row['raw_gff_path']).name
             tmp_check = CheckCp2(row['raw_gff_path'])
-            tmp_check.renumber(row['species_pre'])
+            tmp_check.renumber(row['prefix'])
             # use output path as temporary file
             GFF.write([tmp_check.gff], open(outfile, 'w'), include_fasta=False)
             try:
-                tmp_df = add_rps12(row['pga_gb_path'], outfile, row['species_pre'])
+                tmp_df = add_rps12(row['pga_gb_path'], outfile, row['prefix'])
                 tmp_df.to_csv(outfile, sep='\t', index=False, header=False)
             except:
                 print('please manually add rps12')
 
 
 if __name__ == '__main__':
-    main(parseArgs())
+    main(parse_args())

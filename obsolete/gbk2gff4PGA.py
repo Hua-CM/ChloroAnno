@@ -8,44 +8,27 @@
 
 # load module
 import pandas as pd
-import os
 from Bio import SeqIO
 from Bio.SeqFeature import SeqFeature, FeatureLocation, CompoundLocation
+from Bio.SeqRecord import SeqRecord
+
+from ABC import fix_location
 
 
-def get_phase(genbank_feature):
-    """
-    Get the phase of a record
-    :param genbank_feature: a record feature (Class SeqFeature)
-    :return: phase ("."/0/1/2)
-    """
-    try:
-        phase = str(int(genbank_feature.qualifiers['codon_start'][0])-1)
-    except KeyError:
-        phase = '.'
-    return phase
+def get_phase(_feature):
+    """Get the phase of a record
+    Note: phase in GFF need codon_start in GenBank minus 1
+    
+    Args:
+        genbank_feature (SeqFeature): _description_
 
-
-def fix_location(record_feature, plus_num):
+    Returns:
+        phase (str): "."/0/1/2
     """
-    Fix a subseq loaction problem. If you use position to subseq a child feature from a SeqRecord instance, the start
-    location of the child feature would return to zero. So we should plus the real start position to it.
-    :param record_feature: a record feature (Class SeqFeature)
-    :param plus_num: the real start position
-    :return: none
-    """
-    if len(record_feature.location.parts) == 1:
-        record_feature.location = FeatureLocation(record_feature.location.start + plus_num,
-                                                  record_feature.location.end + plus_num,
-                                                  strand=record_feature.location.strand)
-    else:
-        location_list = []
-        for _ in record_feature.location.parts:
-            location_list.append(FeatureLocation(_.start + plus_num,
-                                                 _.end + plus_num,
-                                                 strand=_.strand)
-                                 )
-        record_feature.location = CompoundLocation(location_list)
+    codon_start = _feature.qualifiers.get('codon_start')
+    if codon_start:
+        return str(int(codon_start[0])-1)
+    return '.'
 
 
 def remove_none_location(genome_record):
@@ -78,21 +61,33 @@ def get_record(record_feature, attributes):
     return feature_record
 
 
-def gbk2gff(genbank_path, new_gff_path, species_id):
-    print('Start change', os.path.basename(new_gff_path))
+def gbkaddlocustag(genbank: SeqRecord, prefix):
+    pass
+
+
+def gbk2gff(genbank: SeqRecord , prefix):
+    """Parse GenBank without locus_tag
+
+    Args:
+        genbank (SeqRecord): The GenBank file SeqRecord object
+        prefix (str): Gene prefix (e.g. 'AAA' in 'AAA0001')
+
+    Returns:
+        _type_: _description_
+    """
+    print('Start change', genbank.id)
     records_list = []
-    genome = SeqIO.read(genbank_path, "genbank")
-    remove_none_location(genome)
-    genome.features.sort(key=lambda x: x.location.start)
+    remove_none_location(genbank)
+    genbank.features.sort(key=lambda x: x.location.start)
     gene_count = 0
     IR_count = 0
-    for ele in genome.features:
+    for ele in genbank.features:
         if ele.type == 'gene':
             if ele.qualifiers['gene'][0] == 'rps12':
                 continue
             gene_count += 1
-            ele.id = species_id + '%03d' % gene_count
-            for child_feature in genome[ele.location.start:ele.location.end].features:
+            ele.id = prefix + '%03d' % gene_count
+            for child_feature in genbank[ele.location.start:ele.location.end].features:
                 fix_location(child_feature, ele.location.start)
                 if child_feature.type != 'gene' and \
                         child_feature.location.start == ele.location.start and \
@@ -111,7 +106,7 @@ def gbk2gff(genbank_path, new_gff_path, species_id):
                                 cds_feature = SeqFeature(cds,
                                                          type='CDS',
                                                          qualifiers={'codon_start': child_feature.qualifiers['codon_start'][0]})
-                                cds_feature.id = 'cds_' + species_id + '%03d' % gene_count + '_' + '%d' % cds_count
+                                cds_feature.id = 'cds_' + prefix + '%03d' % gene_count + '_' + '%d' % cds_count
                                 cds_attributes = ['ID=' + cds_feature.id,
                                                   'Parent=' + ele.id,
                                                   'product=' + child_feature.qualifiers['product'][0]
@@ -125,7 +120,7 @@ def gbk2gff(genbank_path, new_gff_path, species_id):
                                                'gene_biotype=' + child_feature.type]
                             records_list.append(get_record(ele, gene_attributes))
                             # rna
-                            child_feature.id = 'rna_' + species_id + '%03d' % gene_count
+                            child_feature.id = 'rna_' + prefix + '%03d' % gene_count
                             child_attributes = ['ID=' + child_feature.id,
                                                 'Parent=' + ele.id,
                                                 'product=' + child_feature.qualifiers['product'][0]
@@ -137,7 +132,7 @@ def gbk2gff(genbank_path, new_gff_path, species_id):
                             for exon in reversed(child_feature.location.parts):
                                 exon_count += 1
                                 exon_feature = SeqFeature(exon, type='exon')
-                                exon_feature.id = 'exon_' + species_id + '%03d' % gene_count + '_' + '%d' % exon_count
+                                exon_feature.id = 'exon_' + prefix + '%03d' % gene_count + '_' + '%d' % exon_count
                                 exon_attributes = ['ID=' + exon_feature.id, 'Parent=' + child_feature.id]
                                 exon_list.append(get_record(exon_feature, exon_attributes))
                             if exon_count > 1:
@@ -146,14 +141,18 @@ def gbk2gff(genbank_path, new_gff_path, species_id):
             IR_count += 1
             gene_attributes = ['ID=IR' + str(IR_count), 'note=Inverted repeats']
             records_list.append(get_record(ele, gene_attributes))
-    records_dict = {index: record for index, record in enumerate(records_list)}
+    records_dict = dict(enumerate(records_list))
+    """
     result_gff = pd.DataFrame.from_dict(records_dict, 'index')
-    result_gff['seqid'] = genome.id
+    result_gff['seqid'] = genbank.id
     result_gff['score'] = '.'
     result_gff['source'] = 'PGA'
     result_gff = result_gff[["seqid", "source", "type", "start", "end", "score", "strand", "phase", "attributes"]]
     result_gff.to_csv(new_gff_path, sep='\t', header=False, index=False, encoding='utf8')
-    return genome.seq
+    """
+    # Change the raw script to use a SeqRecord to output.
+    out_genbank = ''
+    return out_genbank
 
 
 if __name__ == '__main__':

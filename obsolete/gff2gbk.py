@@ -6,23 +6,16 @@
 # @Note:  only for gffs in GWH!!!
 # @E-mail: njbxhzy@hotmail.com
 
-from BCBio import GFF
-from Bio import SeqIO
-from Bio import SeqRecord
-from Bio.SeqFeature import SeqFeature, ExactPosition, CompoundLocation, FeatureLocation
 from collections import defaultdict
 import argparse
 import time
 
+from BCBio import GFF
+from Bio import SeqIO
+from Bio import SeqRecord
+from Bio.SeqFeature import ExactPosition, FeatureLocation
 
-class MySeqFeature(SeqFeature):
-    def inherit(self, A):
-        self.__dict__ = A.__dict__
-        self.location = [self.location]
-
-    def update_location(self, second_postion: FeatureLocation):
-        if not second_postion == self.location:
-            self.location += second_postion
+from ABC import MySeqFeature
 
 
 def gff2genbank(gff_path, seq_path, organism):
@@ -65,11 +58,6 @@ def gff2genbank(gff_path, seq_path, organism):
             seqfeature_dict.setdefault(_prefix + gene.qualifiers['ID'][0], child).update_location(child.location)
     # reset information like NCBI
     for _key, _feature in seqfeature_dict.items():
-        # parse location
-        if len(_feature.location) == 1:
-            _feature.location = _feature.location[0]
-        else:
-            _feature.location = CompoundLocation(_feature.location)
         # qualifiers
         _old = _feature.qualifiers
         if _feature.type == 'gene':

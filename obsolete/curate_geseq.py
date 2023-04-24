@@ -6,11 +6,12 @@
 # @Note :
 # @E-mail : njbxhzy@hotmail.com
 
+from pathlib import Path
+from utilities.tools import Check, product_dict, rna_dict
+
 from BCBio import GFF
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqFeature import SeqFeature
-from utilities.check import CheckCp2, product_dict, rna_dict
-from os.path import join, split
 
 
 class MySeqFeature(SeqFeature):
@@ -109,14 +110,16 @@ def tidy_gff2(curated_gff, name_dict):
     return curated_gff
 
 
-def parseArgs():
+def parse_args():
+    """Parse arguments
+    """
     import argparse
     parser = argparse.ArgumentParser(
         description='Change GeSeq result gff to a version that meet submission requirement')
-    parser.add_argument('-i', '--input', required=True,
-                        help='<file_path>  One Geseq gff path per line')
-    parser.add_argument('-o', '--output', required=True,
-                        help='<directory>  output directory')
+    parser.add_argument('-i', '--input', required=True, default=Path, metavar='<File path>',
+                        help='One Geseq gff path per line')
+    parser.add_argument('-o', '--output', required=True, default=Path, metavar='<Dir path>',
+                        help='output directory')
     parser.add_argument('-a', '--auto', action="store_true", default=False,
                         help='Correct/delete gene with incorrect name in output gff automatically')
     args = parser.parse_args()
@@ -124,7 +127,11 @@ def parseArgs():
 
 
 def main(args):
-    with open(args.info_table) as f_in:
+    """Main interface
+    """
+    if not args.output.exists():
+        args.output.mkdir()
+    with open(args.input) as f_in:
         info_table = f_in.read().splitlines()
     for raw_gff_path in info_table:
         curated_gff = tidy_gff(raw_gff_path, 'GESEQ')
@@ -134,9 +141,9 @@ def main(args):
             curated_gff = tidy_gff2(curated_gff, name_dict)
         tmp_check = CheckCp2(curated_gff)
         tmp_check.check_region()
-        with open(join(args.output, split(raw_gff_path)[-1]), 'w') as f_out:
+        with open(args.output / Path(raw_gff_path).name, 'w') as f_out:
             GFF.write([curated_gff], f_out, include_fasta=False)
 
 
 if __name__ == '__main__':
-    main(parseArgs())
+    main(parse_args())

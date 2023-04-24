@@ -9,7 +9,7 @@
 import gffutils
 import portion as pt
 import numpy as np
-from check import standard_name_list
+from utilities.tools import standard_name_list
 import pandas as pd
 from Bio import SeqIO
 
@@ -154,6 +154,98 @@ class CheckCp:
                     print(gene.id)
                     print(e)
         print('Auto check done')
+
+
+# Based on SeqRecord and SeqFearure and for GFF
+class CheckCp2:
+    standard_name_list = standard_name_list
+
+    def __init__(self, gff_path):
+        self.gff = gff_path if isinstance(gff_path, SeqRecord) else next(GFF.parse(gff_path))
+
+    def check_hs(self):
+        """
+        Check housekeeping gene: matK, rbcL
+        :return: a message
+        """
+        gene_name_list = []
+        for gene in self.gff.features:
+            gene_name_list.append(gene.qualifiers.get('Name')[0])
+        if ('matK' not in gene_name_list) and ('matk' not in gene_name_list):
+            print('matK loss!')
+        if ('rbcL' not in gene_name_list) and ('rbcl' not in gene_name_list):
+            print('rbcL loss!')
+
+    def check_name(self):
+        return_dict = {}
+        for gene in self.gff.features:
+            gene_name = gene.qualifiers.get('Name')[0]
+            if not ((gene_name in CheckCp2.standard_name_list) or gene_name.startswith('orf')):
+                curated_name = correct_name(gene_name)
+                return_dict.setdefault(gene_name, curated_name)
+                print('check ' + gene_name + ' . Is it ' + curated_name + "?")
+        return return_dict
+
+    def check_region(self):
+        """
+        check duplicated gene region
+        :return: messages
+        """
+        region_list = []
+        locus_list = []
+        for gene in self.gff.features:
+            region_list.append(pt.closed(gene.location.start.__int__(), gene.location.end.__int__()))
+            locus_list.append(gene.qualifiers.get('Name')[0])
+        for i in range(len(region_list) - 1):
+            if not region_list[i] < region_list[i + 1]:
+                if set(locus_list[i:i+2]) not in region_set_list:
+                    print(locus_list[i], region_list[i], ' and ', locus_list[i + 1], region_list[i + 1],
+                          ' are duplicated')
+        print('check duplicated region done')
+
+    def renumber(self, prefix: str):
+        print('Renumber gene id')
+        gene_count = 0
+        for gene in self.gff.features:
+            gene.id = '%s%03d' % (prefix, gene_count)
+            gene.qualifiers['ID'] = [gene.id]
+            sub_count = 0
+            gene_count += 1
+            gene_type = gene.qualifiers['gene_biotype'][0]
+            for subfeature in gene.sub_features:
+                sub_count += 1
+                subfeature.id = '%s_%s_%1d' % ('rna' if gene_type in ['tRNA', 'rRNA'] else 'cds', gene.id, sub_count)
+                subfeature.qualifiers['ID'] = [subfeature.id]
+                subfeature.qualifiers['Parent'] = [gene.id]
+                if gene_type in ['tRNA', 'rRNA']:
+                    exon_count = 0
+                    for exon in subfeature.sub_features:
+                        exon_count += 1
+                        exon.id = 'exon_%s_%1d' % (gene.id, exon_count)
+                        exon.qualifiers['ID'] = [exon.id]
+                        exon.qualifiers['Parent'] = [subfeature.id]
+
+    def check_cds(self, seq_ins, add_pseudo=False):
+        """check if whether the CDSs is illegal
+
+        Args:
+            seq_ins (Bio.Seq.Seq): _description_
+            add_pseudo (bool, optional): _description_. Defaults to False.
+        """
+        self.gff.seq = seq_ins
+        for gene in self.gff.features:
+            # Only useful for gene with gene_biotype
+            gene_type = gene.qualifiers['gene_biotype'][0]
+            if gene.qualifiers.get('Name')[0] == 'rps12':
+                continue
+            if gene_type == 'protein_coding':
+                try:
+                    check_cds(gene, self.gff.seq)
+                except Exception as e:
+                    if add_pseudo:
+                        gene.qualifiers['pseudo'] = ['true']
+                    print(gene.id)
+                    print(e)
 
 def add_rps12(geseq_gff, new_gff, seq_path, species_pre):
     """

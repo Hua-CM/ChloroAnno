@@ -62,7 +62,11 @@
  "trnY-GUA": "tRNA-Tyr",
  "trnY-AUA": "tRNA-Tyr",
  "rrn4.5": "4.5S ribosomal RNA",
- "rrn5": "5S ribosomal RNA",
- "rrn16": "16S ribosomal RNA",
- "rrn23": "23S ribosomal RNA"
+ "rrn4.5S":"4.5S ribosomal RNA",
+ "rrn5":   "5S ribosomal RNA",
+ "rrn5S":  "5S ribosomal RNA",
+ "rrn16":  "16S ribosomal RNA",
+ "rrn16S": "16S ribosomal RNA",
+ "rrn23":  "23S ribosomal RNA",
+ "rrn23S": "23S ribosomal RNA"
 }

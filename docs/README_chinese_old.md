@@ -2,8 +2,15 @@
 叶绿体基因组注释流程
 使用软件自动注释的结果不仅不符合NCBI的格式要求，而且一般还会有生物学问题，故记录下处理流程。  
 
-**更新日期：2022-01-25**  
+**更新日期：2023-04-17**  
 **更新内容：**  
+----------2023-04-15----------
+
+1. 新增基于CPGAVAS2注释流程的配套脚本
+2. 新增配套脚本生成的结果适用于[GenBase](https://ngdc.cncb.ac.cn/genbase/)上传流程的文件格式
+3. 新增确定构型的脚本[isomerism.py](isomerism.py)
+4. 再次对项目进行了重构，编写了针对叶绿体基因组（实际上是GenBank文件的）核心SeqRecord类，使用了类的继承，进一步优化了后续开发流程
+
 ----------2022-01-25----------
 1. curated_geseq.py增加了auto选项：是否自动在输出的GeSeq gff文件中将检查有问题的条目删除/修改（修改详见2）
 2. check中检查基因名在检查的基础上可以进行一定程度的自动修订（如clpP1修正为clpP）
@@ -32,11 +39,15 @@
  *ps:* 加粗的步骤表示需要手工处理
 
 ## 1.校正序列
-主要涉及以下两个方面
+主要涉及以下三个方面
+### 校正构型
+如果组装的叶绿体基因组序列中含有反向重复区(IRs),则会存在两种equimolar isomeric sequence(实在不知道怎么翻译了)。他们都是正确的，并且在植物中共存（Palmer 1983；Walker et al. 2015）。 对于发布，人们倾向于只使用其中一个。 您可以选择 SSC 区域与您的大部分数据或外群在同一方向的配置，这使得下游注释/分析更容易。
+![two_chloroplast](https://upload-images.jianshu.io/upload_images/10518391-cd3ab83875ea9b55.png?imageMogr2/auto-orient/strip|imageView2/2/w/1182/format/webp)
+注意上图中SSC区的竖线，左边图中的偏左，右边图中的偏右，代表了是两个相反的反向
 ### 检查保守基因
 检查保守基因是为了确保序列组装的正确性。本流程使用matK和rbcL作为保守基因进行检查，若组装结果缺少这两个基因中的任何一个，请考虑组装结果的正确性。
 *ps:* 缺失也不一定错误，如南方菟丝子（寄生植物）就是没有matK
-### 校正序列
+### 校正序列链及位置
 校正序列主要涉及三个内容
 1. 序列的链  
 虽然NCBI等数据库对具体使用哪条链上传数据并无强制性要求，但是建议使用常用的链作为序列文件，即trnH的反义链，这样有利于后续分析
@@ -75,23 +86,32 @@ done
 *ps1.* 反向重复区最短长度设为10k是因为我不想让PGA注释反向重复区，具体原因感兴趣的话可以阅读[开发文档](Development.md)  
 *ps2.* 用mv命令是因为PGA每次会自动覆盖上一个output文件夹，而我不想搞出一堆文件夹，毕竟我只要genbank文件。
 
+### CPGAVAS2
+推荐使用db1，即作者人工校正的43条叶绿体基因组。其已覆盖了大部分的分类单元。
+~~~shell
+~~~
+
 ### 说明
 使用两个软件注释的原因是一个软件注释不准确（例如起始、终止密码子错误）。但是要注意，两个软件使用的参考物种是不同的，这是出于以下原因：如果只使用基部物种（如无油樟），则一些在近源种中才有的基因会无法注释到;如果选择了相应的近源物种，则在实际操作中会出现基因名混乱的问题。这是因为现有软件都是基于BLAST进行注释的，所以如果参考基因组中的基因名是错误的话，则注释出来的也是错误的，如参考基因组中如果错误的将atpI写成了aptI，trnK-UUU简写成trnK，则注释结果中就会出现这两种名称。显然这是不对的。基于此，我在使用两种软件进行注释时分别选取了不同的策略，从而保证注释全面、名称准确。而之所以选择GeSeq添加近源物种、PGA只使用基部物种，是因为GeSeq作为在线服务器选择近源物种较方便，同时其基因名本身就不规范（主要它的那个Reference没有公开，不知道具体内容），后期需要校正，校正一个也是校，多校正一个近源物种的也是校。另一方面，PGA对于参考文件的要求较高（见FAQ2）,每个物种的近源种都制作的话太过耗费时间。
 
 ## 3.GeSeq结果校正
+**如果不使用GeSeq而使用CPGAVAS2进行注释，则无需这步**
+
 使用[curate_geseq.py](curate_geseq.py)将GeSeq的注释结果转换。  
-geseq_info,txt, pga_info.txt和geseq.log请参考[example](example)文件中的示例。  
-**注意：PGA和GeSeq转换时请使用不同的前缀，否则后面的校正解析时会出问题，具体原因感兴趣的话可以阅读[开发文档](Development.md)**
+geseq_info,txt和geseq.log请参考[example](example)文件中的示例。  
 ~~~bash
-python curated_geseq.py -i geseq.lst -o /path/to/curated -a > geseq.log
-# geseq.lst  每行一个GeSeq输出文件
+python curate_geseq.py -i geseq.lst -o /path/to/curated -a > geseq.log
+# geseq.lst每行包含一个GeSeq gff3文件路径。其输出文件中基因的Prefix暂时为GESEQ
 ~~~
+*注*：GeSeq转换和下一步的自动检查校正需要使用不同的前缀，否则解析时会出现问题，所以这里统一使用GESEQ，具体原因感兴趣的话可以阅读[开发文档](Development.md)**
 
 转换完成后，根据log文件，手工校正每一个GeSeq中的不规范名称。**这步非常重要，因为后面的校正脚本中很多是依赖基因名的，所以必须认真。** 该步骤非常耗时间，为了节省时间，增加了`-a`选项，使用该选项的话，所有geseq.log中基因名有问题的基因都会先自动校正（如clpP1校正为clpP，ndha校正为ndhA），无法自动校正的会丢弃（比如XXX-fragment这种）。  
 *ps.* PGA结果不需要手工校正的原因是PGA注释时只使用了基部植物的参考基因组，基因名已经人工校正过，所以结果会非常整齐。如果你PGA注释也使用了自己添加的参考物种的话，那么这边同样需要手工校正。
 
 ## 4. 自动检查与校正
-基于步骤6生成的两个gff注释文件，使用[correct.py](correct.py)进行校正  
+
+### 使用GeSeq和PGA
+基于步骤3生成的gff注释文件和PGA的gbk文件，使用[correct.py](correct.py)进行校正  
 correct_info,txt和correct.log请参考[example](example)文件中的示例。
 ~~~bash
 python correct.py combine -i correct_info.txt -o correct > correct.log
@@ -100,7 +120,7 @@ python correct.py combine -i correct_info.txt -o correct > correct.log
 ~~~
 
 目前自动检查、校正实现了以下功能：
-1. 起始密码子检查(目前对于起始密码子中存在的RNA编辑现象，还未决定最终如何处理，暂且当做合法密码子处理，例如ACG->AUG)
+1. 起始密码子检查(对于起始密码子中存在的RNA编辑现象，由于组装过程不可能引入RNAseq数据进行验证，因此一律标注为pseudo处理)
 2. 终止密码子检查
 3. 序列中是否有终止密码子
 4. 序列长度是否为3的倍数
@@ -108,12 +128,19 @@ python correct.py combine -i correct_info.txt -o correct > correct.log
 5. tRNA位置信息是否正确
 6. 是否存在tRNA缺失(GeSeq的注释有时候会莫名其妙少很多tRNA)，及自动插补
 7. 基因组区域是否存在重叠
-8. 起始密码子可能存在RNA-editing现象的基因，自动在起始密码子后30bp寻找替代起始密码子。
 
 *注*：
 1. 以上功能均为自动实现，对于两个GeSeq和PGA注释都有问题的基因（例如根据两个注释gff文件，其实密码子都有问题），会输出到log中，并且在gff文件中该基因的attributes会标注"pseudo=true"
 2. 由于rps12基因的特殊性，所有检查均不涉及rps12基因（脚本检测到rps12基因会自动跳过）
 3. 由于计算机计数从0开始和python的切片机制，因此log文件中位置信息的起始位点会和gff文件中的相差1，是正常现象，不是错误。
+
+### 使用CPGAVAS2和PGA
+基于CPGAVAS2和PGA的gbk文件，请使用[correct2.py](correct2.py)进行校正。与correct.py不同。使用CPGAVAS2结果进行校正的自动化程度更高。结果大部分情况下已无需再手工校正，所以这一步会直接将rps12的基因注释加到最终结果中。
+~~~bash
+python correct2.py -i correct_info.txt -o correct > correct.log
+# correct_info.txt包含三列（请不要保留列名）
+# CPGAVAS2 genbank文件路径    PGA genbank文件路径    基因前缀
+~~~
 
 ## 5. 人工检查
 根据步骤4的log文件检查每个gff文件中区域重复的基因，并且删去相应的重复条目（包括gene和其附属的CDS、exon等。常见的一些重复区域将不会report，减少工作量）。删去cds区长度小于33的基因。同时检查pseudo gene是否需要保留，详细指导见FAQ3.
@@ -125,8 +152,7 @@ python correct.py combine -i correct_info.txt -o correct > correct.log
 ~~~bash
 python correct.py rps12 -i rps12_info.txt > rps12.log
 # rps12_info.txt包含四列（请不要保留无列名）
-# 待处理gff的路径    结果gff存储路径    PGA原始genbank文件路径     基因前缀
-
+# 待处理gff的路径    PGA原始genbank文件路径     基因前缀
 ~~~
 
 ## 9. （可选）生成NCBI上传所需文件
@@ -138,7 +164,7 @@ python correct.py rps12 -i rps12_info.txt > rps12.log
 1.1 大小写问题  
 如rbcl和rbcL。这种问题一般是参考基因组里不规范命名引起的。所以如果有很多序列使用同一个参考基因组注释，建议先人工核对参考基因组。  
 1.2 异名问题  
-如lhbA实际上为psbZ（目前版本针对常见异名已经做了校正处理）  
+如lhbA实际上为psbZ（目前版本针对常见异名已经做了校正处理
 1.3 注释不完整  
 一般有fragment字样，这种一般不需要再进行处理，就是要注意tRNA的fragment的product会统一被标注为hypothetical protein，需要手动
 修改。  

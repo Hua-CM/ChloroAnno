@@ -6,43 +6,23 @@
 # @Note    : mainly for NCBI gff
 # @E-mail  : njbxhzy@hotmail.com
 
+from collections import defaultdict
+from pathlib import Path
+import argparse
+
+
 from BCBio import GFF
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqFeature import SeqFeature, CompoundLocation
-from collections import defaultdict
-import argparse
+
+from ABC import MySeqFeature
 
 FEATURE_ORDER = {'gene': 0, 'CDS': 1, 'tRNA': 2, 'rRNA': 3}
 BIOTYPE = {'CDS': 'protein_coding', 'rRNA': 'rRNA', 'tRNA': 'tRNA'}
 
 
-class MySeqFeature(SeqFeature):
-    def inherit(self, _parent):
-        self.__dict__ = _parent.__dict__
-
-    def update_subfeature(self, _subfeature=None):
-        if not hasattr(self, 'sub_features'):
-            self.sub_features = []
-        if _subfeature is not None:
-            self.sub_features.append(_subfeature)
-
-
-def set_phase(_gene: SeqFeature):
-    """
-    set CDS phase in sub_feature of genes
-    :param _gene: a SeqFeature, feature type is gene
-    :return:
-    """
-    cds_length = 0
-    _gene.sub_features.sort(key=lambda x: x.location.start, reverse=True if _gene.strand < 0 else False)
-    for _cds in _gene.sub_features:
-        _cds.qualifiers['phase'] = ['%d' % ((3-cds_length % 3) % 3)]
-        cds_length += _cds.location.__len__()
-
-
 def parse_rps12(_cds: SeqFeature):
-
     def judge_length(gene_length: int):
         _dis = {'114': abs(gene_length - 114),
                 '232': abs(gene_length - 232),
@@ -90,8 +70,15 @@ def parse_rps12(_cds: SeqFeature):
     return [_gene1, _gene2]
 
 
-def gbk2gff(seq_path):
-    seq_in = SeqIO.read(seq_path, 'genbank')
+def gbk2gff(seq_in):
+    """Parse GenBank with locus tag
+
+    Args:
+        seq_in (SeqRecord): The import GenBank file in SeqRecord class
+
+    Returns:
+        top_feature: The BCBio.GFF readable file 
+    """
     features = [_ for _ in seq_in.features if _.type in ['gene', 'CDS', 'tRNA', 'rRNA']]
     features.sort(key=lambda x: (x.location.start, FEATURE_ORDER[x.type]))
     out_features = defaultdict()
@@ -157,7 +144,9 @@ def gbk2gff(seq_path):
     return top_feature
 
 
-def getArgs():
+def parse_args():
+    """Parse arguments
+    """
     parser = argparse.ArgumentParser(
         description='Change gff to genbank format')
     parser.add_argument('-i', '--info_table', required=True,
@@ -168,11 +157,14 @@ def getArgs():
 
 
 def main(args):
+    """main interface
+    """
     with open(args.info_table) as f_in:
         for _line in f_in.read().strip().split('\n'):
-            genome = gbk2gff(_line.split('\t')[0])
+            seq_in = SeqIO.read(Path(_line.split('\t')[0]), 'fasta')
+            genome = gbk2gff(seq_in)
             GFF.write([genome], open(_line.split('\t')[1], 'w'))
 
 
 if __name__ == '__main__':
-    main(getArgs())
+    main(parse_args())

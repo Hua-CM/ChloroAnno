@@ -39,7 +39,7 @@ def get_record(record_feature, record_type, attributes):
     return feature_record
 
 
-def change_gff(raw_gff_path, new_gff_path, seqid, species_pre):
+def tidy_geseq_gff(raw_gff_path, new_gff_path, seqid, species_pre):
     print('Start change', os.path.basename(new_gff_path))
     gff_file = gffutils.create_db(raw_gff_path, ':memory:', merge_strategy='create_unique')
     feature_list = []
