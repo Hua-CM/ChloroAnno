@@ -164,7 +164,7 @@ def check(input_path: Path, seq_path=None):
         seq_path (path, optional): If check the gff file, a fasta sequence is necessary
     """
     record1 = read_anno(input_path, 'gb')
-    if seq_ins:
+    if seq_path:
         seq_ins = SeqIO.read(seq_path, 'fasta').seq
     else:
         seq_ins = record1.seq

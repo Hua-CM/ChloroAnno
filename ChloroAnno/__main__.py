@@ -10,7 +10,7 @@
 import argparse
 from pathlib import Path
 from tempfile import mktemp
-from shutil import copy, rmtree
+from shutil import rmtree
 
 from Bio import SeqIO
 from tqdm import tqdm
@@ -45,6 +45,8 @@ def main(args):
     """
     sample_lst = parse_meta(args.info)
     tmp = args.tmp
+    if not args.output.exists():
+        args.output.mkdir()
     if args.task == 'iso':
         if not tmp.exists():
             tmp.mkdir()
@@ -52,7 +54,7 @@ def main(args):
             print(f'start check {_sample["inpath1"].stem} isomerism')
             selected_path = isomerism(_sample['inpath1'], _sample['refpath'], tmp)
             if selected_path:
-                SeqIO.write(seq_fixed, Path(args.output) / Path(_sample['inpath1']).name, 'fasta')
+                SeqIO.write(selected_path, Path(args.output) / Path(_sample['inpath1']).name, 'fasta')
         rmtree(tmp)
     elif args.task == 'curate':
         if not tmp.exists():
@@ -92,7 +94,7 @@ def main(args):
                 f_type = _sample['informat1']
             else:
                 f_type = dft( _sample['inpath1'])
-                if f_type:
+                if not f_type:
                     raise TypeError('Please specify the input file format using "informat1"')
             record = convert(_sample['inpath1'], f_type)
             write_anno(record,

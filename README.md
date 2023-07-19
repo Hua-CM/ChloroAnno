@@ -144,7 +144,7 @@ inpath1
 ~~~
 #### command
 ~~~shell
-python ChloroAnno -t tidy -i meta.info --out /path/to/output/directory
+python ChloroAnno -t tidy -i meta.info --output /path/to/output/directory
 ~~~
 *Note:* The output format is gff, no need to specify.
 
@@ -167,7 +167,7 @@ inpath1 inpath2 prefix  organism
 
 #### command
 ~~~shell
-python ChloroAnno -t correct -i meta.info --outfmt tbl --out tbl_dir
+python ChloroAnno -t correct -i meta.info --outfmt tbl --output tbl_dir
 ~~~
 
 ### Check
@@ -202,9 +202,9 @@ This function convert the annotation file from one format to another. The accept
 
 #### meta file
 
-Required  headers: inpath1, inpath2, refpath
+Required  headers: inpath1
 
-Optionanl headers: informat1, informat2
+Optionanl headers: informat1
 
 ~~~shell
 inpath1
