@@ -359,7 +359,9 @@ def feature2tbl(record: SeqFeature):
     part1_line_lst[0][2] = record.type
 
     # Part2: Qualifier features
-    keep_keys = ['transl_table', 'product', 'locus_tag', 'gene', 'codon_start', 'pseudo', 'trans_splicing']
+    keep_keys = set(['transl_table', 'product', 'locus_tag', 'gene', 'codon_start', 'pseudo', 'trans_splicing'])
+    if record.type == 'gene':
+        keep_keys.remove('product')
     part2_lint_lst = [['' ,'', '', _key, _value[0]]  for _key, _value in record.qualifiers.items() if _key in keep_keys]
 
     # Combine

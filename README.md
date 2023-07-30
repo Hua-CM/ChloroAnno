@@ -73,7 +73,7 @@ The format convertion is one of the eternal themes of bioinformatics. For chloro
 ## Manual
 ### meta file
 1. The ChloroAnno use a flexible but unified meta file informat. Users need to choose the appropriate
-header based on functions they want to use. Here is an overview of all illegal headers. For 
+header based on functions they want to use. Here is an overview of all legal headers. For 
 specific headers used in each function, please refer to the following sections.
 
 - `inpath1`  : Input file path. **Every meta file should include this column.**
@@ -87,9 +87,9 @@ suffix (e.g. '.fasta'). So, this column is unnecessary.
 
 Since ChloroAnno use this flexible input format, **users need to include the header name in each meta file**. However, one benefit of specifying headers in meta file is that there is no fixed order for the columns in meta file.
 
-2. All meta file should be tab delimited.
+2. All meta files should be tab delimited.
 
-3. Although a relative path should work, it is recommended to use an absolute path for safety.
+3. Although the relative path should work, it is recommended to use an absolute path for safety.
 
 ### Isomerism
 
@@ -197,7 +197,7 @@ python ChloroAnno -t check -i meta.info
 This function convert the annotation file from one format to another. The accepted file format includes:
 
 *Note:* 
-1. The rps12 gene will be ignored for now due to its particularity. I hope a future updation could fix this.
+1. The rps12 gene will be ignored for now if you select "gff" as output format due to its particularity and BCBio.GFF structure. I hope a future updation could fix this.
 2. The tbl format only supports as an output format, not as an input format.
 
 #### meta file

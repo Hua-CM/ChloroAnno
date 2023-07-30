@@ -24,7 +24,6 @@ from shutil import copy
 
 from difflib import SequenceMatcher
 import portion as pt
-import pandas as pd
 import Bio
 from Bio import SeqIO
 from Bio.SeqFeature import SeqFeature, CompoundLocation, SimpleLocation
@@ -192,7 +191,7 @@ class Check:
 class Correct:
     """Correct annotation results
     """
-    def __init__(self, top_record1, top_record2, geo_seq):
+    def __init__(self, top_record1: SeqRecord, top_record2: SeqRecord, geo_seq: Bio.Seq.Seq):
         """Combine result from two sources, typically two softwares (e.g. PGA and CPGAVAS2),
         to validate the final results.
         
@@ -270,6 +269,7 @@ class Correct:
         If the record from more informative one was incorrect, then, use
         its coresponding record from record1 to replace it.
         """
+        _tmp_curated = []
         for gene in self.record2.features:
             gene_type = gene.qualifiers['gene_biotype'][0]
             if gene.qualifiers.get('Name')[0] == 'rps12':
@@ -277,14 +277,25 @@ class Correct:
             if gene_type == 'protein_coding':
                 try:
                     check_cds(gene, self.seq)
-                    self.curated.append(gene)
+                    _tmp_curated.append(gene)
                 except:
                     fixed_gene = self._query_gene_(gene)
                     if fixed_gene:
-                        self.curated.append(fixed_gene)
+                        _tmp_curated.append(fixed_gene)
             else:  # rRNA and tRNA
-                self.curated.append(gene)
-        self.curated.sort(key=lambda x: x.location.start)
+                _tmp_curated.append(gene)
+        # Sort and remove duplicated records in the final list.
+        ## Duplicated records are always casued by two pseudo genes exsit in the record2.
+        ## For example, two pseudo petB genes were annotated in record2 at 3383..4024 and 
+        ##  91021..91662, while there is only one in record1 (3382..4023). Thus, after correct, there 
+        ## will two 3382..4023 petB genes in the result list.
+        _tmp_curated.sort(key=lambda x: x.location.start)
+        _tmp_gene = None
+        for _gene in _tmp_curated:
+            if _gene == _tmp_gene:
+                continue
+            _tmp_gene = _gene
+            self.curated.append(_gene)
 
     def add_trna(self):
         """Some tRNAs were not annotated by PGA, and thus I use record2 to make up it.

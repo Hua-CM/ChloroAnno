@@ -117,13 +117,30 @@ def _gbk2core(genbank: SeqRecord):
                         continue
                     fix_location(child_feature, _feature.location.start)
                     _feature.update_subfeature(child_feature)
+            # Check children
+            ## Avoid errors (a lot of CDS for a gene) caused by long distance between two exons.
+            ## No gene on chloroplast has more than two exons, except for rps12.
+            ## Therefore, for gene with more than two exons, only keep the first one and last one
+            if len(_feature.sub_features) > 2:
+                _tmp_lst = sorted(_feature.sub_features, key=lambda x: x.location.start)
+                _tmp_lst = [_tmp_lst [0], _tmp_lst[-1]]
+                _feature.sub_features = _tmp_lst
+                del _tmp_lst
             gene_feature_lst.append(_feature)
+    # Check duplicated features and remove
+    position_set = set()
+    gene_lst = []
+    for gene in gene_feature_lst:
+        if (gene.location.start, gene.location.end) in position_set:
+            continue
+        position_set.add((gene.location.start, gene.location.end))
+        gene_lst.append(gene)
     # For non-Gene features , such as IR,Source.
     # Some GenBank files also contain mRNA and exon, remember to remove .
-    gene_feature_lst +=  [_ for _ in genbank.features if _.type not in ['gene', 'CDS', 'tRNA', 'rRNA', 'exon', 'intron','mRNA']]
+    gene_lst +=  [_ for _ in genbank.features if _.type not in ['gene', 'CDS', 'tRNA', 'rRNA', 'exon', 'intron','mRNA']]
     top_record = SeqRecord(id=genbank.id,
                            seq=genbank.seq,
-                           features=gene_feature_lst,
+                           features=gene_lst,
                            annotations=genbank.annotations)
     return top_record
 
