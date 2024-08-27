@@ -16,7 +16,6 @@
 4. renumber
 5. cds check
 """
-import argparse
 import re
 from pathlib import Path
 from collections import defaultdict

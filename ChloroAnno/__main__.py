@@ -69,13 +69,17 @@ def main(args):
         rmtree(tmp)
     elif args.task == 'correct':
         for _sample in tqdm(sample_lst):
-            print(f'start correct {_sample["inpath1"].stem} annotation')
-            out_record = correct(_sample['inpath1'], _sample['inpath2'], _sample['prefix'])
-            if _sample.get('organism'):
-                out_record.annotations['organism'] = _sample.get('organism')
-            write_anno(out_record,
-                       Path(args.output) / (Path(_sample['inpath1']).stem + '.' + args.outfmt),
-                       args.outfmt)
+            try:
+                print(f'start correct {_sample["inpath1"].stem} annotation')
+                out_record = correct(_sample['inpath1'], _sample['inpath2'], _sample['prefix'])
+                if _sample.get('organism'):
+                    out_record.annotations['organism'] = _sample.get('organism')
+                write_anno(out_record,
+                        Path(args.output) / (Path(_sample['inpath1']).stem + '.' + args.outfmt),
+                        args.outfmt)
+            except:
+                print(f'Correct {_sample["inpath1"].stem} annotation fail')
+                continue
     elif args.task == 'check':
         for _sample in tqdm(sample_lst):
             if 'inpath2' in _sample:

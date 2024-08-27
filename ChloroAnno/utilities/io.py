@@ -13,7 +13,7 @@ from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.SeqFeature import SeqFeature
 from BCBio import GFF
-from .ABC import CoreSeqFeature, MySeqFeature, fix_location, feature2tbl
+from .ABC import CoreSeqFeature, fix_location, feature2tbl
 from .functions import Check
 
 
@@ -119,9 +119,9 @@ def _gbk2core(genbank: SeqRecord):
                     _feature.update_subfeature(child_feature)
             # Check children
             ## Avoid errors (a lot of CDS for a gene) caused by long distance between two exons.
-            ## No gene on chloroplast has more than two exons, except for rps12.
+            ## No gene on chloroplast has more than two exons, except for clpP and rps12.
             ## Therefore, for gene with more than two exons, only keep the first one and last one
-            if len(_feature.sub_features) > 2:
+            if len(_feature.sub_features) > 2 and _feature.qualifiers.get('gene') != ['clpP']:
                 _tmp_lst = sorted(_feature.sub_features, key=lambda x: x.location.start)
                 _tmp_lst = [_tmp_lst [0], _tmp_lst[-1]]
                 _feature.sub_features = _tmp_lst
