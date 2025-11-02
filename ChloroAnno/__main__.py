@@ -11,6 +11,7 @@ import argparse
 from pathlib import Path
 from tempfile import mktemp
 from shutil import rmtree
+import traceback
 
 from Bio import SeqIO
 from tqdm import tqdm
@@ -77,7 +78,8 @@ def main(args):
                 write_anno(out_record,
                         Path(args.output) / (Path(_sample['inpath1']).stem + '.' + args.outfmt),
                         args.outfmt)
-            except:
+            except Exception as e:
+                traceback.print_exc()
                 print(f'Correct {_sample["inpath1"].stem} annotation fail')
                 continue
     elif args.task == 'check':

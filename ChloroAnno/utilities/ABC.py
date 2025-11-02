@@ -201,7 +201,7 @@ class CoreSeqFeature(MySeqFeature):
         """
         cds_length = 0
         # Note: ignore_strand should at the first beacause rps12 strand was None and will raise a TypeError
-        if ignore_strand or self.strand > 0:
+        if ignore_strand or self.location.strand > 0:
             _reverse = False
         else:
             _reverse = True

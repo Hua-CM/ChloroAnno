@@ -19,16 +19,16 @@
 import re
 from pathlib import Path
 from collections import defaultdict
+import subprocess as sp
 from shutil import copy
 
 from difflib import SequenceMatcher
 import portion as pt
 import Bio
 from Bio import SeqIO
+from Bio.Seq import Seq
 from Bio.SeqFeature import SeqFeature, CompoundLocation, SimpleLocation
 from Bio.SeqRecord import SeqRecord
-from Bio.Blast.Applications import NcbitblastnCommandline, NcbiblastnCommandline, NcbimakeblastdbCommandline
-
 
 from .ABC import standard_name_list, CoreSeqFeature
 
@@ -41,7 +41,7 @@ def check_cds(gene, genome_seq):
         genome_seq (Bio.Seq.Seq): The genomic sequence
     """
     check_seq = ''
-    gene.sub_features.sort(key=lambda x: x.location.start, reverse=bool(gene.strand == -1))
+    gene.sub_features.sort(key=lambda x: x.location.start, reverse=bool(gene.location.strand == -1))
     for cds in gene.sub_features:
         check_seq += cds.location.extract(genome_seq)
     check_seq.translate(table=11, cds=True)
@@ -324,7 +324,7 @@ class Correct:
         self._create_link()
         self.correct_records()
         self.add_trna()
-        return SeqRecord(id=self.record1.id, seq='', features=self.curated)
+        return SeqRecord(id=self.record1.id, seq=Seq(''), features=self.curated)
 
 """rps12 feature
 1. SeqFeature numbers
@@ -434,26 +434,36 @@ class CurateSequence:
         """
         # makeblastdb
         copy(genome_seq, self.tmp / 'genome.fasta')
-        mkdbcline = NcbimakeblastdbCommandline(input_file=self.tmp / 'genome.fasta', dbtype='nucl')
-        mkdbcline()
+        mkdbcline = [
+            "makeblastdb",
+            "-in", str(self.tmp / 'genome.fasta'),
+            "-dbtype", "nucl"]
+        sp.run(mkdbcline, check=True)
         # trnH
-        ncline = NcbiblastnCommandline(
-            query=self.query1,
-            db=self.tmp / 'genome.fasta',
-            evalue=0.001,
-            word_size=11,
-            out=self.tmp / 'blastn.res',
-            outfmt="6 qseqid sstart send sstrand evalue")
-        ncline()
-        # matK, rbcL and psbA
-        tncline = NcbitblastnCommandline(
-            query=self.query2,
-            db=self.tmp / 'genome.fasta',
-            evalue=0.001,
-            out=self.tmp / 'tblastn.res',
-            outfmt="6 qseqid sstart send sstrand evalue")
-        tncline()
+        # blastn command (trnH)
+        ncline = [
+            "blastn",
+            "-query", self.query1,
+            "-db", str(self.tmp / 'genome.fasta'),
+            "-evalue", "0.001",
+            "-word_size", "11",
+            "-outfmt", "6 qseqid sstart send sstrand evalue",
+            "-out", str(self.tmp / 'blastn.res')
+        ]
+        # Execute blastn
+        sp.run(ncline, check=True)
 
+        # tblastn command (matK, rbcL and psbA)
+        tncline = [
+            "tblastn",
+            "-query", self.query2,
+            "-db", str(self.tmp / 'genome.fasta'),
+            "-evalue", "0.001",
+            "-outfmt", "6 qseqid sstart send sstrand evalue",
+            "-out", str(self.tmp / 'tblastn.res')
+        ]
+        # Execute tblastn
+        sp.run(tncline, check=True)
     
     def _curate(self, genome_seq):
         self._blast_wrapper(genome_seq)
@@ -532,18 +542,25 @@ class CurateSequence:
         # To avoid someting on gap
         double_seq = raw_seq + raw_seq
         SeqIO.write(double_seq, self.tmp / 'doule_seq.fasta', 'fasta')
-        mkdbcline = NcbimakeblastdbCommandline(input_file= self.tmp / 'doule_seq.fasta',
-                                               dbtype='nucl')
-        mkdbcline()
+        
+        mkdbcline = [
+            "makeblastdb",
+            "-in", str(self.tmp / 'doule_seq.fasta'),
+            "-dbtype", "nucl"
+        ]
+        sp.run(mkdbcline, check=True)
 
-        ncline = NcbiblastnCommandline(
-            query=self.tmp / 'doule_seq.fasta',
-            db=self.tmp / 'doule_seq.fasta',
-            strand = 'both',
-            perc_identity = 70,
-            out=self.tmp / 'double_seq.res',
-            outfmt='6 qlen length qstart qend sstart send')
-        ncline()
+        # 2. blastn command
+        ncline = [
+            "blastn",
+            "-query", str(self.tmp / 'doule_seq.fasta'),
+            "-db", str(self.tmp / 'doule_seq.fasta'),
+            "-strand", "both",
+            "-perc_identity", "70",
+            "-outfmt", "6 qlen length qstart qend sstart send",
+            "-out", str(self.tmp / 'double_seq.res')
+        ]
+        sp.run(ncline, check=True)
 
         max_aln_n = 0
         min_ir = 1000
@@ -612,18 +629,25 @@ class CurateSequence:
         
         copy(ref_path, self.tmp / 'ref_genome.fasta')
         #makeblastdb
-        mkdbcline = NcbimakeblastdbCommandline(input_file= self.tmp / 'ref_genome.fasta',
-                                               dbtype='nucl')
-        mkdbcline()
+        # 1. makeblastdb command (创建参考基因组数据库)
+        mkdbcline = [
+            "makeblastdb",
+            "-in", str(self.tmp / 'ref_genome.fasta'),
+            "-dbtype", "nucl"
+        ]
+        sp.run(mkdbcline, check=True)
 
-        ncline = NcbiblastnCommandline(
-            query=self.tmp / 'SSC.fa',
-            db=self.tmp / 'ref_genome.fasta',
-            strand = 'both',
-            out=self.tmp / 'SSC.res',
-            max_hsps = 1,
-            outfmt="6 qseqid sseqid sstrand evalue")
-        ncline()
+        # 2. blastn command (执行SSC序列比对)
+        ncline=[
+            "blastn",
+            "-query", str(self.tmp / 'SSC.fa'),
+            "-db", str(self.tmp / 'ref_genome.fasta'),
+            "-strand", "both",
+            "-max_hsps", "1",
+            "-outfmt", "6 qseqid sseqid sstrand evalue",
+            "-out", str(self.tmp / 'SSC.res')
+        ]
+        sp.run(ncline, check=True)
         
         strand = 0
         for _line in Path(self.tmp/ 'SSC.res').read_text(encoding='utf-8').strip().split('\n'):

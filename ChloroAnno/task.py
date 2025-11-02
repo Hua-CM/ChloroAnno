@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-# @Time : 2020/4/16 20:59
+# @Time : 2025/11/1 17:35
 # @Author : Zhongyi Hua
-# @FileName: correct2.py
-# @Usage: correct annotation error using CPGAVAS2 and PGA result.
+# @FileName: task.py
+# @Usage: task interface for ChloroAnno
 # @Note:
 # @E-mail: njbxhzy@hotmail.com
 
 from pathlib import Path
 from collections import defaultdict
 from datetime import date
+import subprocess as sp 
 
 from Bio import SeqIO
-from Bio.Blast.Applications import NcbiblastnCommandline, NcbimakeblastdbCommandline
 from utilities import Check, Correct, CurateSequence, add_rps12, read_geseq, read_anno
 
 # !!NOTICE!! All methods in this scirpt can only be used in a loop because they are under continue decorator.
@@ -40,16 +40,28 @@ def isomerism_old(asm_path1:Path, asm_path2:Path, ref_path: Path, tmp_dir:Path):
 
     SeqIO.write([path1_seq, path2_seq, ref_seq], subject_path, 'fasta')
 
-    dbcmd = NcbimakeblastdbCommandline(input_file=subject_path, dbtype='nucl')
-    qcmd =  NcbiblastnCommandline(
-        query=query_path,
-        db=subject_path,
-        evalue=0.001,
-        out=tmp_dir / 'blastn.res',
-        outfmt="6 qseqid sseqid sstrand evalue")
+    # makeblastdb command
+    dbcmd = [
+        "makeblastdb",
+        "-in", subject_path,
+        "-dbtype", "nucl"
+    ]
 
-    dbcmd()
-    qcmd()
+    # Execute makeblastdb
+    sp.run(dbcmd, check=True)
+
+    # blastn command
+    qcmd = [
+        "blastn",
+        "-query", query_path,
+        "-db", subject_path,
+        "-evalue", "0.001",
+        "-outfmt", "6 qseqid sseqid sstrand evalue",
+        "-out", str(Path(tmp_dir) / 'blastn.res')
+    ]
+
+    # Execute blastn
+    sp.run(qcmd, check=True)
 
     #{seqid1: 0, seqid2: 0, refid: 0}
     # if one gene on plus strand, add 1, otherwise minus 1
